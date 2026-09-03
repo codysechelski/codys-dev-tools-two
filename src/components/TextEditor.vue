@@ -40,22 +40,22 @@ const view = shallowRef<EditorView | null>(null);
 const copyState = ref<'idle' | 'copied'>('idle');
 
 const codeHighlightStyle = HighlightStyle.define([
-  { tag: [tags.keyword, tags.modifier, tags.operatorKeyword, tags.controlKeyword, tags.definitionKeyword], color: '#c4b5fd', fontWeight: '700' },
-  { tag: [tags.atom, tags.bool, tags.null, tags.standard(tags.variableName), tags.self], color: '#f0abfc' },
-  { tag: [tags.number, tags.integer, tags.float], color: '#93c5fd' },
-  { tag: [tags.string, tags.character, tags.regexp, tags.special(tags.string)], color: '#a7f3d0' },
-  { tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment], color: '#8b96c8', fontStyle: 'italic' },
-  { tag: [tags.variableName, tags.local(tags.variableName)], color: '#e0e7ff' },
-  { tag: [tags.definition(tags.variableName), tags.function(tags.variableName), tags.function(tags.definition(tags.variableName))], color: '#67e8f9' },
-  { tag: [tags.className, tags.definition(tags.className), tags.typeName], color: '#fde68a' },
-  { tag: [tags.propertyName, tags.definition(tags.propertyName), tags.attributeName], color: '#7dd3fc' },
-  { tag: [tags.tagName, tags.angleBracket], color: '#60a5fa' },
-  { tag: [tags.heading, tags.strong], color: '#f8fafc', fontWeight: '800' },
-  { tag: tags.emphasis, color: '#f8fafc', fontStyle: 'italic' },
-  { tag: [tags.link, tags.url], color: '#67e8f9', textDecoration: 'underline' },
-  { tag: [tags.operator, tags.compareOperator, tags.arithmeticOperator, tags.logicOperator, tags.derefOperator], color: '#f0abfc' },
-  { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket, tags.paren], color: 'rgba(238, 242, 255, 0.72)' },
-  { tag: tags.invalid, color: '#fda4af' },
+  { tag: [tags.keyword, tags.modifier, tags.operatorKeyword, tags.controlKeyword, tags.definitionKeyword], color: 'var(--syntax-keyword)', fontWeight: '700' },
+  { tag: [tags.atom, tags.bool, tags.null, tags.standard(tags.variableName), tags.self], color: 'var(--syntax-atom)' },
+  { tag: [tags.number, tags.integer, tags.float], color: 'var(--syntax-number)' },
+  { tag: [tags.string, tags.character, tags.regexp, tags.special(tags.string)], color: 'var(--syntax-string)' },
+  { tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment], color: 'var(--syntax-comment)', fontStyle: 'italic' },
+  { tag: [tags.variableName, tags.local(tags.variableName)], color: 'var(--syntax-variable)' },
+  { tag: [tags.definition(tags.variableName), tags.function(tags.variableName), tags.function(tags.definition(tags.variableName))], color: 'var(--syntax-function)' },
+  { tag: [tags.className, tags.definition(tags.className), tags.typeName], color: 'var(--syntax-class)' },
+  { tag: [tags.propertyName, tags.definition(tags.propertyName), tags.attributeName], color: 'var(--syntax-property)' },
+  { tag: [tags.tagName, tags.angleBracket], color: 'var(--syntax-tag)' },
+  { tag: [tags.heading, tags.strong], color: 'var(--syntax-heading)', fontWeight: '800' },
+  { tag: tags.emphasis, color: 'var(--syntax-heading)', fontStyle: 'italic' },
+  { tag: [tags.link, tags.url], color: 'var(--syntax-link)', textDecoration: 'underline' },
+  { tag: [tags.operator, tags.compareOperator, tags.arithmeticOperator, tags.logicOperator, tags.derefOperator], color: 'var(--syntax-operator)' },
+  { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket, tags.paren], color: 'var(--syntax-punctuation)' },
+  { tag: tags.invalid, color: 'var(--syntax-invalid)' },
 ]);
 
 onMounted(() => {

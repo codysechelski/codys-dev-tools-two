@@ -3,9 +3,9 @@ import { computed, ref, watch } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import AppButton from '@/components/AppButton.vue';
 import DataList from '@/components/DataList.vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import {
   createDateFromParts,
   getDateParts,
@@ -276,14 +276,8 @@ function padDatePart(value: number): string {
       <AppSelect v-model="parseFormat" label="Input format" :options="parseFormatOptions" />
       <AppSelect v-model="setTo" label="Set To" :options="setToOptions" @update:model-value="applySetTo" />
       <div class="formatter-tool__status-slot timestamp-tool__status">
-        <p v-if="error" class="formatter-tool__status formatter-tool__status--error">
-          <AppIcon name="timesCircle" />
-          <span>{{ error }}</span>
-        </p>
-        <p v-else class="formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>{{ detectedLabel || 'Ready' }}</span>
-        </p>
+        <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
+        <ToolbarStatusBadge v-else :label="detectedLabel || 'Ready'" />
       </div>
     </div>
 

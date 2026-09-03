@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import {
   convertJsonYaml,
   type JsonYamlDirection,
@@ -68,14 +68,8 @@ const lineWidthOptions: Array<{ label: string; value: YamlLineWidth }> = [
       />
       <AppToggle v-model="sortKeys" label="Sort keys" description="Alphabetize object/map keys recursively before writing output." />
       <div class="formatter-tool__status-slot">
-        <p v-if="error" class="formatter-tool__status formatter-tool__status--error">
-          <AppIcon name="timesCircle" />
-          <span>Invalid input</span>
-        </p>
-        <p v-else class="formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>Ready</span>
-        </p>
+        <ToolbarStatusBadge v-if="error" variant="error" label="Invalid input" />
+        <ToolbarStatusBadge v-else label="Ready" />
       </div>
     </div>
 

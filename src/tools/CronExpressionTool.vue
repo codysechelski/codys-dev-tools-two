@@ -2,9 +2,9 @@
 import { computed, ref, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 import DataList from '@/components/DataList.vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { buildCronExpression, parseCronExpression } from './cronExpression';
 
 type CronPreset = 'custom' | 'every-minute' | 'hourly' | 'weekdays-9' | 'monthly';
@@ -129,14 +129,8 @@ function getOrdinalDay(day: number): string {
     <div class="tool-options cron-tool__toolbar">
       <AppSelect v-model="preset" label="Preset" :options="presetOptions" />
       <DataList class="formatter-tool__status-slot cron-tool__status cron-tool__status-list">
-        <p v-if="parsed.error" class="data-list__row formatter-tool__status formatter-tool__status--error">
-          <AppIcon name="timesCircle" />
-          <span>Invalid cron</span>
-        </p>
-        <p v-else class="data-list__row formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>Valid cron</span>
-        </p>
+        <ToolbarStatusBadge v-if="parsed.error" class="data-list__row" variant="error" label="Invalid cron" />
+        <ToolbarStatusBadge v-else class="data-list__row" label="Valid cron" />
       </DataList>
     </div>
 

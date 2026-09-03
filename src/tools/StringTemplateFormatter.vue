@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { detectDelimiter, formatStringTemplate, type InputDelimiter, type JoinToken } from './stringTemplateFormatter';
 
 const input = ref('1,one\n2,two');
@@ -99,14 +99,8 @@ function flashDelimiterAutoBadge(): void {
         <AppToggle v-model="trimCells" label="Trim cells" description="Remove leading and trailing whitespace from each parsed cell." />
       </div>
       <div class="formatter-tool__status-slot template-tool__status">
-        <p v-if="error" class="formatter-tool__status formatter-tool__status--error">
-          <AppIcon name="timesCircle" />
-          <span>{{ error }}</span>
-        </p>
-        <p v-else class="formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>{{ rowCount }} rows formatted</span>
-        </p>
+        <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
+        <ToolbarStatusBadge v-else :label="`${rowCount} rows formatted`" />
       </div>
     </div>
 

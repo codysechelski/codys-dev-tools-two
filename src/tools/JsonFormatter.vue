@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { formatJson, type JsonOutputMode } from './jsonFormatter';
 
 const input = ref(`{
@@ -56,19 +56,14 @@ const indentationOptions: Array<{ label: string; value: '2-spaces' | '4-spaces' 
       />
       <AppToggle v-model="sortKeys" label="Sort keys" description="Alphabetize object keys recursively." />
       <div class="formatter-tool__status-slot">
-        <button
+        <ToolbarStatusBadge
           v-if="parseError"
-          class="formatter-tool__status formatter-tool__status--error"
-          type="button"
+          variant="error"
+          label="Invalid - Click for details"
+          button
           @click="isErrorModalOpen = true"
-        >
-          <AppIcon name="timesCircle" />
-          <span>Invalid - Click for details</span>
-        </button>
-        <p v-else class="formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>Valid JSON</span>
-        </p>
+        />
+        <ToolbarStatusBadge v-else label="Valid JSON" />
       </div>
     </div>
 

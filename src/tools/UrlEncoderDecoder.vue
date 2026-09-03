@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { transformUrl, type UrlTransformMode } from './urlEncoderDecoder';
 
 const input = ref('https://example.com/search?q=Cody\'s Dev Tools#top');
@@ -51,14 +51,8 @@ const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded URL
         description="Strict RFC 3986 encoding for !, ', (, ), and *. Full-URL mode preserves IPv6 brackets."
       />
       <div class="formatter-tool__status-slot">
-        <p v-if="error" class="formatter-tool__status formatter-tool__status--error">
-          <AppIcon name="timesCircle" />
-          <span>Invalid encoding</span>
-        </p>
-        <p v-else class="formatter-tool__status">
-          <AppIcon name="checkCircle" />
-          <span>Ready</span>
-        </p>
+        <ToolbarStatusBadge v-if="error" variant="error" label="Invalid encoding" />
+        <ToolbarStatusBadge v-else label="Ready" />
       </div>
     </div>
 
