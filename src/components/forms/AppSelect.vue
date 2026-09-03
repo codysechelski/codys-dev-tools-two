@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends string">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
 import HelpPopover from '@/components/HelpPopover.vue';
 
@@ -24,9 +24,27 @@ const root = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const activeIndex = ref(0);
 const opensAbove = ref(false);
+const searchQuery = ref('');
 const selectedOption = computed(() => props.options.find((option) => option.value === props.modelValue) ?? { label: props.modelValue, value: props.modelValue });
 const longestOptionLength = computed(() => Math.max(...props.options.map((option) => option.label.length), props.label.length));
 const minimumWidth = computed(() => `${Math.max(10.5, longestOptionLength.value * 0.58 + 3.5)}rem`);
+const filteredOptions = computed(() => {
+  const normalizedQuery = searchQuery.value.trim().toLowerCase();
+  if (!normalizedQuery) return props.options;
+
+  return props.options.filter((option) => {
+    return option.label.toLowerCase().includes(normalizedQuery) || option.value.toLowerCase().includes(normalizedQuery);
+  });
+});
+
+watch(filteredOptions, (options) => {
+  if (!options.length) {
+    activeIndex.value = 0;
+    return;
+  }
+
+  activeIndex.value = Math.min(activeIndex.value, options.length - 1);
+});
 
 onMounted(() => {
   document.addEventListener('pointerdown', handleOutsidePointerDown);
@@ -49,6 +67,7 @@ function openMenu(): void {
 function closeMenu(): void {
   isOpen.value = false;
   opensAbove.value = false;
+  searchQuery.value = '';
 }
 
 function selectOption(value: T): void {
@@ -62,6 +81,23 @@ function handleKeydown(event: KeyboardEvent): void {
     return;
   }
 
+  if (isSearchKey(event)) {
+    event.preventDefault();
+    if (!isOpen.value) openMenu();
+    searchQuery.value += event.key;
+    activeIndex.value = 0;
+    void updateMenuPlacement();
+    return;
+  }
+
+  if (event.key === 'Backspace' && isOpen.value && searchQuery.value) {
+    event.preventDefault();
+    searchQuery.value = searchQuery.value.slice(0, -1);
+    activeIndex.value = 0;
+    void updateMenuPlacement();
+    return;
+  }
+
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault();
     if (!isOpen.value) {
@@ -69,7 +105,7 @@ function handleKeydown(event: KeyboardEvent): void {
       return;
     }
 
-    selectOption(props.options[activeIndex.value]?.value ?? props.modelValue);
+    selectOption(filteredOptions.value[activeIndex.value]?.value ?? props.modelValue);
     return;
   }
 
@@ -77,9 +113,17 @@ function handleKeydown(event: KeyboardEvent): void {
 
   event.preventDefault();
   if (!isOpen.value) openMenu();
+  if (!filteredOptions.value.length) return;
 
   const direction = event.key === 'ArrowDown' ? 1 : -1;
-  activeIndex.value = (activeIndex.value + direction + props.options.length) % props.options.length;
+  activeIndex.value = (activeIndex.value + direction + filteredOptions.value.length) % filteredOptions.value.length;
+}
+
+function isSearchKey(event: KeyboardEvent): boolean {
+  if (event.metaKey || event.ctrlKey || event.altKey) return false;
+  if (event.key.length !== 1) return false;
+
+  return event.key !== ' ' || (isOpen.value && searchQuery.value.length > 0);
 }
 
 function handleOutsidePointerDown(event: PointerEvent): void {
@@ -127,8 +171,9 @@ async function updateMenuPlacement(): Promise<void> {
       <span class="form-select__chevron" aria-hidden="true" />
     </button>
     <div v-if="isOpen" class="form-select__menu" role="listbox">
+      <div v-if="searchQuery" class="form-select__search-hint">{{ searchQuery }}</div>
       <button
-        v-for="(option, index) in options"
+        v-for="(option, index) in filteredOptions"
         :key="option.value"
         type="button"
         class="form-select__option"
@@ -141,6 +186,7 @@ async function updateMenuPlacement(): Promise<void> {
       >
         {{ option.label }}
       </button>
+      <div v-if="!filteredOptions.length" class="form-select__empty">No matching options</div>
     </div>
   </div>
 </template>
