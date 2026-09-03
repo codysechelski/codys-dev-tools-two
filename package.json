@@ -1,0 +1,90 @@
+{
+  "name": "codys-dev-tools-two",
+  "version": "0.11.1",
+  "private": true,
+  "type": "module",
+  "main": "out/main/index.js",
+  "description": "A cross-platform developer tools app built with Vue, TypeScript, Sass, and Electron.",
+  "scripts": {
+    "dev": "node scripts/dev-electron.mjs",
+    "dev:web": "vite --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc --noEmit",
+    "build": "npm run typecheck && vite build && electron-vite build",
+    "build:web": "npm run typecheck && vite build",
+    "build:electron": "npm run typecheck && electron-vite build",
+    "dist:mac": "npm run build:electron && electron-builder --mac --universal",
+    "dist:win": "npm run build:electron && electron-builder --win --x64",
+    "dist:all": "npm run build:electron && electron-builder --mac --universal --win --x64",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.11.0",
+    "@codemirror/lang-css": "^6.3.1",
+    "@codemirror/lang-html": "^6.4.12",
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/legacy-modes": "^6.5.4",
+    "@codemirror/state": "^6.7.1",
+    "@codemirror/view": "^6.43.9",
+    "@unicode/unicode-17.0.0": "^2.0.2",
+    "@vitejs/plugin-vue": "latest",
+    "@vuepic/vue-datepicker": "^14.0.0",
+    "codemirror": "^6.0.2",
+    "qrcode": "^1.5.4",
+    "unicode-name": "^1.1.0",
+    "unicode-properties": "^1.4.1",
+    "vue": "latest",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "latest",
+    "@types/node": "latest",
+    "@types/qrcode": "^1.5.6",
+    "@vue/test-utils": "^2.5.0",
+    "@vue/tsconfig": "^0.9.1",
+    "electron": "^43.1.1",
+    "electron-builder": "latest",
+    "electron-vite": "latest",
+    "jsdom": "^30.0.1",
+    "sass": "latest",
+    "typescript": "^5.9.2",
+    "vite": "latest",
+    "vitest": "^4.1.11",
+    "vue-tsc": "latest"
+  },
+  "build": {
+    "appId": "com.codysdevtools.app",
+    "productName": "Cody's Dev Tools",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "out/**"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}
