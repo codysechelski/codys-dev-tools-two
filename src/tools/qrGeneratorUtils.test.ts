@@ -25,13 +25,14 @@ describe('qrGenerator utilities', () => {
     const values = createDefaultQrValues();
     values.url = 'https://example.com/docs';
     values.emailTo = 'person@example.com';
-    values.emailSubject = 'Hello';
+    values.emailSubject = 'Hello there';
+    values.emailBody = 'Line one and two';
     values.smsTo = '+15555551212';
     values.smsBody = 'Hi there';
     values.phoneNumber = '+15555551212';
 
     expect(buildQrPayload('url', values)).toBe('https://example.com/docs');
-    expect(buildQrPayload('email', values)).toBe('mailto:person@example.com?subject=Hello');
+    expect(buildQrPayload('email', values)).toBe('mailto:person@example.com?subject=Hello%20there&body=Line%20one%20and%20two');
     expect(buildQrPayload('sms', values)).toBe('sms:+15555551212?body=Hi%20there');
     expect(buildQrPayload('phone', values)).toBe('tel:+15555551212');
   });
@@ -117,5 +118,18 @@ describe('qrGenerator utilities', () => {
     });
 
     expect(output).toContain('<svg');
+  });
+
+  it('renders SVG QR modules as filled shapes instead of strokes', async () => {
+    const output = await renderQrCode('hello', {
+      format: 'svg',
+      errorCorrectionLevel: 'M',
+      margin: 2,
+      darkColor: '#000000',
+      lightColor: '#ffffff',
+    });
+
+    expect(output).toContain('fill="#000000"');
+    expect(output).not.toContain('stroke=');
   });
 });

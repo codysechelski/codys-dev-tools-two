@@ -67,10 +67,11 @@ export function buildQrPayload(schema: QrSchema, values: QrFormValues): string {
   }
 
   if (schema === 'email') {
-    const params = new URLSearchParams();
-    if (values.emailSubject) params.set('subject', values.emailSubject);
-    if (values.emailBody) params.set('body', values.emailBody);
-    const query = params.toString();
+    const params = [
+      values.emailSubject ? `subject=${encodeURIComponent(values.emailSubject)}` : '',
+      values.emailBody ? `body=${encodeURIComponent(values.emailBody)}` : '',
+    ].filter(Boolean);
+    const query = params.join('&');
 
     return `mailto:${values.emailTo}${query ? `?${query}` : ''}`;
   }
@@ -144,7 +145,7 @@ export async function renderQrCode(payload: string, options: QrRenderOptions): P
   };
 
   if (options.format === 'svg') {
-    return QRCode.toString(payload, { ...qrOptions, type: 'svg' });
+    return renderQrSvg(payload, options);
   }
 
   return QRCode.toDataURL(payload, { ...qrOptions, type: 'image/png', width: getPngSize(options.format) });
@@ -226,6 +227,33 @@ function escapeWifiValue(value: string): string {
 
 function formatCalendarDate(value: string): string {
   return value.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+}
+
+function renderQrSvg(payload: string, options: QrRenderOptions): string {
+  const qr = QRCode.create(payload, { errorCorrectionLevel: options.errorCorrectionLevel });
+  const moduleCount = qr.modules.size;
+  const margin = Number.isFinite(options.margin) ? Math.max(0, options.margin) : 0;
+  const size = moduleCount + margin * 2;
+  const darkModules: string[] = [];
+
+  qr.modules.data.forEach((enabled, index) => {
+    if (!enabled) return;
+
+    const x = (index % moduleCount) + margin;
+    const y = Math.floor(index / moduleCount) + margin;
+    darkModules.push(`M${x} ${y}h1v1h-1z`);
+  });
+
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges">`,
+    `<path fill="${escapeSvgAttribute(options.lightColor)}" d="M0 0h${size}v${size}H0z"/>`,
+    `<path fill="${escapeSvgAttribute(options.darkColor)}" d="${darkModules.join('')}"/>`,
+    '</svg>',
+  ].join('');
+}
+
+function escapeSvgAttribute(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 export function getPngSize(format: QrOutputFormat): number {
