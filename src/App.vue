@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { APP_VERSION } from '@/appInfo';
 import AppSidebar from '@/components/AppSidebar.vue';
 import { resolveTheme, type ThemeMode } from '@/theme';
@@ -14,6 +14,10 @@ const systemPrefersDark = ref(true);
 const activeTheme = computed(() => resolveTheme(themeMode.value, systemPrefersDark.value));
 let mediaQuery: MediaQueryList | null = null;
 
+watchEffect(() => {
+  document.body.dataset.theme = activeTheme.value;
+});
+
 onMounted(() => {
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
   if (!mediaQuery) return;
@@ -24,6 +28,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   mediaQuery?.removeEventListener('change', updateSystemTheme);
+  delete document.body.dataset.theme;
 });
 
 function selectTool(toolId: string): void {
