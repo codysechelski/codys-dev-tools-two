@@ -109,7 +109,7 @@ function createSeededRandom(seed: number): () => number {
     </div>
 
     <div class="lorem-tool__outputs">
-      <HtmlPreview :html="output" :plain-text="plainOutput" label="Rendered HTML" />
+      <HtmlPreview :html="output" :plain-text="plainOutput" label="Text" />
       <TextEditor :model-value="output" label="Markup" language="html" readonly placeholder="Generated markup will appear here" />
     </div>
   </section>

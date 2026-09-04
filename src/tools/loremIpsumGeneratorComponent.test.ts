@@ -10,7 +10,7 @@ describe('LoremIpsumGenerator', () => {
     expect(wrapper.text()).toContain('Vary sentence punctuation');
     expect(wrapper.text()).toContain('Include common HTML tags');
     expect(wrapper.text()).toContain('Generate');
-    expect(wrapper.text()).toContain('Rendered HTML');
+    expect(wrapper.text()).toContain('Text');
     expect(wrapper.text()).toContain('Markup');
   });
 

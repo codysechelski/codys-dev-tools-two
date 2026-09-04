@@ -518,6 +518,10 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
   color: #1e293b;
 }
 
+.app-shell[data-theme='light'] .html-preview__body a {
+  color: var(--color-purple-700);
+}
+
 .app-shell[data-theme='light'] .unicode-card:hover,
 .app-shell[data-theme='light'] .unicode-card:focus-visible {
   border-color: rgba(79, 70, 229, 0.34);
@@ -1537,10 +1541,10 @@ body[data-theme='light'] .unicode-attribute code {
 }
 
 .text-analyzer-results {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   min-height: 0;
-  grid-template-rows: auto minmax(0, 1fr);
   gap: var(--space-4);
 }
 
@@ -1552,7 +1556,13 @@ body[data-theme='light'] .unicode-attribute code {
 }
 
 .text-analyzer-stats {
+  flex: 0 0 auto;
   overflow: hidden;
+}
+
+.text-analyzer-frequency {
+  flex: 0 1 auto;
+  min-height: 0;
 }
 
 .text-analyzer-stats .data-list__body {
