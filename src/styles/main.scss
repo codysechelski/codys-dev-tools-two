@@ -1791,7 +1791,7 @@ body[data-theme='light'] .unicode-attribute code {
   display: grid;
   min-height: 0;
   flex: 1;
-  grid-template-columns: minmax(22rem, 0.9fr) minmax(24rem, 1.1fr);
+  grid-template-columns: repeat(2, minmax(22rem, 1fr));
   gap: var(--space-5);
 }
 
