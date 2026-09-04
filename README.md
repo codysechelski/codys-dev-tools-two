@@ -15,7 +15,7 @@ Vue, TypeScript, Sass, and Electron scaffolding for a cross-platform developer t
 
 ## Version
 
-The displayed app version is defined in `src/appInfo.ts` and currently matches package version `0.11.1`.
+The displayed app version is read from `package.json` via `src/appInfo.ts`, so bumping the package version updates the sidebar footer automatically.
 
 ## Tools
 
