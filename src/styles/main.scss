@@ -495,6 +495,7 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
 .app-shell[data-theme='light'] .html-preview__body,
 .app-shell[data-theme='light'] .unicode-card,
 .app-shell[data-theme='light'] .text-analyzer-frequency__row span,
+.app-shell[data-theme='light'] .cron-summary-panel strong,
 .app-shell[data-theme='light'] .cron-runs-panel p {
   color: #1e293b;
 }
@@ -1750,10 +1751,12 @@ body[data-theme='light'] .unicode-attribute code {
 }
 
 .cron-summary-panel span,
+.cron-summary-panel strong,
 .cron-summary-panel code {
   display: block;
 }
 
+.cron-summary-panel strong,
 .cron-summary-panel code {
   margin-top: 0.1rem;
   overflow-wrap: anywhere;

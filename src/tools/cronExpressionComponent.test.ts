@@ -35,16 +35,6 @@ describe('CronExpressionTool', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('*/15 9-17 1 jan mon');
   });
 
-  it('formats the summary and field values the same way as the expression', () => {
-    const wrapper = mount(CronExpressionTool);
-    const rows = wrapper.findAll('.cron-summary-panel .data-list__row');
-
-    rows.forEach((row) => {
-      expect(row.find('code').exists()).toBe(true);
-      expect(row.find('strong').exists()).toBe(false);
-    });
-  });
-
   it('copies the parsed expression', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {

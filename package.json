@@ -1,6 +1,6 @@
 {
   "name": "codys-dev-tools-two",
-  "version": "0.18.5",
+  "version": "0.18.4",
   "private": true,
   "type": "module",
   "main": "out/main/index.js",
