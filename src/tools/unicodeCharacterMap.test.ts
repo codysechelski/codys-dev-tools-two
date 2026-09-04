@@ -30,4 +30,22 @@ describe('UnicodeCharacterMap', () => {
     expect(wrapper.find('[role="combobox"]').text()).toContain('Emoticons');
     expect(wrapper.text()).toContain('U+1F600');
   });
+
+  it('resets a copy button back to idle when a different character is opened', async () => {
+    const wrapper = mount(UnicodeCharacterMap, { attachTo: document.body });
+    const cards = wrapper.findAll('.unicode-card');
+
+    await cards[0].trigger('click');
+    document.body.querySelector<HTMLButtonElement>('.unicode-detail__copy-character')?.click();
+    await new Promise((resolve) => window.setTimeout(resolve));
+
+    expect(document.body.querySelector('.unicode-detail__copy-character')?.textContent).toBe('Copied');
+
+    await cards[1].trigger('click');
+    await new Promise((resolve) => window.setTimeout(resolve));
+
+    expect(document.body.querySelector('.unicode-detail__copy-character')?.textContent).toBe('Copy');
+
+    wrapper.unmount();
+  });
 });

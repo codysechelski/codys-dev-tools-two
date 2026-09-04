@@ -165,6 +165,16 @@ code {
   opacity: 0.5;
 }
 
+.app-copy-button {
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    width 180ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
 .app-button--primary {
   border-color: rgba(103, 232, 249, 0.42);
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(37, 99, 235, 0.88));
@@ -184,6 +194,11 @@ code {
 .app-button--destructive {
   border-color: rgba(244, 63, 94, 0.42);
   background: rgba(244, 63, 94, 0.18);
+}
+
+.app-button--success {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(34, 197, 94, 0.18);
 }
 
 .app-button--ghost {
@@ -592,6 +607,17 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
 .app-shell[data-theme='light'] .app-button--destructive:hover:not(:disabled) {
   border-color: rgba(190, 18, 60, 0.52);
   background: rgba(254, 202, 202, 0.92);
+}
+
+.app-shell[data-theme='light'] .app-button--success {
+  border-color: rgba(21, 128, 61, 0.34);
+  color: #166534;
+  background: rgba(220, 252, 231, 0.82);
+}
+
+.app-shell[data-theme='light'] .app-button--success:hover:not(:disabled) {
+  border-color: rgba(21, 128, 61, 0.52);
+  background: rgba(187, 247, 208, 0.92);
 }
 
 body[data-theme='light'] .modal-backdrop {

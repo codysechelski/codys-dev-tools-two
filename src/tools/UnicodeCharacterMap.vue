@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import AppButton from '@/components/AppButton.vue';
+import AppCopyButton from '@/components/AppCopyButton.vue';
 import DataList from '@/components/DataList.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
@@ -18,7 +18,6 @@ import {
 const selectedBlock = ref('basic-latin');
 const search = ref('');
 const selectedCharacter = ref<UnicodeCharacterInfo | null>(null);
-const copiedKey = ref('');
 
 const blockOptions = [{ label: 'All', value: ALL_UNICODE_BLOCK_VALUE }, ...unicodeBlocks.map((block) => ({ label: block.label, value: block.value }))];
 const query = computed(() => search.value.trim());
@@ -74,20 +73,11 @@ watch(search, (value) => {
 });
 
 function openCharacter(character: UnicodeCharacterInfo): void {
-  copiedKey.value = '';
   selectedCharacter.value = character;
 }
 
 function closeCharacter(): void {
   selectedCharacter.value = null;
-}
-
-async function copyValue(value: string, key: string): Promise<void> {
-  await navigator.clipboard.writeText(value);
-  copiedKey.value = key;
-  window.setTimeout(() => {
-    if (copiedKey.value === key) copiedKey.value = '';
-  }, 1200);
 }
 </script>
 
@@ -118,9 +108,12 @@ async function copyValue(value: string, key: string): Promise<void> {
     >
       <div v-if="selectedCharacter" class="unicode-detail">
         <section class="unicode-detail__preview-panel">
-          <AppButton class="unicode-detail__copy-character" variant="secondary" icon="copy" @click="copyValue(selectedCharacter.character, 'character')">
-            {{ copiedKey === 'character' ? 'Copied' : 'Copy' }}
-          </AppButton>
+          <AppCopyButton
+            class="unicode-detail__copy-character"
+            variant="secondary"
+            :value="selectedCharacter.character"
+            :reset-key="selectedCharacter.code"
+          />
           <div class="unicode-detail__glyph" :class="{ 'unicode-detail__glyph--label': selectedCharacter.displayCharacter.length > 2 }">
             {{ selectedCharacter.displayCharacter }}
           </div>
@@ -144,9 +137,7 @@ async function copyValue(value: string, key: string): Promise<void> {
                 <span>{{ attribute.label }}</span>
                 <code>{{ attribute.value }}</code>
               </div>
-              <AppButton variant="muted" icon="copy" @click="copyValue(attribute.value, attribute.label)">
-                {{ copiedKey === attribute.label ? 'Copied' : 'Copy' }}
-              </AppButton>
+              <AppCopyButton :value="attribute.value" :reset-key="selectedCharacter.code" />
             </div>
           </DataList>
         </section>

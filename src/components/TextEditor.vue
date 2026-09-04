@@ -13,6 +13,7 @@ import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { tags } from '@lezer/highlight';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
+import AppCopyButton from '@/components/AppCopyButton.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import AppModal from '@/components/AppModal.vue';
 import HelpPopover from '@/components/HelpPopover.vue';
@@ -39,7 +40,6 @@ const emit = defineEmits<{
 
 const editorRoot = ref<HTMLDivElement | null>(null);
 const view = shallowRef<EditorView | null>(null);
-const copyState = ref<'idle' | 'copied'>('idle');
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const isLoadFileModalOpen = ref(false);
 const isDragOver = ref(false);
@@ -93,17 +93,6 @@ watch(
     });
   },
 );
-
-async function copyContents(): Promise<void> {
-  if (!props.modelValue) return;
-
-  await navigator.clipboard.writeText(props.modelValue);
-  copyState.value = 'copied';
-
-  window.setTimeout(() => {
-    copyState.value = 'idle';
-  }, 1200);
-}
 
 function clearContents(): void {
   if (props.readonly || !props.modelValue) return;
@@ -217,9 +206,7 @@ function createEditorState(): EditorState {
         <AppButton v-if="!readonly" variant="muted" icon="eraser" :disabled="!modelValue" @click="clearContents">
           Clear
         </AppButton>
-        <AppButton variant="muted" icon="copy" :disabled="!modelValue" @click="copyContents">
-          {{ copyState === 'copied' ? 'Copied' : 'Copy' }}
-        </AppButton>
+        <AppCopyButton :value="modelValue" :disabled="!modelValue" />
       </div>
     </header>
 

@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import AppButton from '@/components/AppButton.vue';
+import AppCopyButton from '@/components/AppCopyButton.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
@@ -73,8 +74,6 @@ const pngImageStyle = computed(() => ({
   width: `${Math.floor(pngWidth.value * pngPreviewScale.value)}px`,
   height: `${Math.floor(pngHeight.value * pngPreviewScale.value)}px`,
 }));
-const copyState = ref<'idle' | 'copied' | 'error'>('idle');
-const copySvgCodeState = ref<'idle' | 'copied' | 'error'>('idle');
 const isSaving = ref(false);
 const eventEndError = computed(() =>
   schema.value === 'calendar' && values.value.eventStart && values.value.eventEnd && values.value.eventEnd < values.value.eventStart
@@ -199,7 +198,6 @@ async function updateQrCode(): Promise<void> {
       darkColor: darkColor.value,
       lightColor: lightColor.value,
     });
-    copyState.value = 'idle';
     await nextTick();
     updatePreviewSize();
   } catch (error) {
@@ -317,37 +315,14 @@ async function saveQr(): Promise<void> {
 async function copyQr(): Promise<void> {
   if (!renderedQr.value) return;
 
-  try {
-    const blob = await getRenderedQrBlob();
-
-    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-    copyState.value = 'copied';
-    window.setTimeout(() => {
-      copyState.value = 'idle';
-    }, 1400);
-  } catch {
-    copyState.value = 'error';
-    window.setTimeout(() => {
-      copyState.value = 'idle';
-    }, 1800);
-  }
+  const blob = await getRenderedQrBlob();
+  await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
 }
 
 async function copySvgCode(): Promise<void> {
   if (!renderedQr.value || outputFormat.value !== 'svg') return;
 
-  try {
-    await navigator.clipboard.writeText(renderedQr.value);
-    copySvgCodeState.value = 'copied';
-    window.setTimeout(() => {
-      copySvgCodeState.value = 'idle';
-    }, 1400);
-  } catch {
-    copySvgCodeState.value = 'error';
-    window.setTimeout(() => {
-      copySvgCodeState.value = 'idle';
-    }, 1800);
-  }
+  await navigator.clipboard.writeText(renderedQr.value);
 }
 
 async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
@@ -380,12 +355,16 @@ async function getRenderedQrBlob(): Promise<Blob> {
       />
       <AppTextInput v-model="margin" label="Margin" type="number" :min="0" :max="10" />
       <div class="tool-options__actions">
-        <AppButton v-if="outputFormat === 'svg'" variant="secondary" icon="code" :disabled="!canDownload" @click="copySvgCode">
-          {{ copySvgCodeState === 'copied' ? 'Copied' : copySvgCodeState === 'error' ? 'Copy failed' : 'Copy SVG Code' }}
-        </AppButton>
-        <AppButton variant="secondary" icon="copy" :disabled="!canDownload" @click="copyQr">
-          {{ copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy' }}
-        </AppButton>
+        <AppCopyButton
+          v-if="outputFormat === 'svg'"
+          variant="secondary"
+          icon="code"
+          label="Copy SVG Code"
+          :copy="copySvgCode"
+          :disabled="!canDownload"
+          :reset-key="renderedQr"
+        />
+        <AppCopyButton variant="secondary" :copy="copyQr" :disabled="!canDownload" :reset-key="renderedQr" />
         <AppButton variant="primary" :icon="isSaving ? 'spinner' : 'save'" :disabled="!canDownload || isSaving" @click="saveQr">
           {{ isSaving ? 'Saving' : 'Save' }}
         </AppButton>

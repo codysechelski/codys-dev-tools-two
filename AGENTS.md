@@ -34,6 +34,7 @@
 - For a square, icon-only button (e.g. a toolbar regenerate/swap action), use `AppButton`'s `icon-only` prop rather than a tool-specific CSS class.
 - For a toolbar action button that should match the toolbar's select/text-input styling rather than the default purple secondary look, use `AppButton`'s `field` variant (combine with `icon-only` for icon-only buttons, or use alone for a normal-width button like "Now").
 - Use the shared `AppModal` component for modal dialogs.
+- Use the shared `AppCopyButton` component for any "copy to clipboard" action instead of wiring up `navigator.clipboard` and a copied-state ref by hand. It shows a success state (green, checkmark icon) briefly after copying, an error state if the copy fails, and animates its own width change. Pass `value` for a plain string copy, or a `copy` async callback for anything more custom (e.g. copying an image blob); pass `reset-key` to force it back to idle when unrelated state changes (e.g. switching to a different item in a list/modal).
 - If behavior is needed for a form control, add it to the shared wrapper component rather than one-off native controls.
 - Toolbar form controls should place labels above controls, align label rows horizontally, and use consistent control heights.
 - Form-control hints or descriptive text should use the shared popover help pattern instead of inline helper text in toolbars.

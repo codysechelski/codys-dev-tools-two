@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import AppButton from '@/components/AppButton.vue';
+import AppCopyButton from '@/components/AppCopyButton.vue';
 import DataList from '@/components/DataList.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
@@ -36,7 +37,6 @@ const hour = ref(initialParts.hour.toString());
 const minute = ref(initialParts.minute.toString());
 const second = ref(initialParts.second.toString());
 const millisecond = ref(initialParts.millisecond.toString());
-const copiedLabel = ref('');
 const activeError = ref('');
 let isSyncing = false;
 
@@ -217,14 +217,6 @@ function syncInputsFromDate(date: Date, zone: TimestampDisplayZone, source?: 'bu
   });
 }
 
-async function copyValue(label: string, value: string): Promise<void> {
-  await navigator.clipboard.writeText(value);
-  copiedLabel.value = label;
-  window.setTimeout(() => {
-    if (copiedLabel.value === label) copiedLabel.value = '';
-  }, 1200);
-}
-
 function validateDateParts(parts: DateParts, date: Date, zone: TimestampDisplayZone): string {
   if (Object.values(parts).some((value) => !Number.isFinite(value))) return 'Enter valid numeric date parts.';
   if (parts.month < 1 || parts.month > 12) return 'Month must be between 1 and 12.';
@@ -371,9 +363,7 @@ function padDatePart(value: number): string {
               <span>{{ item.label }}</span>
               <code>{{ item.value }}</code>
             </div>
-            <AppButton variant="muted" icon="copy" :disabled="!item.value" @click="copyValue(item.label, item.value)">
-              {{ copiedLabel === item.label ? 'Copied' : 'Copy' }}
-            </AppButton>
+            <AppCopyButton :value="item.value" :disabled="!item.value" />
           </article>
         </DataList>
       </section>

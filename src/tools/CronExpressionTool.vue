@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import AppButton from '@/components/AppButton.vue';
+import AppCopyButton from '@/components/AppCopyButton.vue';
 import DataList from '@/components/DataList.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
@@ -17,7 +17,6 @@ const hour = ref('9-17');
 const dayOfMonth = ref('*');
 const month = ref('*');
 const dayOfWeek = ref('mon-fri');
-const copiedExpression = ref(false);
 let isSyncingFields = false;
 let isApplyingPreset = false;
 
@@ -109,16 +108,6 @@ function formatRunDate(date: Date): string {
   }).format(date);
 }
 
-async function copyExpression(): Promise<void> {
-  if (!parsed.value.expression) return;
-
-  await navigator.clipboard.writeText(parsed.value.expression);
-  copiedExpression.value = true;
-  window.setTimeout(() => {
-    copiedExpression.value = false;
-  }, 1200);
-}
-
 function getOrdinalDay(day: number): string {
   const suffix = day % 10 === 1 && day !== 11 ? 'st' : day % 10 === 2 && day !== 12 ? 'nd' : day % 10 === 3 && day !== 13 ? 'rd' : 'th';
   return `${day}${suffix}`;
@@ -161,9 +150,7 @@ function getOrdinalDay(day: number): string {
               <span>Expression</span>
               <code>{{ parsed.expression || 'None' }}</code>
             </div>
-            <AppButton variant="muted" icon="copy" :disabled="!parsed.expression" @click="copyExpression">
-              {{ copiedExpression ? 'Copied' : 'Copy' }}
-            </AppButton>
+            <AppCopyButton :value="parsed.expression" :disabled="!parsed.expression" />
           </article>
           <article class="data-list__row">
             <span>Summary</span>
