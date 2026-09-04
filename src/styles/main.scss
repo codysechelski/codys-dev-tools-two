@@ -353,13 +353,23 @@ body[data-theme='light'] {
   background: linear-gradient(135deg, rgba(103, 232, 249, 0.06), rgba(124, 58, 237, 0.045)), rgba(248, 250, 252, 0.94);
 }
 
+.app-shell[data-theme='light'] .form-text-input input:hover,
+.app-shell[data-theme='light'] .form-text-input textarea:hover,
+.app-shell[data-theme='light'] .form-text-input input:focus-visible,
+.app-shell[data-theme='light'] .form-text-input textarea:focus-visible {
+  border-color: rgba(79, 70, 229, 0.46);
+  color: #111936;
+  background: rgba(226, 234, 247, 0.96);
+  box-shadow: none;
+}
+
 .app-shell[data-theme='light'] .form-select__trigger:hover,
 .app-shell[data-theme='light'] .form-select--open .form-select__trigger,
 .app-shell[data-theme='light'] .form-select__trigger:focus-visible {
   border-color: rgba(79, 70, 229, 0.46);
   color: #111936;
   background: rgba(226, 234, 247, 0.96);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: none;
 }
 
 .app-shell[data-theme='light'] .form-select--open .form-select__chevron {
@@ -545,9 +555,10 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
   background: #ffffff;
 }
 
-.app-shell[data-theme='light'] .form-toggle__control:hover .form-toggle__track {
+.app-shell[data-theme='light'] .form-toggle__control:hover .form-toggle__track,
+.app-shell[data-theme='light'] .form-toggle__control:focus-visible .form-toggle__track {
   border-color: rgba(79, 70, 229, 0.46);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: none;
 }
 
 .app-shell[data-theme='light'] .app-button--secondary,
