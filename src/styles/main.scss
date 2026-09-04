@@ -579,6 +579,21 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
   box-shadow: none;
 }
 
+.app-shell[data-theme='light'] .help-popover__trigger:hover,
+.app-shell[data-theme='light'] .help-popover__trigger:focus-visible {
+  border-color: rgba(124, 58, 237, 0.5);
+  color: var(--color-purple-500);
+}
+
+.app-shell[data-theme='light'] .help-popover__content {
+  border-color: rgba(124, 58, 237, 0.72);
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(37, 99, 235, 0.88));
+  box-shadow:
+    0 18px 46px rgba(15, 23, 42, 0.16),
+    0 0 24px rgba(124, 58, 237, 0.16);
+}
+
 .app-shell[data-theme='light'] .app-button--secondary,
 .app-shell[data-theme='light'] .app-button--muted,
 .app-shell[data-theme='light'] .app-button--ghost {
