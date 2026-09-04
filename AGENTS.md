@@ -13,6 +13,8 @@
 - Shared design values belong in `src/styles/_tokens.scss`.
 - Sizing, spacing, colors, border widths, radii, and similar primitives should be centralized as tokens.
 - The dark theme should be nearly black with subtle purple and blue atmosphere.
+- A light-mode `:hover`/`:focus-visible`/`--open`/`--active`/`--checked` state needs its own `.app-shell[data-theme='light']` (or `body[data-theme='light']` for Teleported content, e.g. modals) override whenever the base/dark rule sets a color — otherwise the dark theme's cyan accent leaks into light mode. This has been the single most common theming bug in this codebase; when touching an interactive state, check both themes.
+- For a color that's read from a themed CSS custom property (`--app-text`, `--editor-background`, etc.), reference the variable rather than hardcoding its current light-mode value — those variables are already re-declared under both `.app-shell[data-theme='light']` and `body[data-theme='light']` so they resolve correctly in Teleported content too.
 - Theme controls belong on the Settings page, accessible from the sidebar footer gear.
 - Scrollbars should be styled for dark mode throughout the app and scrollable components.
 - Fonts are vendored locally. Use Ubuntu for UI text and Ubuntu Mono for code/editor text.
