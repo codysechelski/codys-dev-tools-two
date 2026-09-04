@@ -358,8 +358,6 @@ body[data-theme='light'] {
 .app-shell[data-theme='light'] .form-text-input input:focus-visible,
 .app-shell[data-theme='light'] .form-text-input textarea:focus-visible {
   border-color: rgba(79, 70, 229, 0.46);
-  color: #111936;
-  background: rgba(226, 234, 247, 0.96);
   box-shadow: none;
 }
 
@@ -367,8 +365,6 @@ body[data-theme='light'] {
 .app-shell[data-theme='light'] .form-select--open .form-select__trigger,
 .app-shell[data-theme='light'] .form-select__trigger:focus-visible {
   border-color: rgba(79, 70, 229, 0.46);
-  color: #111936;
-  background: rgba(226, 234, 247, 0.96);
   box-shadow: none;
 }
 
