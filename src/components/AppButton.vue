@@ -4,7 +4,7 @@ import type { IconName } from '@/icons';
 
 withDefaults(
   defineProps<{
-    variant?: 'primary' | 'secondary' | 'muted' | 'destructive' | 'ghost';
+    variant?: 'primary' | 'secondary' | 'muted' | 'destructive' | 'ghost' | 'field';
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
     icon?: IconName;

@@ -32,6 +32,7 @@
 - Use reusable wrapper components for form controls such as text inputs, selects, radio buttons, checkboxes, and toggles.
 - Use the shared `AppButton` component for buttons and extend its variants instead of creating one-off button styles.
 - For a square, icon-only button (e.g. a toolbar regenerate/swap action), use `AppButton`'s `icon-only` prop rather than a tool-specific CSS class.
+- For a toolbar action button that should match the toolbar's select/text-input styling rather than the default purple secondary look, use `AppButton`'s `field` variant (combine with `icon-only` for icon-only buttons, or use alone for a normal-width button like "Now").
 - Use the shared `AppModal` component for modal dialogs.
 - If behavior is needed for a form control, add it to the shared wrapper component rather than one-off native controls.
 - Toolbar form controls should place labels above controls, align label rows horizontally, and use consistent control heights.

@@ -278,7 +278,7 @@ function padDatePart(value: number): string {
   <section class="timestamp-tool">
     <ToolToolbar class="timestamp-tool__toolbar">
       <AppSelect v-model="displayZone" label="Display time zone" :options="zoneOptions" />
-      <AppButton variant="secondary" @click="setToNow">Now</AppButton>
+      <AppButton variant="field" icon="clock" @click="setToNow">Now</AppButton>
       <template #badge>
         <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
         <ToolbarStatusBadge v-else :label="detectedLabel || 'Ready'" />

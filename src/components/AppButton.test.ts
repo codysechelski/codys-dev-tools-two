@@ -37,4 +37,17 @@ describe('AppButton', () => {
 
     expect(wrapper.classes()).toContain('app-button--icon-only');
   });
+
+  it('supports the field variant, which matches toolbar select styling', () => {
+    const wrapper = mount(AppButton, {
+      props: {
+        variant: 'field',
+      },
+      slots: {
+        default: 'Now',
+      },
+    });
+
+    expect(wrapper.classes()).toContain('app-button--field');
+  });
 });

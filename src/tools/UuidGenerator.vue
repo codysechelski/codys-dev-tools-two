@@ -38,7 +38,7 @@ function regenerate(): void {
       <AppSelect v-model="countInput" label="Count" :options="countOptions" />
       <AppToggle v-model="uppercase" label="Uppercase" />
       <AppToggle v-model="removeHyphens" label="No hyphens" />
-      <AppButton variant="secondary" icon="recycle" icon-only aria-label="Regenerate UUIDs" @click="regenerate" />
+      <AppButton variant="field" icon="recycle" icon-only aria-label="Regenerate UUIDs" @click="regenerate" />
     </ToolToolbar>
 
     <TextEditor :model-value="output" label="UUID Output" readonly />

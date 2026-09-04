@@ -62,7 +62,7 @@ function flipDirection(): void {
   <section class="converter-tool">
     <ToolToolbar>
       <AppSelect v-model="direction" label="Mode" :options="directionOptions" />
-      <AppButton variant="secondary" icon="exchangeAlt" icon-only aria-label="Swap input and output" @click="flipDirection" />
+      <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap input and output" @click="flipDirection" />
       <AppSelect
         v-if="direction === 'yaml-to-json'"
         v-model="jsonIndentation"

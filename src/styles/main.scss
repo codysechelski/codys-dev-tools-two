@@ -192,12 +192,15 @@ code {
   color: var(--color-mist-500);
 }
 
+.app-button--field {
+  border-color: rgba(167, 139, 250, 0.24);
+  background: linear-gradient(135deg, rgba(103, 232, 249, 0.045), rgba(167, 139, 250, 0.04)), rgba(7, 10, 24, 0.8);
+}
+
 .app-button--icon-only {
   width: 2.45rem;
   min-width: 2.45rem;
   padding: 0;
-  border-color: rgba(167, 139, 250, 0.24);
-  background: linear-gradient(135deg, rgba(103, 232, 249, 0.045), rgba(167, 139, 250, 0.04)), rgba(7, 10, 24, 0.8);
 }
 
 .app-button:hover:not(:disabled) {
@@ -567,14 +570,16 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
 
 .app-shell[data-theme='light'] .app-button--secondary:hover:not(:disabled),
 .app-shell[data-theme='light'] .app-button--muted:hover:not(:disabled),
-.app-shell[data-theme='light'] .app-button--ghost:hover:not(:disabled) {
+.app-shell[data-theme='light'] .app-button--ghost:hover:not(:disabled),
+.app-shell[data-theme='light'] .app-button--field:hover:not(:disabled) {
   border-color: rgba(79, 70, 229, 0.46);
   color: #111936;
   background: rgba(226, 234, 247, 0.96);
 }
 
-.app-shell[data-theme='light'] .app-button--icon-only {
+.app-shell[data-theme='light'] .app-button--field {
   border-color: rgba(79, 70, 229, 0.26);
+  color: #111936;
   background: linear-gradient(135deg, rgba(103, 232, 249, 0.06), rgba(124, 58, 237, 0.045)), rgba(248, 250, 252, 0.94);
 }
 
