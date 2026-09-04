@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { APP_VERSION } from '@/appInfo';
 import AppSidebar from '@/components/AppSidebar.vue';
 import { resolveTheme, type ThemeMode } from '@/theme';
@@ -18,7 +18,15 @@ watchEffect(() => {
   document.body.dataset.theme = activeTheme.value;
 });
 
+watch(themeMode, (mode) => {
+  window.codyDevTools?.notifyThemeChanged?.(mode);
+});
+
 onMounted(() => {
+  window.codyDevTools?.onSetTheme?.((mode) => {
+    themeMode.value = mode;
+  });
+
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
   if (!mediaQuery) return;
 

@@ -39,7 +39,7 @@ The displayed app version is read from `package.json` via `src/appInfo.ts`, so b
 
 ## Theme
 
-The Settings page supports light, dark, and system modes. System mode follows `prefers-color-scheme`.
+The Settings page supports light, dark, and system modes. System mode follows `prefers-color-scheme`. In the Electron app, the same three modes are also available from the View > Theme menu, kept in sync with the Settings page in both directions. Theme choice is not persisted between launches yet.
 
 ## Add A Tool
 
