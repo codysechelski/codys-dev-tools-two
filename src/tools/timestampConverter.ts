@@ -1,6 +1,6 @@
 export type TimestampMode = 'build' | 'picker' | 'parse';
 export type TimestampDisplayZone = 'local' | 'utc';
-export type TimestampParseFormat = 'auto' | 'unix-seconds' | 'unix-milliseconds' | 'iso-8601';
+export type TimestampParseFormat = 'auto' | 'unix-seconds' | 'unix-milliseconds' | 'iso-8601' | 'rfc-5545';
 
 export interface DateParts {
   year: number;
@@ -53,6 +53,7 @@ export function detectTimestampFormat(value: string): TimestampParseFormat | und
   if (/^-?\d{10}$/.test(value)) return 'unix-seconds';
   if (/^-?\d{1,9}$/.test(value)) return 'unix-seconds';
   if (/^-?\d{11,}$/.test(value)) return 'unix-milliseconds';
+  if (/^\d{8}T\d{6}Z?$/.test(value)) return 'rfc-5545';
   if (!Number.isNaN(Date.parse(value))) return 'iso-8601';
 
   return undefined;
@@ -66,6 +67,7 @@ export function getTimestampOutputs(date: Date, zone: TimestampDisplayZone, now 
     { label: 'Unix time', value: seconds.toString() },
     { label: 'Milliseconds since epoch', value: milliseconds.toString() },
     { label: 'ISO 8601', value: date.toISOString() },
+    { label: 'RFC 5545 (iCalendar)', value: formatIcalendarDateTime(date, zone) },
     { label: 'RFC 2822 / HTTP date', value: date.toUTCString() },
     { label: `${zone === 'utc' ? 'UTC' : 'Local'} date & time`, value: formatDateTime(date, zone, { dateStyle: 'full', timeStyle: 'long' }) },
     { label: 'Date only', value: formatDateTime(date, zone, { dateStyle: 'medium' }) },
@@ -84,7 +86,16 @@ export function getParseFormatLabel(format: TimestampParseFormat): string {
   if (format === 'unix-seconds') return 'Unix seconds';
   if (format === 'unix-milliseconds') return 'Unix milliseconds';
   if (format === 'iso-8601') return 'ISO 8601';
+  if (format === 'rfc-5545') return 'RFC 5545 (iCalendar)';
   return 'Auto';
+}
+
+export function formatIcalendarDateTime(date: Date, zone: TimestampDisplayZone): string {
+  const parts = getDateParts(date, zone);
+  const datePart = `${parts.year.toString().padStart(4, '0')}${padTwoDigits(parts.month)}${padTwoDigits(parts.day)}`;
+  const timePart = `${padTwoDigits(parts.hour)}${padTwoDigits(parts.minute)}${padTwoDigits(parts.second)}`;
+
+  return `${datePart}T${timePart}${zone === 'utc' ? 'Z' : ''}`;
 }
 
 export function getDateParts(date: Date, zone: TimestampDisplayZone): DateParts {
@@ -100,10 +111,35 @@ export function getDateParts(date: Date, zone: TimestampDisplayZone): DateParts 
 }
 
 function parseWithFormat(value: string, format: Exclude<TimestampParseFormat, 'auto'>): Date | null {
-  if (format === 'unix-seconds') return new Date(Number(value) * 1000);
-  if (format === 'unix-milliseconds') return new Date(Number(value));
+  if (format === 'unix-seconds') {
+    if (!/^-?\d+$/.test(value)) return null;
+
+    return new Date(Number(value) * 1000);
+  }
+
+  if (format === 'unix-milliseconds') {
+    if (!/^-?\d+$/.test(value)) return null;
+
+    return new Date(Number(value));
+  }
+
+  if (format === 'rfc-5545') {
+    const match = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/.exec(value);
+    if (!match) return null;
+
+    const [, year, month, day, hour, minute, second, utc] = match;
+    return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}${utc ? 'Z' : ''}`);
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/.test(value)) {
+    return null;
+  }
 
   return new Date(value);
+}
+
+function padTwoDigits(value: number): string {
+  return value.toString().padStart(2, '0');
 }
 
 function formatDateTime(date: Date, zone: TimestampDisplayZone, options: Intl.DateTimeFormatOptions): string {

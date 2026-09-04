@@ -5,9 +5,11 @@ import AppButton from '@/components/AppButton.vue';
 import DataList from '@/components/DataList.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import {
   createDateFromParts,
+  formatIcalendarDateTime,
   getDateParts,
   getParseFormatLabel,
   getTimestampOutputs,
@@ -17,15 +19,12 @@ import {
   type TimestampParseFormat,
 } from './timestampConverter';
 
-type TimestampSetToOption = 'now' | 'plus-1-hour' | 'minus-1-hour' | 'plus-1-day' | 'minus-1-day' | 'plus-1-week' | 'minus-1-week' | 'plus-1-year' | 'minus-1-year';
-
 const now = new Date();
 const initialParts = getDateParts(now, 'local');
 
 const selectedDate = ref(new Date(now));
 const displayZone = ref<TimestampDisplayZone>('local');
 const parseFormat = ref<TimestampParseFormat>('auto');
-const setTo = ref<TimestampSetToOption>('now');
 const parseInput = ref(Math.floor(now.getTime() / 1000).toString());
 const pickerDate = ref<Date | null>(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
 const pickerTime = ref({ hours: now.getHours(), minutes: now.getMinutes(), seconds: now.getSeconds() });
@@ -50,17 +49,7 @@ const parseFormatOptions: Array<{ label: string; value: TimestampParseFormat }> 
   { label: 'Unix seconds', value: 'unix-seconds' },
   { label: 'Unix milliseconds', value: 'unix-milliseconds' },
   { label: 'ISO 8601', value: 'iso-8601' },
-];
-const setToOptions: Array<{ label: string; value: TimestampSetToOption }> = [
-  { label: 'Now', value: 'now' },
-  { label: 'Now + 1 hour', value: 'plus-1-hour' },
-  { label: 'Now - 1 hour', value: 'minus-1-hour' },
-  { label: 'Now + 1 day', value: 'plus-1-day' },
-  { label: 'Now - 1 day', value: 'minus-1-day' },
-  { label: 'Now + 1 week', value: 'plus-1-week' },
-  { label: 'Now - 1 week', value: 'minus-1-week' },
-  { label: 'Now + 1 year', value: 'plus-1-year' },
-  { label: 'Now - 1 year', value: 'minus-1-year' },
+  { label: 'RFC 5545 (iCalendar)', value: 'rfc-5545' },
 ];
 const datePickerTextInput = {
   format: 'yyyy-MM-dd',
@@ -136,11 +125,30 @@ const pickerError = computed(() => {
     return '';
 });
 const error = computed(() => activeError.value);
-const outputs = computed(() => (selectedDate.value && !error.value ? getTimestampOutputs(selectedDate.value, displayZone.value) : []));
+const outputs = computed(() => {
+  if (!selectedDate.value) return [];
+
+  const values = getTimestampOutputs(selectedDate.value, displayZone.value);
+  if (!error.value) return values;
+
+  return values.map((item) => ({ ...item, value: '' }));
+});
 const detectedLabel = computed(() => (parsed.value.detectedFormat !== 'auto' && !parsed.value.error ? getParseFormatLabel(parsed.value.detectedFormat) : ''));
+const parseAllowedCharacters = computed(() => {
+  if (parseFormat.value === 'unix-seconds' || parseFormat.value === 'unix-milliseconds') return /^[-\d]$/;
+  if (parseFormat.value === 'rfc-5545') return /^[\dTZ]$/;
+
+  return /^[\dTtZz:\-+. ]$/;
+});
+const parseInputMode = computed(() => (parseFormat.value === 'unix-seconds' || parseFormat.value === 'unix-milliseconds' ? 'numeric' : 'text'));
 
 watch(displayZone, (zone) => {
   syncInputsFromDate(selectedDate.value, zone);
+  activeError.value = '';
+});
+
+watch(parseFormat, () => {
+  syncInputsFromDate(selectedDate.value, displayZone.value);
   activeError.value = '';
 });
 
@@ -172,23 +180,8 @@ watch([parseInput, parseFormat], () => {
   setSelectedDate(parsed.value.date, 'parse');
 });
 
-function applySetTo(value: TimestampSetToOption): void {
-  setSelectedDate(getRelativeDate(value));
-}
-
-function getRelativeDate(value: TimestampSetToOption): Date {
-  const current = new Date();
-
-  if (value === 'plus-1-hour') current.setHours(current.getHours() + 1);
-  if (value === 'minus-1-hour') current.setHours(current.getHours() - 1);
-  if (value === 'plus-1-day') current.setDate(current.getDate() + 1);
-  if (value === 'minus-1-day') current.setDate(current.getDate() - 1);
-  if (value === 'plus-1-week') current.setDate(current.getDate() + 7);
-  if (value === 'minus-1-week') current.setDate(current.getDate() - 7);
-  if (value === 'plus-1-year') current.setFullYear(current.getFullYear() + 1);
-  if (value === 'minus-1-year') current.setFullYear(current.getFullYear() - 1);
-
-  return current;
+function setToNow(): void {
+  setSelectedDate(new Date());
 }
 
 function setBuilderParts(parts: DateParts): void {
@@ -217,7 +210,7 @@ function syncInputsFromDate(date: Date, zone: TimestampDisplayZone, source?: 'bu
     pickerTime.value = { hours: parts.hour, minutes: parts.minute, seconds: parts.second };
     pickerMillisecond.value = parts.millisecond.toString();
   }
-  if (source !== 'parse') parseInput.value = Math.floor(date.getTime() / 1000).toString();
+  if (source !== 'parse') parseInput.value = formatParseInput(date);
 
   window.setTimeout(() => {
     isSyncing = false;
@@ -248,6 +241,18 @@ function validateDateParts(parts: DateParts, date: Date, zone: TimestampDisplayZ
   return '';
 }
 
+function formatParseInput(date: Date): string {
+  if (parseFormat.value === 'unix-milliseconds') return date.getTime().toString();
+  if (parseFormat.value === 'iso-8601') return date.toISOString();
+  if (parseFormat.value === 'rfc-5545') return formatIcalendarDateTime(date, displayZone.value);
+
+  return Math.floor(date.getTime() / 1000).toString();
+}
+
+function transformParseInput(value: string): string {
+  return [...value].filter((character) => parseAllowedCharacters.value.test(character)).join('');
+}
+
 function formatPickerDate(date: Date): string {
   return [date.getFullYear(), padDatePart(date.getMonth() + 1), padDatePart(date.getDate())].join('-');
 }
@@ -271,37 +276,30 @@ function padDatePart(value: number): string {
 
 <template>
   <section class="timestamp-tool">
-    <div class="tool-options timestamp-tool__toolbar">
+    <ToolToolbar class="timestamp-tool__toolbar">
       <AppSelect v-model="displayZone" label="Display time zone" :options="zoneOptions" />
-      <AppSelect v-model="parseFormat" label="Input format" :options="parseFormatOptions" />
-      <AppSelect v-model="setTo" label="Set To" :options="setToOptions" @update:model-value="applySetTo" />
-      <div class="formatter-tool__status-slot timestamp-tool__status">
+      <AppButton variant="primary" @click="setToNow">Now</AppButton>
+      <template #badge>
         <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
         <ToolbarStatusBadge v-else :label="detectedLabel || 'Ready'" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="timestamp-tool__workspace">
       <section class="timestamp-tool__input-panel">
-        <section class="timestamp-input-section timestamp-builder">
-          <h4>Date Builder</h4>
-          <div class="timestamp-builder__group">
-            <h4>Date</h4>
-            <div class="timestamp-builder__row timestamp-builder__row--date">
-              <AppTextInput v-model="year" label="Year" type="number" :step="1" />
-              <AppSelect v-model="month" label="Month" :options="monthOptions" />
-              <AppTextInput v-model="day" label="Day" type="number" :min="1" :max="31" :step="1" />
-            </div>
-          </div>
-
-          <div class="timestamp-builder__group">
-            <h4>Time</h4>
-            <div class="timestamp-builder__row timestamp-builder__row--time">
-              <AppTextInput v-model="hour" label="Hour (24)" type="number" :min="0" :max="23" :step="1" />
-              <AppTextInput v-model="minute" label="Minute" type="number" :min="0" :max="59" :step="1" />
-              <AppTextInput v-model="second" label="Second" type="number" :min="0" :max="59" :step="1" />
-              <AppTextInput v-model="millisecond" label="Millisecond" type="number" :min="0" :max="999" :step="1" />
-            </div>
+        <section class="timestamp-input-section timestamp-parse-list">
+          <h4>Parse Timestamp</h4>
+          <div class="timestamp-parse-row">
+            <AppTextInput
+              v-model="parseInput"
+              label="Timestamp"
+              placeholder="Unix seconds, milliseconds, or ISO 8601"
+              description="Auto detects Unix seconds, Unix milliseconds, ISO 8601, and RFC 5545 (iCalendar). Choose a specific input format when needed."
+              :allowed-characters="parseAllowedCharacters"
+              :input-mode="parseInputMode"
+              :transform-input="transformParseInput"
+            />
+            <AppSelect v-model="parseFormat" label="Input format" :options="parseFormatOptions" />
           </div>
         </section>
 
@@ -321,11 +319,7 @@ function padDatePart(value: number): string {
                 :teleport="false"
                 :input-attrs="{ autocomplete: 'off', clearable: false }"
                 placeholder="Select or type a date"
-              >
-                <template #input-icon>
-                  <AppIcon name="calendar" />
-                </template>
-              </VueDatePicker>
+              />
             </label>
             <label class="timestamp-picker-field">
               <span>Time</span>
@@ -341,25 +335,31 @@ function padDatePart(value: number): string {
                 :teleport="false"
                 :input-attrs="{ autocomplete: 'off', clearable: false }"
                 placeholder="Select or type a time"
-              >
-                <template #input-icon>
-                  <AppIcon name="clock" />
-                </template>
-              </VueDatePicker>
+              />
             </label>
             <AppTextInput v-model="pickerMillisecond" label="Millisecond" type="number" :min="0" :max="999" :step="1" />
           </div>
         </section>
 
-        <section class="timestamp-input-section timestamp-parse-list">
-          <h4>Parse Timestamp</h4>
-          <div class="timestamp-parse-row">
-            <AppTextInput
-              v-model="parseInput"
-              label="Timestamp input"
-              placeholder="Unix seconds, milliseconds, or ISO 8601"
-              description="Auto detects Unix seconds, Unix milliseconds, and ISO 8601. Choose a specific input format when needed."
-            />
+        <section class="timestamp-input-section timestamp-builder">
+          <h4>Date Builder</h4>
+          <div class="timestamp-builder__group">
+            <h4>Date</h4>
+            <div class="timestamp-builder__row timestamp-builder__row--date">
+              <AppTextInput v-model="year" label="Year" type="number" :step="1" />
+              <AppSelect v-model="month" label="Month" :options="monthOptions" />
+              <AppTextInput v-model="day" label="Day" type="number" :min="1" :max="31" :step="1" />
+            </div>
+          </div>
+
+          <div class="timestamp-builder__group">
+            <h4>Time</h4>
+            <div class="timestamp-builder__row timestamp-builder__row--time">
+              <AppTextInput v-model="hour" label="Hour (24)" type="number" :min="0" :max="23" :step="1" />
+              <AppTextInput v-model="minute" label="Minute" type="number" :min="0" :max="59" :step="1" />
+              <AppTextInput v-model="second" label="Second" type="number" :min="0" :max="59" :step="1" />
+              <AppTextInput v-model="millisecond" label="Millisecond" type="number" :min="0" :max="999" :step="1" />
+            </div>
           </div>
         </section>
       </section>
