@@ -26,4 +26,15 @@ describe('AppButton', () => {
 
     expect(wrapper.attributes('disabled')).toBeDefined();
   });
+
+  it('applies a compact square treatment for icon-only buttons', () => {
+    const wrapper = mount(AppButton, {
+      props: {
+        icon: 'copy',
+        iconOnly: true,
+      },
+    });
+
+    expect(wrapper.classes()).toContain('app-button--icon-only');
+  });
 });

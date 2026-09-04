@@ -192,6 +192,12 @@ code {
   color: var(--color-mist-500);
 }
 
+.app-button--icon-only {
+  width: 2.45rem;
+  min-width: 2.45rem;
+  padding: 0;
+}
+
 .app-button:hover:not(:disabled) {
   border-color: rgba(103, 232, 249, 0.48);
 }
@@ -2229,12 +2235,6 @@ body[data-theme='light'] .unicode-attribute code {
   min-width: 100%;
 }
 
-.lorem-tool__regenerate {
-  width: 2.45rem;
-  min-width: 2.45rem;
-  padding: 0;
-}
-
 .lorem-tool__outputs {
   display: grid;
   min-height: 24rem;
@@ -2705,7 +2705,7 @@ body[data-theme='light'] .unicode-attribute code {
   display: grid;
   grid-template-rows: 1.25rem 2.45rem;
   gap: var(--space-2);
-  min-width: 10.5rem;
+  width: fit-content;
   padding: 0 var(--space-2);
 }
 

@@ -105,7 +105,7 @@ function createSeededRandom(seed: number): () => number {
         <AppTextInput v-model="termWordCount" hide-label label="Words in term" type="number" :min="1" :max="12" :step="1" />
         <span>words in term.</span>
       </template>
-      <AppButton class="lorem-tool__regenerate" variant="secondary" icon="recycle" aria-label="Regenerate text" @click="regenerate" />
+      <AppButton variant="secondary" icon="recycle" icon-only aria-label="Regenerate text" @click="regenerate" />
     </div>
 
     <div class="lorem-tool__outputs">

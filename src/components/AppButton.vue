@@ -8,17 +8,24 @@ withDefaults(
     type?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
     icon?: IconName;
+    iconOnly?: boolean;
   }>(),
   {
     variant: 'secondary',
     type: 'button',
     disabled: false,
+    iconOnly: false,
   },
 );
 </script>
 
 <template>
-  <button class="app-button" :class="[`app-button--${variant}`, icon ? `app-button--icon-${icon}` : '']" :type="type" :disabled="disabled">
+  <button
+    class="app-button"
+    :class="[`app-button--${variant}`, icon ? `app-button--icon-${icon}` : '', iconOnly ? 'app-button--icon-only' : '']"
+    :type="type"
+    :disabled="disabled"
+  >
     <AppIcon v-if="icon" :name="icon" />
     <slot />
   </button>
