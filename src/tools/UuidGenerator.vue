@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import AppButton from '@/components/AppButton.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
@@ -37,6 +38,7 @@ function regenerate(): void {
       <AppSelect v-model="countInput" label="Count" :options="countOptions" />
       <AppToggle v-model="uppercase" label="Uppercase" />
       <AppToggle v-model="removeHyphens" label="No hyphens" />
+      <AppButton variant="ghost" icon="recycle" aria-label="Regenerate UUIDs" @click="regenerate" />
     </ToolToolbar>
 
     <TextEditor :model-value="output" label="UUID Output" readonly />

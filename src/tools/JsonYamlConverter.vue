@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import AppButton from '@/components/AppButton.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
@@ -48,12 +49,20 @@ const lineWidthOptions: Array<{ label: string; value: YamlLineWidth }> = [
   { label: 'Wrap at 80', value: 'wrap-80' },
   { label: 'Wrap at 120', value: 'wrap-120' },
 ];
+
+function flipDirection(): void {
+  const previousOutput = output.value;
+
+  direction.value = direction.value === 'json-to-yaml' ? 'yaml-to-json' : 'json-to-yaml';
+  if (previousOutput) input.value = previousOutput;
+}
 </script>
 
 <template>
   <section class="converter-tool">
     <ToolToolbar>
-      <AppSelect v-model="direction" label="Direction" :options="directionOptions" />
+      <AppSelect v-model="direction" label="Mode" :options="directionOptions" />
+      <AppButton variant="ghost" icon="exchangeAlt" aria-label="Swap input and output" @click="flipDirection" />
       <AppSelect
         v-if="direction === 'yaml-to-json'"
         v-model="jsonIndentation"
