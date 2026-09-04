@@ -44,11 +44,11 @@ describe('CssFormatter', () => {
     wrapper.findComponent(TextEditor).vm.$emit('update:modelValue', '.card { color: red;');
     await nextTick();
 
-    expect(wrapper.find('.formatter-tool__status--error').text()).toBe('Invalid - Click for details');
+    expect(wrapper.find('.formatter-tool__status--error').text()).toBe('Error - click for details');
     await wrapper.find('.formatter-tool__status--error').trigger('click');
     await nextTick();
 
-    expect(document.body.textContent).toContain('Invalid CSS');
+    expect(document.body.textContent).toContain('Error Details');
     expect(document.body.textContent).toContain('Missing closing brace.');
 
     wrapper.unmount();

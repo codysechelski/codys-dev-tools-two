@@ -11,6 +11,7 @@ describe('HtmlEncoderDecoder', () => {
     expect(wrapper.text()).toContain('Encode all characters');
     expect(wrapper.findAllComponents(TextEditor)).toHaveLength(2);
     expect(wrapper.findAllComponents(TextEditor)[0].props('language')).toBe('html');
+    expect(wrapper.findAllComponents(TextEditor)[1].props('language')).toBe('text');
   });
 
   it('switches to decode mode', async () => {
@@ -21,5 +22,7 @@ describe('HtmlEncoderDecoder', () => {
 
     expect(wrapper.text()).not.toContain('Encode all characters');
     expect(wrapper.findAllComponents(TextEditor)[1].props('modelValue')).toContain('<p');
+    expect(wrapper.findAllComponents(TextEditor)[0].props('language')).toBe('text');
+    expect(wrapper.findAllComponents(TextEditor)[1].props('language')).toBe('html');
   });
 });

@@ -52,13 +52,12 @@ describe('JsonFormatter', () => {
     wrapper.findComponent(TextEditor).vm.$emit('update:modelValue', '{bad}');
     await nextTick();
 
-    expect(wrapper.find('.formatter-tool__status--error').text()).toBe('Invalid - Click for details');
+    expect(wrapper.find('.formatter-tool__status--error').text()).toBe('Error - click for details');
     expect(wrapper.find('.formatter-tool__status--error .app-icon').exists()).toBe(true);
 
     await wrapper.find('.formatter-tool__status--error').trigger('click');
     await nextTick();
 
-    expect(document.body.textContent).toContain('Invalid JSON');
     expect(document.body.textContent).toContain('Error Details');
 
     wrapper.unmount();

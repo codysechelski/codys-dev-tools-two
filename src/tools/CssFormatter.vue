@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { formatCss, type CssIndentation, type CssOutputMode } from './cssFormatter';
 
@@ -14,7 +14,6 @@ const outputMode = ref<CssOutputMode>('expanded');
 const indentation = ref<CssIndentation>('2-spaces');
 const sortDeclarations = ref(false);
 const preserveComments = ref(true);
-const isErrorModalOpen = ref(false);
 
 const result = computed(() =>
   formatCss(input.value, {
@@ -42,36 +41,20 @@ const indentationOptions: Array<{ label: string; value: CssIndentation }> = [
 
 <template>
   <section class="formatter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="outputMode" label="Output" :options="outputModeOptions" />
       <AppSelect v-model="indentation" label="Indent" :options="indentationOptions" />
       <AppToggle v-model="sortDeclarations" label="Sort declarations" description="Alphabetize declarations inside simple CSS rule blocks." />
       <AppToggle v-model="preserveComments" label="Preserve comments" description="Keep block comments in formatted or minified output." />
-      <div class="formatter-tool__status-slot">
-        <ToolbarStatusBadge
-          v-if="parseError"
-          variant="error"
-          label="Invalid - Click for details"
-          button
-          @click="isErrorModalOpen = true"
-        />
+      <template #badge>
+        <ToolbarStatusBadge v-if="parseError" variant="error" :label="parseError" />
         <ToolbarStatusBadge v-else label="Valid CSS" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="formatter-tool__editors">
       <TextEditor v-model="input" label="Input" language="css" placeholder="Paste CSS here" />
       <TextEditor :model-value="formattedOutput" label="Formatted Output" language="css" readonly placeholder="Formatted CSS will appear here" />
     </div>
-
-    <AppModal
-      :open="isErrorModalOpen"
-      title="Invalid CSS"
-      subtitle="The input could not be formatted. Review the parser message below."
-      icon="code"
-      @close="isErrorModalOpen = false"
-    >
-      <TextEditor :model-value="parseError" label="Error Details" readonly />
-    </AppModal>
   </section>
 </template>

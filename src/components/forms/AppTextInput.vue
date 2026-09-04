@@ -17,6 +17,7 @@ const props = withDefaults(
     hideLabel?: boolean;
     inputMode?: 'text' | 'numeric' | 'tel' | 'email' | 'url';
     transformInput?: (value: string) => string;
+    allowedCharacters?: RegExp;
     filter?: 'phone';
   }>(),
   {
@@ -46,13 +47,29 @@ function handleChange(): void {
 
 function handleBeforeInput(event: Event): void {
   const inputEvent = event as InputEvent;
-  if (props.filter !== 'phone' || !inputEvent.data || !inputEvent.inputType.startsWith('insert')) return;
+  if (!inputEvent.data || !inputEvent.inputType.startsWith('insert')) return;
+
+  if (props.allowedCharacters) {
+    if ([...inputEvent.data].every((character) => isAllowedCharacter(character))) return;
+
+    event.preventDefault();
+    return;
+  }
+
+  if (props.filter !== 'phone') return;
   if (/^\d+$/.test(inputEvent.data)) return;
 
   const input = event.target as HTMLInputElement;
   if (inputEvent.data === '+' && input.selectionStart === 0 && !input.value.includes('+')) return;
 
   event.preventDefault();
+}
+
+function isAllowedCharacter(character: string): boolean {
+  if (!props.allowedCharacters) return true;
+
+  props.allowedCharacters.lastIndex = 0;
+  return props.allowedCharacters.test(character);
 }
 </script>
 

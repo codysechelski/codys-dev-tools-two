@@ -4,6 +4,7 @@ import AppButton from '@/components/AppButton.vue';
 import DataList from '@/components/DataList.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { buildCronExpression, parseCronExpression } from './cronExpression';
 
@@ -126,13 +127,15 @@ function getOrdinalDay(day: number): string {
 
 <template>
   <section class="cron-tool">
-    <div class="tool-options cron-tool__toolbar">
+    <ToolToolbar class="cron-tool__toolbar">
       <AppSelect v-model="preset" label="Preset" :options="presetOptions" />
-      <DataList class="formatter-tool__status-slot cron-tool__status cron-tool__status-list">
-        <ToolbarStatusBadge v-if="parsed.error" class="data-list__row" variant="error" label="Invalid cron" />
-        <ToolbarStatusBadge v-else class="data-list__row" label="Valid cron" />
-      </DataList>
-    </div>
+      <template #badge>
+        <DataList class="cron-tool__status cron-tool__status-list">
+          <ToolbarStatusBadge v-if="parsed.error" class="data-list__row" variant="error" :label="parsed.error" />
+          <ToolbarStatusBadge v-else class="data-list__row" label="Valid cron" />
+        </DataList>
+      </template>
+    </ToolToolbar>
 
     <div class="cron-tool__workspace">
       <section class="cron-tool__builder">

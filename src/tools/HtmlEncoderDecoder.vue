@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import { transformHtmlEntities, type HtmlTransformMode } from './htmlEncoderDecoder';
 
 const input = ref('<p class="note">Cody\'s Dev Tools</p>');
@@ -17,11 +18,13 @@ const output = computed(() => transformHtmlEntities(input.value, mode.value, enc
 
 const inputPlaceholder = computed(() => (mode.value === 'encode' ? 'Paste text or HTML to encode' : 'Paste HTML entities to decode'));
 const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded HTML entities will appear here' : 'Decoded text will appear here'));
+const inputLanguage = computed(() => (mode.value === 'encode' ? 'html' : 'text'));
+const outputLanguage = computed(() => (mode.value === 'encode' ? 'text' : 'html'));
 </script>
 
 <template>
   <section class="converter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="mode" label="Mode" :options="modeOptions" />
       <AppToggle
         v-if="mode === 'encode'"
@@ -29,11 +32,11 @@ const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded HTM
         label="Encode all characters"
         description="When off, only &, <, >, quotes, and apostrophes are encoded. When on, every Unicode character is encoded as a numeric HTML entity."
       />
-    </div>
+    </ToolToolbar>
 
     <div class="formatter-tool__editors">
-      <TextEditor v-model="input" label="Input" language="html" :placeholder="inputPlaceholder" />
-      <TextEditor :model-value="output" label="Output" language="text" readonly :placeholder="outputPlaceholder" />
+      <TextEditor :key="`input-${inputLanguage}`" v-model="input" label="Input" :language="inputLanguage" :placeholder="inputPlaceholder" />
+      <TextEditor :key="`output-${outputLanguage}`" :model-value="output" label="Output" :language="outputLanguage" readonly :placeholder="outputPlaceholder" />
     </div>
   </section>
 </template>

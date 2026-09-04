@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { formatJavaScript, type CodeIndentation, type CodeOutputMode } from './codeFormatters';
 
@@ -15,7 +15,6 @@ const preserveBlankLines = ref(false);
 const semicolons = ref<'preserve' | 'add' | 'remove'>('preserve');
 const quoteStyle = ref<'preserve' | 'single' | 'double'>('preserve');
 const trailingCommas = ref<'preserve' | 'remove'>('preserve');
-const isErrorModalOpen = ref(false);
 const result = computed(() =>
   formatJavaScript(input.value, {
     mode: outputMode.value,
@@ -56,7 +55,7 @@ const trailingCommaOptions: Array<{ label: string; value: 'preserve' | 'remove' 
 
 <template>
   <section class="formatter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="outputMode" label="Output" :options="outputModeOptions" />
       <AppSelect v-model="indentation" label="Indent" :options="indentationOptions" />
       <AppSelect v-model="semicolons" label="Semicolons" :options="semicolonOptions" />
@@ -64,17 +63,14 @@ const trailingCommaOptions: Array<{ label: string; value: 'preserve' | 'remove' 
       <AppSelect v-model="trailingCommas" label="Trailing commas" :options="trailingCommaOptions" />
       <AppToggle v-model="preserveComments" label="Preserve comments" description="Keep line and block comments in formatted or minified output." />
       <AppToggle v-model="preserveBlankLines" label="Preserve blank lines" description="Keep intentional blank lines where possible in formatted output." />
-      <div class="formatter-tool__status-slot">
-        <ToolbarStatusBadge v-if="parseError" variant="error" label="Invalid - Click for details" button @click="isErrorModalOpen = true" />
+      <template #badge>
+        <ToolbarStatusBadge v-if="parseError" variant="error" :label="parseError" />
         <ToolbarStatusBadge v-else label="Valid JavaScript" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
     <div class="formatter-tool__editors">
       <TextEditor v-model="input" label="Input" language="javascript" placeholder="Paste JavaScript here" />
       <TextEditor :model-value="formattedOutput" label="Formatted Output" language="javascript" readonly placeholder="Formatted JavaScript will appear here" />
     </div>
-    <AppModal :open="isErrorModalOpen" title="Invalid JavaScript" subtitle="The input could not be formatted. Review the parser message below." icon="code" @close="isErrorModalOpen = false">
-      <TextEditor :model-value="parseError" label="Error Details" readonly />
-    </AppModal>
   </section>
 </template>

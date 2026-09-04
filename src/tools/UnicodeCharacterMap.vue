@@ -5,6 +5,7 @@ import DataList from '@/components/DataList.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import {
   ALL_UNICODE_BLOCK_VALUE,
   MAX_ALL_SEARCH_RESULTS,
@@ -92,10 +93,10 @@ async function copyValue(value: string, key: string): Promise<void> {
 
 <template>
   <section class="unicode-tool">
-    <div class="tool-options unicode-tool__options">
+    <ToolToolbar class="unicode-tool__options">
       <AppSelect v-model="selectedBlock" label="Character set" :options="blockOptions" />
       <AppTextInput v-model="search" label="Search" placeholder="Search by Unicode name, code, or character" />
-    </div>
+    </ToolToolbar>
 
     <p v-if="searchNote" class="unicode-tool__note">{{ searchNote }}</p>
 

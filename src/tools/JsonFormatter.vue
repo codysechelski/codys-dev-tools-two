@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { formatJson, type JsonOutputMode } from './jsonFormatter';
 
@@ -15,7 +15,6 @@ const input = ref(`{
 const outputMode = ref<JsonOutputMode>('formatted');
 const indentation = ref<'2-spaces' | '4-spaces' | 'tabs'>('2-spaces');
 const sortKeys = ref(false);
-const isErrorModalOpen = ref(false);
 
 const result = computed(() =>
   formatJson(input.value, {
@@ -43,7 +42,7 @@ const indentationOptions: Array<{ label: string; value: '2-spaces' | '4-spaces' 
 
 <template>
   <section class="formatter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect
         v-model="outputMode"
         label="Output"
@@ -55,17 +54,11 @@ const indentationOptions: Array<{ label: string; value: '2-spaces' | '4-spaces' 
         :options="indentationOptions"
       />
       <AppToggle v-model="sortKeys" label="Sort keys" description="Alphabetize object keys recursively." />
-      <div class="formatter-tool__status-slot">
-        <ToolbarStatusBadge
-          v-if="parseError"
-          variant="error"
-          label="Invalid - Click for details"
-          button
-          @click="isErrorModalOpen = true"
-        />
+      <template #badge>
+        <ToolbarStatusBadge v-if="parseError" variant="error" :label="parseError" />
         <ToolbarStatusBadge v-else label="Valid JSON" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="formatter-tool__editors">
       <TextEditor v-model="input" label="Input" language="json" placeholder="Paste JSON here" />
@@ -77,15 +70,5 @@ const indentationOptions: Array<{ label: string; value: '2-spaces' | '4-spaces' 
         placeholder="Formatted JSON will appear here"
       />
     </div>
-
-    <AppModal
-      :open="isErrorModalOpen"
-      title="Invalid JSON"
-      subtitle="The input could not be parsed. Review the parser message below."
-      icon="code"
-      @close="isErrorModalOpen = false"
-    >
-      <TextEditor :model-value="parseError" label="Error Details" readonly />
-    </AppModal>
   </section>
 </template>

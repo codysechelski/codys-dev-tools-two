@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import DataList from '@/components/DataList.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import { analyzeText } from './textAnalyzer';
 
 const input = ref(`Cody's Dev Tools is a focused desktop-style utility app for developers.
@@ -29,9 +30,9 @@ const summaryStats = computed(() => [
 
 <template>
   <section class="text-analyzer-tool">
-    <div class="tool-options text-analyzer-tool__toolbar">
+    <ToolToolbar class="text-analyzer-tool__toolbar">
       <AppToggle v-model="caseSensitive" label="Case-sensitive word count" />
-    </div>
+    </ToolToolbar>
 
     <div class="text-analyzer-tool__workspace">
       <TextEditor v-model="input" label="Input Text" language="text" placeholder="Paste long-form text here" />

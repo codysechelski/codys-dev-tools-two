@@ -6,6 +6,7 @@ import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import HtmlPreview from '@/components/HtmlPreview.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import { generateLoremIpsum, stripHtml, type CountMode, type LoremUnit } from './loremIpsum';
 
 const varyEndingPunctuation = ref(false);
@@ -67,7 +68,7 @@ function createSeededRandom(seed: number): () => number {
 
 <template>
   <section class="lorem-tool">
-    <div class="tool-options lorem-tool__toolbar">
+    <ToolToolbar class="lorem-tool__toolbar">
       <AppToggle
         v-model="varyEndingPunctuation"
         label="Vary ending punctuation"
@@ -83,7 +84,7 @@ function createSeededRandom(seed: number): () => number {
         label="Include common HTML tags"
         description="Randomly wraps words with common inline tags: em, strong, and placeholder links."
       />
-    </div>
+    </ToolToolbar>
 
     <div class="lorem-tool__phrase" aria-label="Lorem ipsum generation options">
       <span>Generate</span>

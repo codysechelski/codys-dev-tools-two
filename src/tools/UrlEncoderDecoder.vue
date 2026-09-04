@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { transformUrl, type UrlTransformMode } from './urlEncoderDecoder';
 
@@ -32,7 +33,7 @@ const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded URL
 
 <template>
   <section class="converter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="mode" label="Mode" :options="modeOptions" />
       <AppToggle
         v-model="component"
@@ -50,11 +51,11 @@ const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded URL
         label="RFC 3986"
         description="Strict RFC 3986 encoding for !, ', (, ), and *. Full-URL mode preserves IPv6 brackets."
       />
-      <div class="formatter-tool__status-slot">
-        <ToolbarStatusBadge v-if="error" variant="error" label="Invalid encoding" />
+      <template #badge>
+        <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
         <ToolbarStatusBadge v-else label="Ready" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="formatter-tool__editors">
       <TextEditor v-model="input" label="Input" language="text" :placeholder="inputPlaceholder" />

@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import { clampCount, generateUuids } from './uuidGenerator';
 
 const countInput = ref('5');
@@ -32,11 +33,11 @@ function regenerate(): void {
 
 <template>
   <section class="uuid-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="countInput" label="Count" :options="countOptions" />
       <AppToggle v-model="uppercase" label="Uppercase" />
       <AppToggle v-model="removeHyphens" label="No hyphens" />
-    </div>
+    </ToolToolbar>
 
     <TextEditor :model-value="output" label="UUID Output" readonly />
   </section>

@@ -3,6 +3,7 @@ dist/
 dist-electron/
 out/
 release/
+local-notes/
 *.log
 .DS_Store
 .env

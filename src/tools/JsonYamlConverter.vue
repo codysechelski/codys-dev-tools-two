@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import {
   convertJsonYaml,
@@ -51,7 +52,7 @@ const lineWidthOptions: Array<{ label: string; value: YamlLineWidth }> = [
 
 <template>
   <section class="converter-tool">
-    <div class="tool-options">
+    <ToolToolbar>
       <AppSelect v-model="direction" label="Direction" :options="directionOptions" />
       <AppSelect
         v-if="direction === 'yaml-to-json'"
@@ -67,11 +68,11 @@ const lineWidthOptions: Array<{ label: string; value: YamlLineWidth }> = [
         :options="lineWidthOptions"
       />
       <AppToggle v-model="sortKeys" label="Sort keys" description="Alphabetize object/map keys recursively before writing output." />
-      <div class="formatter-tool__status-slot">
-        <ToolbarStatusBadge v-if="error" variant="error" label="Invalid input" />
+      <template #badge>
+        <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
         <ToolbarStatusBadge v-else label="Ready" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="formatter-tool__editors">
       <TextEditor v-model="input" label="Input" :language="inputLanguage" placeholder="Paste JSON or YAML here" />
