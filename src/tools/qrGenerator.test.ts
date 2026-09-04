@@ -45,5 +45,17 @@ describe('QrGenerator', () => {
     expect(wrapper.find('.qr-calendar-picker').exists()).toBe(true);
     expect(wrapper.text()).toContain('Start');
     expect(wrapper.text()).toContain('End');
+    expect(wrapper.text()).toContain('All Day');
+  });
+
+  it('only shows the Copy SVG Code button when SVG output is selected', async () => {
+    const wrapper = mount(QrGenerator);
+
+    expect(wrapper.text()).not.toContain('Copy SVG Code');
+
+    await wrapper.findAll('[role="combobox"]')[1].trigger('click');
+    await wrapper.find('[data-value="svg"]').trigger('click');
+
+    expect(wrapper.text()).toContain('Copy SVG Code');
   });
 });

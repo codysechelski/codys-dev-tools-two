@@ -2,11 +2,11 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import AppButton from '@/components/AppButton.vue';
-import AppIcon from '@/components/AppIcon.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import {
   buildQrPayload,
   createDefaultQrValues,
@@ -74,7 +74,13 @@ const pngImageStyle = computed(() => ({
   height: `${Math.floor(pngHeight.value * pngPreviewScale.value)}px`,
 }));
 const copyState = ref<'idle' | 'copied' | 'error'>('idle');
+const copySvgCodeState = ref<'idle' | 'copied' | 'error'>('idle');
 const isSaving = ref(false);
+const eventEndError = computed(() =>
+  schema.value === 'calendar' && values.value.eventStart && values.value.eventEnd && values.value.eventEnd < values.value.eventStart
+    ? 'End date/time must not be earlier than the start date/time.'
+    : '',
+);
 
 const schemaOptions: Array<{ label: string; value: QrSchema }> = [
   { label: 'Text', value: 'text' },
@@ -86,14 +92,18 @@ const schemaOptions: Array<{ label: string; value: QrSchema }> = [
   { label: 'Phone', value: 'phone' },
   { label: 'Calendar', value: 'calendar' },
 ];
-const calendarDateTextInput = {
-  format: 'MM/dd/yyyy, hh:mm aa',
+const calendarDateTextInput = computed(() => ({
+  format: values.value.eventAllDay ? 'MM/dd/yyyy' : 'MM/dd/yyyy, hh:mm aa',
   selectOnFocus: true,
   openMenu: 'open',
-};
+}));
 const defaultCalendarStartDate = getRoundedCalendarDefault(0);
 const defaultCalendarEndDate = getRoundedCalendarDefault(30);
-const calendarDateTimeConfig = { enableSeconds: false, is24: false };
+const calendarDateTimeConfig = computed(() => ({
+  enableSeconds: false,
+  is24: false,
+  enableTimePicker: !values.value.eventAllDay,
+}));
 const calendarStartTime = getTimeModel(defaultCalendarStartDate);
 const calendarEndTime = getTimeModel(defaultCalendarEndDate);
 const formatOptions: Array<{ label: string; value: QrOutputFormat }> = [
@@ -124,12 +134,17 @@ watch(
 );
 
 watch(eventStartDate, (date) => {
-  values.value.eventStart = date ? formatCalendarPickerDate(date) : '';
+  values.value.eventStart = date ? formatCalendarPickerDate(date, values.value.eventAllDay) : '';
 }, { immediate: true });
 
 watch(eventEndDate, (date) => {
-  values.value.eventEnd = date ? formatCalendarPickerDate(date) : '';
+  values.value.eventEnd = date ? formatCalendarPickerDate(date, values.value.eventAllDay) : '';
 }, { immediate: true });
+
+watch(() => values.value.eventAllDay, (allDay) => {
+  values.value.eventStart = eventStartDate.value ? formatCalendarPickerDate(eventStartDate.value, allDay) : '';
+  values.value.eventEnd = eventEndDate.value ? formatCalendarPickerDate(eventEndDate.value, allDay) : '';
+});
 
 watch(() => values.value.phoneNumber, (value) => {
   const formatted = formatPhoneInput(value);
@@ -193,15 +208,17 @@ async function updateQrCode(): Promise<void> {
   }
 }
 
-function formatCalendarPickerDate(date: Date): string {
+function formatCalendarPickerDate(date: Date, allDay: boolean): string {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
+
+  if (allDay) return `${year}${month}${day}T000000`;
+
   const hour = date.getHours().toString().padStart(2, '0');
   const minute = date.getMinutes().toString().padStart(2, '0');
-  const second = '00';
 
-  return `${year}${month}${day}T${hour}${minute}${second}`;
+  return `${year}${month}${day}T${hour}${minute}00`;
 }
 
 function formatCalendarPickerDisplay(date: Date): string {
@@ -211,6 +228,14 @@ function formatCalendarPickerDisplay(date: Date): string {
     day: '2-digit',
     hour: 'numeric',
     minute: '2-digit',
+  }).format(date);
+}
+
+function formatCalendarPickerDateOnlyDisplay(date: Date): string {
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).format(date);
 }
 
@@ -308,6 +333,23 @@ async function copyQr(): Promise<void> {
   }
 }
 
+async function copySvgCode(): Promise<void> {
+  if (!renderedQr.value || outputFormat.value !== 'svg') return;
+
+  try {
+    await navigator.clipboard.writeText(renderedQr.value);
+    copySvgCodeState.value = 'copied';
+    window.setTimeout(() => {
+      copySvgCodeState.value = 'idle';
+    }, 1400);
+  } catch {
+    copySvgCodeState.value = 'error';
+    window.setTimeout(() => {
+      copySvgCodeState.value = 'idle';
+    }, 1800);
+  }
+}
+
 async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
   const response = await fetch(dataUrl);
 
@@ -327,7 +369,7 @@ async function getRenderedQrBlob(): Promise<Blob> {
 
 <template>
   <section class="qr-tool">
-    <div class="tool-options qr-tool__options">
+    <ToolToolbar class="qr-tool__options">
       <AppSelect v-model="schema" label="Schema" :options="schemaOptions" />
       <AppSelect v-model="outputFormat" label="Output" :options="formatOptions" />
       <AppSelect
@@ -338,6 +380,9 @@ async function getRenderedQrBlob(): Promise<Blob> {
       />
       <AppTextInput v-model="margin" label="Margin" type="number" :min="0" :max="10" />
       <div class="tool-options__actions">
+        <AppButton v-if="outputFormat === 'svg'" variant="secondary" icon="code" :disabled="!canDownload" @click="copySvgCode">
+          {{ copySvgCodeState === 'copied' ? 'Copied' : copySvgCodeState === 'error' ? 'Copy failed' : 'Copy SVG Code' }}
+        </AppButton>
         <AppButton variant="secondary" icon="copy" :disabled="!canDownload" @click="copyQr">
           {{ copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy' }}
         </AppButton>
@@ -345,7 +390,7 @@ async function getRenderedQrBlob(): Promise<Blob> {
           {{ isSaving ? 'Saving' : 'Save' }}
         </AppButton>
       </div>
-    </div>
+    </ToolToolbar>
 
     <div class="qr-tool__workspace">
       <section class="qr-tool__form-panel">
@@ -416,13 +461,14 @@ async function getRenderedQrBlob(): Promise<Blob> {
           <AppTextInput v-model="values.eventTitle" label="Title" />
           <AppTextInput v-model="values.eventLocation" label="Location" />
           <div class="timestamp-picker-row qr-calendar-picker">
+            <AppToggle v-model="values.eventAllDay" label="All Day" />
             <label class="timestamp-picker-field">
               <span>Start</span>
               <VueDatePicker
                 v-model="eventStartDate"
                 auto-apply
                 :text-input="calendarDateTextInput"
-                :format="formatCalendarPickerDisplay"
+                :format="values.eventAllDay ? formatCalendarPickerDateOnlyDisplay : formatCalendarPickerDisplay"
                 :time-config="calendarDateTimeConfig"
                 :start-date="defaultCalendarStartDate"
                 :start-time="calendarStartTime"
@@ -430,12 +476,7 @@ async function getRenderedQrBlob(): Promise<Blob> {
                 :clearable="false"
                 :teleport="false"
                 :input-attrs="{ autocomplete: 'off', clearable: false }"
-                placeholder="Select or type start date and time"
-              >
-                <template #input-icon>
-                  <AppIcon name="calendar" />
-                </template>
-              </VueDatePicker>
+              />
             </label>
             <label class="timestamp-picker-field">
               <span>End</span>
@@ -443,7 +484,7 @@ async function getRenderedQrBlob(): Promise<Blob> {
                 v-model="eventEndDate"
                 auto-apply
                 :text-input="calendarDateTextInput"
-                :format="formatCalendarPickerDisplay"
+                :format="values.eventAllDay ? formatCalendarPickerDateOnlyDisplay : formatCalendarPickerDisplay"
                 :time-config="calendarDateTimeConfig"
                 :start-date="defaultCalendarEndDate"
                 :start-time="calendarEndTime"
@@ -451,14 +492,10 @@ async function getRenderedQrBlob(): Promise<Blob> {
                 :clearable="false"
                 :teleport="false"
                 :input-attrs="{ autocomplete: 'off', clearable: false }"
-                placeholder="Select or type end date and time"
-              >
-                <template #input-icon>
-                  <AppIcon name="calendar" />
-                </template>
-              </VueDatePicker>
+              />
             </label>
           </div>
+          <span v-if="eventEndError" class="form-text-input__error">{{ eventEndError }}</span>
           <AppTextInput v-model="values.eventDescription" label="Description" multiline />
         </template>
       </section>

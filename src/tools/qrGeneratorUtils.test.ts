@@ -50,6 +50,30 @@ describe('qrGenerator utilities', () => {
     expect(payload).toContain('DTEND:20260831T140000');
   });
 
+  it('extends all-day calendar payloads to cover the full start and end days', () => {
+    const values = createDefaultQrValues();
+    values.eventTitle = 'Conference';
+    values.eventAllDay = true;
+    values.eventStart = '20260901T000000';
+    values.eventEnd = '20260903T000000';
+
+    const payload = buildQrPayload('calendar', values);
+
+    expect(payload).toContain('DTSTART:20260901T000000');
+    expect(payload).toContain('DTEND:20260903T235959');
+  });
+
+  it('validates that a calendar end date/time is not earlier than the start', () => {
+    const values = createDefaultQrValues();
+    values.eventStart = '20260901T133000';
+    values.eventEnd = '20260901T120000';
+
+    expect(validateQrValues('calendar', values)).toBe('End date/time must not be earlier than the start date/time.');
+
+    values.eventEnd = '20260901T140000';
+    expect(validateQrValues('calendar', values)).toBe('');
+  });
+
   it('validates URL, email, and phone fields', () => {
     const values = createDefaultQrValues();
 

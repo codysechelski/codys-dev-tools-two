@@ -27,6 +27,7 @@ export interface QrFormValues {
   eventLocation: string;
   eventStart: string;
   eventEnd: string;
+  eventAllDay: boolean;
   eventDescription: string;
 }
 
@@ -86,12 +87,14 @@ export function buildQrPayload(schema: QrSchema, values: QrFormValues): string {
   }
 
   if (schema === 'calendar') {
+    const eventEnd = values.eventAllDay && values.eventEnd ? `${values.eventEnd.slice(0, 8)}T235959` : values.eventEnd;
+
     return [
       'BEGIN:VEVENT',
       values.eventTitle ? `SUMMARY:${values.eventTitle}` : '',
       values.eventLocation ? `LOCATION:${values.eventLocation}` : '',
       values.eventStart ? `DTSTART:${formatCalendarDate(values.eventStart)}` : '',
-      values.eventEnd ? `DTEND:${formatCalendarDate(values.eventEnd)}` : '',
+      eventEnd ? `DTEND:${formatCalendarDate(eventEnd)}` : '',
       values.eventDescription ? `DESCRIPTION:${values.eventDescription.replaceAll('\n', '\\n')}` : '',
       'END:VEVENT',
     ]
@@ -111,6 +114,10 @@ export function validateQrValues(schema: QrSchema, values: QrFormValues): string
   if (schema === 'vcard') {
     if (values.contactPhone.trim() && !isValidPhone(values.contactPhone)) return 'Enter a valid contact phone number.';
     if (values.contactEmail.trim() && !isValidEmail(values.contactEmail)) return 'Enter a valid contact email address.';
+  }
+
+  if (schema === 'calendar' && values.eventStart && values.eventEnd && values.eventEnd < values.eventStart) {
+    return 'End date/time must not be earlier than the start date/time.';
   }
 
   return '';
@@ -179,6 +186,7 @@ export function createDefaultQrValues(): QrFormValues {
     eventLocation: '',
     eventStart: '',
     eventEnd: '',
+    eventAllDay: false,
     eventDescription: '',
   };
 }
