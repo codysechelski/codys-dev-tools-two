@@ -167,11 +167,11 @@ function getOrdinalDay(day: number): string {
           </article>
           <article class="data-list__row">
             <span>Summary</span>
-            <strong>{{ parsed.summary }}</strong>
+            <code>{{ parsed.summary }}</code>
           </article>
           <article v-for="field in parsed.fields" :key="field.label" class="data-list__row">
             <span>{{ field.label }}</span>
-            <strong>{{ field.description }}</strong>
+            <code>{{ field.description }}</code>
           </article>
         </DataList>
 
