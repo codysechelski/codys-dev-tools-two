@@ -1762,6 +1762,10 @@ body[data-theme='light'] .unicode-attribute code {
   overflow-wrap: anywhere;
 }
 
+.cron-summary-panel strong {
+  font-weight: 400;
+}
+
 .cron-runs-panel {
   min-height: 0;
   align-content: start;
