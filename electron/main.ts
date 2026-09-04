@@ -1,7 +1,38 @@
-import { app, BrowserWindow, shell } from 'electron';
-import { join } from 'node:path';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { readFile } from 'node:fs/promises';
+import { basename, join } from 'node:path';
 
 const isDev = !app.isPackaged;
+const textFileExtensions = [
+  'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'csv', 'log', 'ini', 'conf',
+  'js', 'jsx', 'ts', 'tsx', 'css', 'scss', 'html', 'htm', 'py', 'lua', 'sh', 'sql',
+];
+
+ipcMain.handle('load-text-file', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      { name: 'Text Files', extensions: textFileExtensions },
+      { name: 'All Files', extensions: ['*'] },
+    ],
+  });
+
+  if (result.canceled || !result.filePaths[0]) return null;
+
+  const filePath = result.filePaths[0];
+  const name = basename(filePath);
+  const buffer = await readFile(filePath);
+
+  if (looksLikeBinary(buffer)) {
+    return { name, error: `"${name}" doesn't look like a text file.` };
+  }
+
+  return { name, content: buffer.toString('utf-8') };
+});
+
+function looksLikeBinary(buffer: Buffer): boolean {
+  return buffer.subarray(0, 8000).includes(0);
+}
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({

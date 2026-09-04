@@ -35,7 +35,7 @@ async function copyFormatted(): Promise<void> {
   <section class="html-preview">
     <header class="html-preview__toolbar">
       <strong>{{ label }}</strong>
-      <AppButton class="text-editor__button" variant="muted" icon="copy" :disabled="!html" @click="copyFormatted">
+      <AppButton variant="muted" icon="copy" :disabled="!html" @click="copyFormatted">
         {{ copyState === 'copied' ? 'Copied' : 'Copy' }}
       </AppButton>
     </header>

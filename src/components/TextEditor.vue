@@ -13,6 +13,8 @@ import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { tags } from '@lezer/highlight';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
+import AppIcon from '@/components/AppIcon.vue';
+import AppModal from '@/components/AppModal.vue';
 import HelpPopover from '@/components/HelpPopover.vue';
 
 const props = withDefaults(
@@ -38,6 +40,11 @@ const emit = defineEmits<{
 const editorRoot = ref<HTMLDivElement | null>(null);
 const view = shallowRef<EditorView | null>(null);
 const copyState = ref<'idle' | 'copied'>('idle');
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const isLoadFileModalOpen = ref(false);
+const isDragOver = ref(false);
+const fileLoadError = ref('');
+const hasNativeFilePicker = Boolean(window.codyDevTools?.isElectron && window.codyDevTools.loadTextFile);
 
 const codeHighlightStyle = HighlightStyle.define([
   { tag: [tags.keyword, tags.modifier, tags.operatorKeyword, tags.controlKeyword, tags.definitionKeyword], color: 'var(--syntax-keyword)', fontWeight: '700' },
@@ -104,6 +111,72 @@ function clearContents(): void {
   emit('update:modelValue', '');
 }
 
+function openLoadFile(): void {
+  fileLoadError.value = '';
+  isDragOver.value = false;
+  isLoadFileModalOpen.value = true;
+}
+
+function closeLoadFileModal(): void {
+  isLoadFileModalOpen.value = false;
+  fileLoadError.value = '';
+  isDragOver.value = false;
+}
+
+function browseForFile(): void {
+  if (hasNativeFilePicker && window.codyDevTools?.loadTextFile) {
+    void loadFromNativePicker(window.codyDevTools.loadTextFile);
+    return;
+  }
+
+  fileInputRef.value?.click();
+}
+
+async function loadFromNativePicker(loadTextFile: NonNullable<Window['codyDevTools']>['loadTextFile']): Promise<void> {
+  const result = await loadTextFile();
+  if (!result) return;
+
+  if (result.content === undefined) {
+    fileLoadError.value = result.error ?? 'Unable to read that file.';
+    return;
+  }
+
+  emit('update:modelValue', result.content);
+  closeLoadFileModal();
+}
+
+function handleFileInputChange(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = '';
+
+  if (file) void loadBrowserFile(file);
+}
+
+function handleFileDrop(event: DragEvent): void {
+  isDragOver.value = false;
+  const file = event.dataTransfer?.files?.[0];
+
+  if (file) void loadBrowserFile(file);
+}
+
+async function loadBrowserFile(file: File): Promise<void> {
+  fileLoadError.value = '';
+
+  const buffer = await file.arrayBuffer();
+  if (looksLikeBinary(buffer)) {
+    fileLoadError.value = `"${file.name}" doesn't look like a text file.`;
+    return;
+  }
+
+  emit('update:modelValue', new TextDecoder('utf-8').decode(buffer));
+  closeLoadFileModal();
+}
+
+function looksLikeBinary(buffer: ArrayBuffer): boolean {
+  return new Uint8Array(buffer.slice(0, 8000)).includes(0);
+}
+
 function createEditorState(): EditorState {
   return EditorState.create({
     doc: props.modelValue,
@@ -139,16 +212,40 @@ function createEditorState(): EditorState {
         <HelpPopover v-if="description" :text="description" :label="`${label} help`" />
       </span>
       <div class="text-editor__actions">
+        <AppButton v-if="!readonly" variant="muted" icon="fileUpload" @click="openLoadFile">Load File</AppButton>
         <slot name="toolbar" />
-        <AppButton v-if="!readonly" class="text-editor__button" variant="muted" icon="eraser" :disabled="!modelValue" @click="clearContents">
+        <AppButton v-if="!readonly" variant="muted" icon="eraser" :disabled="!modelValue" @click="clearContents">
           Clear
         </AppButton>
-        <AppButton class="text-editor__button" variant="muted" icon="copy" :disabled="!modelValue" @click="copyContents">
+        <AppButton variant="muted" icon="copy" :disabled="!modelValue" @click="copyContents">
           {{ copyState === 'copied' ? 'Copied' : 'Copy' }}
         </AppButton>
       </div>
     </header>
 
     <div ref="editorRoot" class="text-editor__body" />
+
+    <AppModal
+      v-if="!readonly"
+      :open="isLoadFileModalOpen"
+      title="Load File"
+      subtitle="Load the contents of a text file into this editor."
+      icon="fileUpload"
+      @close="closeLoadFileModal"
+    >
+      <div
+        class="text-editor-file-drop"
+        :class="{ 'text-editor-file-drop--active': isDragOver }"
+        @dragover.prevent="isDragOver = true"
+        @dragleave.prevent="isDragOver = false"
+        @drop.prevent="handleFileDrop"
+      >
+        <AppIcon name="fileUpload" />
+        <p>Drag and drop a text file here</p>
+        <AppButton variant="secondary" @click="browseForFile">Browse Files</AppButton>
+        <input v-if="!hasNativeFilePicker" ref="fileInputRef" type="file" class="text-editor-file-drop__input" @change="handleFileInputChange" />
+      </div>
+      <p v-if="fileLoadError" class="form-text-input__error">{{ fileLoadError }}</p>
+    </AppModal>
   </section>
 </template>

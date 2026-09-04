@@ -63,7 +63,7 @@ Use `AppButton` for buttons and `AppModal` for modal dialogs so variants and dia
 
 ## Text Editor
 
-The shared editor component is `src/components/TextEditor.vue`. It uses CodeMirror for cursor handling, line numbers, indentation, and syntax highlighting.
+The shared editor component is `src/components/TextEditor.vue`. It uses CodeMirror for cursor handling, line numbers, indentation, and syntax highlighting. Editable instances include a Load File button: in Electron it opens the native OS file picker, in the browser it opens a modal with a browse button and a drag-and-drop zone. Loaded files are rejected with an inline error if they look binary.
 
 ## Attributions
 
