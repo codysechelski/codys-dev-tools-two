@@ -4,6 +4,7 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
+import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
 import { detectDelimiter, formatStringTemplate, type InputDelimiter, type JoinToken } from './stringTemplateFormatter';
 
@@ -62,6 +63,7 @@ const result = computed(() =>
 );
 const output = computed(() => result.value.output);
 const error = computed(() => result.value.error);
+const warning = computed(() => result.value.warning);
 const rowCount = computed(() => result.value.rows.length);
 
 watch(input, (value) => {
@@ -85,24 +87,23 @@ function flashDelimiterAutoBadge(): void {
 
 <template>
   <section class="template-tool">
-    <div class="tool-options template-tool__toolbar">
-      <div class="template-tool__toolbar-controls">
-        <AppSelect v-model="delimiter" label="Delimiter" label-badge="AUTO" :label-badge-visible="showDelimiterAutoBadge" :options="delimiterOptions" />
-        <AppTextInput v-if="delimiter === 'custom'" v-model="customDelimiter" label="Custom delimiter" placeholder="One or more characters" />
-        <AppSelect
-          v-model="lineEnding"
-          label="Line ending"
-          description="Controls how each formatted row is joined in the output."
-          :options="joinOptions"
-        />
-        <AppToggle v-model="skipFirstLine" label="Skip first line" description="Ignore the first input row when it contains table headers." />
-        <AppToggle v-model="trimCells" label="Trim cells" description="Remove leading and trailing whitespace from each parsed cell." />
-      </div>
-      <div class="formatter-tool__status-slot template-tool__status">
+    <ToolToolbar class="template-tool__toolbar">
+      <AppSelect v-model="delimiter" label="Delimiter" label-badge="AUTO" :label-badge-visible="showDelimiterAutoBadge" :options="delimiterOptions" />
+      <AppTextInput v-if="delimiter === 'custom'" v-model="customDelimiter" label="Custom delimiter" placeholder="One or more characters" />
+      <AppSelect
+        v-model="lineEnding"
+        label="Line ending"
+        description="Controls how each formatted row is joined in the output."
+        :options="joinOptions"
+      />
+      <AppToggle v-model="skipFirstLine" label="Skip first line" description="Ignore the first input row when it contains table headers." />
+      <AppToggle v-model="trimCells" label="Trim cells" description="Remove leading and trailing whitespace from each parsed cell." />
+      <template #badge>
         <ToolbarStatusBadge v-if="error" variant="error" :label="error" />
+        <ToolbarStatusBadge v-else-if="warning" variant="warning" :label="warning" />
         <ToolbarStatusBadge v-else :label="`${rowCount} rows formatted`" />
-      </div>
-    </div>
+      </template>
+    </ToolToolbar>
 
     <div class="template-tool__workspace">
       <section class="template-tool__input-panel">

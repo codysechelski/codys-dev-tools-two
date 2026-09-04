@@ -71,4 +71,17 @@ describe('stringTemplateFormatter utilities', () => {
     expect(detectDelimiter('1|one\n2|two')).toBe('pipe');
     expect(detectDelimiter('1,one;uno\n2,two;dos')).toBeUndefined();
   });
+
+  it('leaves out-of-range placeholders blank and reports a warning', () => {
+    const result = formatStringTemplate({ ...defaults, template: "The number {0} is spelled '{1}' ({2})" });
+
+    expect(result.output).toBe("The number 1 is spelled 'one' ()\nThe number 2 is spelled 'two' ()");
+    expect(result.error).toBe('');
+    expect(result.warning).toContain('row 0 {2}');
+    expect(result.warning).toContain('row 1 {2}');
+  });
+
+  it('has no warning when every placeholder is in range', () => {
+    expect(formatStringTemplate(defaults).warning).toBe('');
+  });
 });

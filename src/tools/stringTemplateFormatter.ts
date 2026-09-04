@@ -18,6 +18,7 @@ export interface StringTemplateFormatterResult {
   output: string;
   rows: string[][];
   error: string;
+  warning: string;
 }
 
 const delimiterValues: Record<Exclude<InputDelimiter, 'custom' | 'whitespace'>, string> = {
@@ -60,18 +61,22 @@ export function formatStringTemplate(options: StringTemplateFormatterOptions): S
   const delimiter = getDelimiter(options);
 
   if (!delimiter) {
-    return { output: '', rows: [], error: 'Enter a custom delimiter.' };
+    return { output: '', rows: [], error: 'Enter a custom delimiter.', warning: '' };
   }
 
   const rows = parseRows(options.input, options.delimiter, delimiter, options.trimCells, options.skipFirstLine);
   const formattedRows = rows.map((row, rowIndex) => applyTemplate(options.template, row, rowIndex));
   const rowOutput = formattedRows.join(getJoinValue(options.lineEnding));
   const parts = [options.staticTextBefore, rowOutput, options.staticTextAfter].filter((part) => part.length > 0);
+  const outOfRangeByRow = rows
+    .map((row, rowIndex) => ({ rowIndex, columns: findOutOfRangeColumns(options.template, row) }))
+    .filter((entry) => entry.columns.length > 0);
 
   return {
     output: parts.join(getJoinValue(options.joinWith)),
     rows,
     error: '',
+    warning: buildOutOfRangeWarning(outOfRangeByRow),
   };
 }
 
@@ -182,6 +187,29 @@ function getNextColumnIndex(nextTokens: RegExpMatchArray[]): string {
   const nextColumnToken = nextTokens.find((token) => /^\d+$/.test(token[1] ?? ''));
 
   return nextColumnToken?.[1] ?? '';
+}
+
+function findOutOfRangeColumns(template: string, row: string[]): number[] {
+  const tokens = [...template.matchAll(/(?<!\\)\{(rowIndex|colIndex|\d+)(?<!\\)\}/g)];
+
+  return tokens
+    .map((token) => token[1])
+    .filter((key) => /^\d+$/.test(key))
+    .map(Number)
+    .filter((columnIndex) => columnIndex >= row.length);
+}
+
+function buildOutOfRangeWarning(entries: Array<{ rowIndex: number; columns: number[] }>): string {
+  if (!entries.length) return '';
+
+  const occurrences = entries.flatMap((entry) => entry.columns.map((columnIndex) => `row ${entry.rowIndex} {${columnIndex}}`));
+  const maxListed = 5;
+  const listed = occurrences.slice(0, maxListed).join(', ');
+  const remaining = occurrences.length - maxListed;
+  const suffix = remaining > 0 ? `, and ${remaining} more` : '';
+  const plural = occurrences.length === 1 ? 'placeholder is' : 'placeholders are';
+
+  return `${occurrences.length} ${plural} out of range for the input data and were left blank: ${listed}${suffix}.`;
 }
 
 function scoreDelimiter(lines: string[], delimiter: string): number {
