@@ -1,3 +1,11 @@
+## [0.25.3](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.2...v0.25.3) (2026-09-08)
+
+
+### Bug Fixes
+
+* **help-popover:** stop the editor card clipping its own tooltip ([f4cd34d](https://github.com/codysechelski/codys-dev-tools-two/commit/f4cd34db7ac11ec2316524e6cb04c7792748a494))
+* **text-editor:** focus the editor after clicking Clear ([cb00537](https://github.com/codysechelski/codys-dev-tools-two/commit/cb005376b350b2fa76b5329148179970c0797adf))
+
 ## [0.25.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.1...v0.25.2) (2026-09-08)
 
 
