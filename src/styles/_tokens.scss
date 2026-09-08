@@ -47,6 +47,23 @@ $shadows: (
   glow: 0 0 60px rgba(124, 58, 237, 0.28),
 );
 
+// Animation/transition scale: change a duration or easing curve here and every
+// component using the matching --duration-*/--ease-* token picks it up.
+$durations: (
+  fast: 120ms,
+  base: 140ms,
+  slow: 180ms,
+  slower: 2000ms,
+  spin: 900ms,
+  flash-hold: 1000ms,
+  flash: 900ms,
+);
+
+$easings: (
+  standard: ease,
+  linear: linear,
+);
+
 :root {
   @each $name, $value in $colors {
     --color-#{$name}: #{$value};
@@ -67,4 +84,23 @@ $shadows: (
   @each $name, $value in $shadows {
     --shadow-#{$name}: #{$value};
   }
+
+  @each $name, $value in $durations {
+    --duration-#{$name}: #{$value};
+  }
+
+  @each $name, $value in $easings {
+    --ease-#{$name}: #{$value};
+  }
+
+  // Row hover background shared by DataList and DataTable (and anything
+  // else that wants the same "row is interactive" affordance).
+  --row-hover-background: rgba(103, 232, 249, 0.09);
+
+  // "Jump here" flash background for the editor's line-flash animation.
+  --line-flash-background: rgba(103, 232, 249, 0.35);
+
+  // Checkerboard used to represent a transparent background (e.g. the QR preview).
+  --checkerboard-base: #2b2d33;
+  --checkerboard-tile: rgba(255, 255, 255, 0.06);
 }
