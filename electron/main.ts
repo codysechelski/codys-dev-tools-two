@@ -30,6 +30,11 @@ const DEFAULT_SETTINGS: AppSettings = {
 const REMEMBER_TOOL_INPUT_MODES: RememberToolInput[] = ['never', 'session', 'forever'];
 const INDENT_STYLES: IndentStyle[] = ['2-spaces', '4-spaces', 'tabs'];
 
+// Electron falls back to package.json's "name" field ("codys-dev-tools-two") for the
+// app/menu-bar name during development, since productName is only read from the
+// electron-builder config once packaged. Force it here so dev and packaged builds match.
+app.setName("Cody's Dev Tools");
+
 const isDev = !app.isPackaged;
 const textFileExtensions = [
   'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'csv', 'log', 'ini', 'conf',
@@ -72,6 +77,14 @@ ipcMain.on('theme-mode-changed', (_event, mode: ThemeMode) => {
 function setThemeFromMenu(mode: ThemeMode): void {
   currentThemeMode = mode;
   mainWindowRef?.webContents.send('set-theme', mode);
+}
+
+function showHome(): void {
+  mainWindowRef?.webContents.send('navigate-home');
+}
+
+function showSettings(): void {
+  mainWindowRef?.webContents.send('navigate-settings');
 }
 
 function syncThemeMenuChecked(): void {
@@ -257,7 +270,9 @@ function buildAppMenu(): Menu {
           {
             label: app.name,
             submenu: [
-              { role: 'about' },
+              { label: `About ${app.name}`, click: () => showHome() },
+              { type: 'separator' },
+              { label: 'Settings', accelerator: 'Cmd+,', click: () => showSettings() },
               { type: 'separator' },
               { role: 'services' },
               { type: 'separator' },
@@ -272,7 +287,13 @@ function buildAppMenu(): Menu {
       : []),
     {
       label: 'File',
-      submenu: [isMac ? { role: 'close' } : { role: 'quit' }] as MenuItemConstructorOptions[],
+      submenu: (isMac
+        ? [{ role: 'close' }]
+        : [
+            { label: 'Settings', accelerator: 'Ctrl+,', click: () => showSettings() },
+            { type: 'separator' },
+            { role: 'quit' },
+          ]) as MenuItemConstructorOptions[],
     },
     {
       label: 'Edit',
@@ -291,6 +312,8 @@ function buildAppMenu(): Menu {
     {
       label: 'View',
       submenu: [
+        { label: 'Theme', submenu: themeSubmenu },
+        { type: 'separator' },
         { role: 'reload' },
         { role: 'forceReload' },
         { role: 'toggleDevTools' },
@@ -298,10 +321,9 @@ function buildAppMenu(): Menu {
         { role: 'resetZoom' },
         { role: 'zoomIn' },
         { role: 'zoomOut' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' },
-        { type: 'separator' },
-        { label: 'Theme', submenu: themeSubmenu },
+        // macOS already adds an "Enter Full Screen" item to the Window menu itself for any
+        // fullscreenable window, so a second entry here would just duplicate it.
+        ...(isMac ? [] : [{ type: 'separator' }, { role: 'togglefullscreen' }]),
       ] as MenuItemConstructorOptions[],
     },
     {
@@ -314,6 +336,14 @@ function buildAppMenu(): Menu {
           : [{ role: 'close' }]),
       ] as MenuItemConstructorOptions[],
     },
+    ...(isMac
+      ? []
+      : [
+          {
+            label: 'Help',
+            submenu: [{ label: `About ${app.name}`, click: () => showHome() }] as MenuItemConstructorOptions[],
+          },
+        ]),
   ];
 
   return Menu.buildFromTemplate(template);

@@ -43,6 +43,9 @@ onMounted(async () => {
     settings.value = { ...settings.value, themeMode: mode };
   });
 
+  window.codyDevTools?.onNavigateHome?.(() => selectTool(null));
+  window.codyDevTools?.onNavigateSettings?.(() => selectTool(settingsTool.id));
+
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
   if (mediaQuery) {
     systemPrefersDark.value = mediaQuery.matches;

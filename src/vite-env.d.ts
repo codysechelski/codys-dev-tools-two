@@ -16,6 +16,8 @@ declare global {
       loadTextFile: () => Promise<{ name: string; content?: string; error?: string } | null>;
       onSetTheme: (callback: (mode: 'light' | 'dark' | 'system') => void) => void;
       notifyThemeChanged: (mode: 'light' | 'dark' | 'system') => void;
+      onNavigateHome: (callback: () => void) => void;
+      onNavigateSettings: (callback: () => void) => void;
       loadSettings: () => Promise<{ settings: AppSettings } & SettingsLocationResult>;
       saveSettings: (settings: AppSettings) => Promise<{ settingsPath: string }>;
       chooseSettingsDirectory: () => Promise<SettingsLocationResult | null>;

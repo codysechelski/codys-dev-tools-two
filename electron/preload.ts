@@ -21,6 +21,12 @@ contextBridge.exposeInMainWorld('codyDevTools', {
   notifyThemeChanged: (mode: 'light' | 'dark' | 'system') => {
     ipcRenderer.send('theme-mode-changed', mode);
   },
+  onNavigateHome: (callback: () => void) => {
+    ipcRenderer.on('navigate-home', () => callback());
+  },
+  onNavigateSettings: (callback: () => void) => {
+    ipcRenderer.on('navigate-settings', () => callback());
+  },
   loadSettings: () => ipcRenderer.invoke('load-settings'),
   saveSettings: (settings: AppSettings) => ipcRenderer.invoke('save-settings', settings),
   chooseSettingsDirectory: () => ipcRenderer.invoke('choose-settings-directory'),
