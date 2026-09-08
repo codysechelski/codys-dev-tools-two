@@ -121,4 +121,4 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set
 
 ## License
 
-[MIT](LICENSE)
+[Polyform Noncommercial License 1.0.0](LICENSE) — free to use, modify, and contribute to for any noncommercial purpose. Selling this software, or a modified version of it, is not permitted.
