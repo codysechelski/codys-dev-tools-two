@@ -1,3 +1,10 @@
+## [0.25.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.0...v0.25.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **ci:** chain desktop builds via workflow_run instead of tag push ([ac6b93d](https://github.com/codysechelski/codys-dev-tools-two/commit/ac6b93da09ea25573dd691f159fa7748d09987b7))
+
 # [0.25.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.24.0...v0.25.0) (2026-09-08)
 
 
