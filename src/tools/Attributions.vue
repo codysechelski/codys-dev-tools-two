@@ -44,6 +44,12 @@ const attributions: Attribution[] = [
     repoUrl: 'https://github.com/NaturalIntelligence/fast-xml-parser',
   },
   {
+    name: 'Font Awesome Free',
+    license: 'CC BY 4.0 License',
+    description: 'Icon shapes used throughout the app interface are vendored from Font Awesome Free.',
+    repoUrl: 'https://github.com/FortAwesome/Font-Awesome',
+  },
+  {
     name: 'Lezer',
     license: 'MIT License',
     description: 'Supplies the syntax-highlighting tags used by the shared text editor.',
@@ -60,6 +66,12 @@ const attributions: Attribution[] = [
     license: 'MIT License',
     description: 'Generates PNG and SVG QR codes.',
     repoUrl: 'https://github.com/soldair/node-qrcode',
+  },
+  {
+    name: 'Ubuntu Font Family',
+    license: 'Ubuntu Font Licence 1.0',
+    description: 'Ubuntu and Ubuntu Mono are vendored locally under src/assets/fonts/ubuntu for offline use.',
+    repoUrl: 'https://ubuntu.com/legal/font-licence',
   },
   {
     name: 'unicode-name',
