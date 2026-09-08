@@ -67,6 +67,7 @@
   // Kept distinct from --color-accent so linked text doesn't read as just more accent styling.
   --color-accent: var(--color-cyan-300);
   --color-link: var(--color-violet-400);
+  --color-star-gold: #f4b400;
 }
 
 * {
@@ -333,7 +334,7 @@ code {
 .app-shell {
   position: relative;
   display: grid;
-  grid-template-columns: 19.5rem minmax(0, 1fr);
+  grid-template-columns: 22rem minmax(0, 1fr);
   width: 100%;
   height: 100dvh;
   min-height: 0;
@@ -426,10 +427,6 @@ body[data-theme='light'] {
 
 .app-shell[data-theme='light'] .tool-nav__pin:hover {
   background: rgba(79, 70, 229, 0.12);
-}
-
-.app-shell[data-theme='light'] .tool-nav__pin--active {
-  color: var(--color-accent);
 }
 
 .app-shell[data-theme='light'] .formatter-tool__status:not(.formatter-tool__status--error):not(.formatter-tool__status--warning) {
@@ -1020,7 +1017,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 }
 
 .tool-nav__pin--active {
-  color: var(--color-accent);
+  color: var(--color-star-gold);
   opacity: 1;
 }
 

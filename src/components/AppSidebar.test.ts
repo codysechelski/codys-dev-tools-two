@@ -112,17 +112,17 @@ describe('AppSidebar', () => {
     expect(wrapper.find('.tool-nav').text()).toContain('Text Analyzer');
   });
 
-  it('has no Pinned section when nothing is pinned', () => {
+  it('has no Starred section when nothing is pinned', () => {
     const wrapper = mount(AppSidebar, { props: baseProps });
 
-    expect(wrapper.text()).not.toContain('Pinned');
+    expect(wrapper.text()).not.toContain('Starred');
   });
 
-  it('shows a Pinned section with the pinned tool when pinnedToolIds is set', () => {
+  it('shows a Starred section with the pinned tool when pinnedToolIds is set', () => {
     const wrapper = mount(AppSidebar, { props: { ...baseProps, pinnedToolIds: ['json-formatter'] } });
     const sections = wrapper.findAll('.tool-nav__section');
 
-    expect(sections[0].text()).toContain('Pinned');
+    expect(sections[0].text()).toContain('Starred');
     expect(sections[0].text()).toContain('JSON Formatter');
   });
 

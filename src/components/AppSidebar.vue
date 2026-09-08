@@ -48,7 +48,7 @@ const groupedTools = computed(() =>
 
     <nav class="tool-nav" aria-label="Developer tools">
       <section v-if="pinnedTools.length" class="tool-nav__section">
-        <h2>Pinned</h2>
+        <h2>Starred</h2>
         <ToolNavItem
           v-for="tool in pinnedTools"
           :key="tool.id"
