@@ -6,6 +6,8 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultSortKeys } from '@/formatterDefaults';
 import {
   convertJsonYaml,
   type JsonYamlDirection,
@@ -18,9 +20,11 @@ const input = ref(`{
   "tools": ["JSON Formatter", "UUID Generator", "JSON/YAML Converter"]
 }`);
 const direction = ref<JsonYamlDirection>('json-to-yaml');
-const jsonIndentation = ref<JsonYamlIndentation>('2-spaces');
+const jsonIndentation = ref<JsonYamlIndentation>(defaultIndentStyle.value);
 const yamlLineWidth = ref<YamlLineWidth>('preserve');
-const sortKeys = ref(false);
+const sortKeys = ref(defaultSortKeys.value);
+
+usePersistedToolState('json-yaml-converter', { input, direction, jsonIndentation, yamlLineWidth, sortKeys });
 
 const result = computed(() =>
   convertJsonYaml(input.value, {

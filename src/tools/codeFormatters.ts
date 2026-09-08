@@ -14,6 +14,9 @@ export interface CodeFormatterOptions {
   htmlVoidTagStyle?: 'preserve' | 'xhtml';
   pythonNormalizeIndentation?: boolean;
   luaNormalizeIndentation?: boolean;
+  xmlWrapTextNodes?: boolean;
+  xmlCollapseWhitespace?: boolean;
+  xmlSelfCloseEmptyTags?: boolean;
 }
 
 export interface CodeFormatterResult {
@@ -43,6 +46,24 @@ export function formatHtml(input: string, options: CodeFormatterOptions): CodeFo
   const withoutComments = options.preserveComments ? source : source.replace(/<!--[\s\S]*?-->/g, '');
   const normalized = normalizeHtml(withoutComments, options);
   return { output: options.mode === 'compact' ? minifyHtml(normalized) : prettifyHtml(normalized, getIndentation(options.indentation), Boolean(options.preserveBlankLines), options.htmlWrapTextNodes !== false), error: '' };
+}
+
+export function formatXml(input: string, options: CodeFormatterOptions): CodeFormatterResult {
+  const source = input.trim();
+  if (!source) return { output: '', error: '' };
+
+  const validationError = validateXml(source);
+  if (validationError) return { output: '', error: validationError };
+
+  const withoutComments = options.preserveComments ? source : source.replace(/<!--[\s\S]*?-->/g, '');
+  const normalized = normalizeXml(withoutComments, options);
+  return {
+    output:
+      options.mode === 'compact'
+        ? minifyXml(normalized)
+        : prettifyXml(normalized, getIndentation(options.indentation), Boolean(options.preserveBlankLines), options.xmlWrapTextNodes !== false),
+    error: '',
+  };
 }
 
 export function formatPython(input: string, options: CodeFormatterOptions): CodeFormatterResult {
@@ -129,6 +150,36 @@ function minifyHtml(input: string): string {
   return input.replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim();
 }
 
+const XML_TAG_PATTERN = /<!\[CDATA\[[\s\S]*?]]>|<!--[^]*?-->|<\?[\s\S]*?\?>|<!DOCTYPE[^>]*>|<[^>]+>/gi;
+const XML_TOKEN_PATTERN = /<!\[CDATA\[[\s\S]*?]]>|<!--[^]*?-->|<\?[\s\S]*?\?>|<!DOCTYPE[^>]*>|<[^>]+>|[^<]+/gi;
+
+function prettifyXml(input: string, indent: string, preserveBlankLines: boolean, wrapTextNodes: boolean): string {
+  const tokens = input.replace(/>\s*</g, '><').match(XML_TOKEN_PATTERN) ?? [];
+  const lines: string[] = [];
+  let depth = 0;
+
+  for (const rawToken of tokens) {
+    const token = rawToken.trim();
+    if (!token) continue;
+
+    const isClosingTag = /^<\//.test(token);
+    if (isClosingTag) depth = Math.max(0, depth - 1);
+    if (!wrapTextNodes && !token.startsWith('<') && lines.length) {
+      lines[lines.length - 1] += token;
+    } else {
+      pushLine(token, lines, depth, indent);
+    }
+    if (isXmlOpeningTag(token)) depth += 1;
+  }
+
+  const formatted = lines.join('\n');
+  return preserveBlankLines ? restoreBlankLines(input, formatted) : formatted;
+}
+
+function minifyXml(input: string): string {
+  return input.replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim();
+}
+
 function prettifyPython(input: string, indent: string, preserveBlankLines: boolean): string {
   const lines: string[] = [];
   let depth = 0;
@@ -171,6 +222,13 @@ function normalizeHtml(input: string, options: CodeFormatterOptions): string {
   if (options.htmlVoidTagStyle === 'xhtml') {
     output = output.replace(/<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>/]*?)>/gi, '<$1$2 />');
   }
+  return output;
+}
+
+function normalizeXml(input: string, options: CodeFormatterOptions): string {
+  let output = input;
+  if (options.xmlCollapseWhitespace) output = output.replace(/>\s+</g, '><').replace(/\s+/g, ' ');
+  if (options.xmlSelfCloseEmptyTags) output = output.replace(/<([\w:.-]+)((?:\s+[^<>]*?)?)>\s*<\/\1>/g, '<$1$2/>');
   return output;
 }
 
@@ -298,6 +356,26 @@ function validateHtml(input: string): string {
   return stack.length ? `Missing closing </${stack.at(-1)}>.` : '';
 }
 
+function validateXml(input: string): string {
+  const stack: string[] = [];
+  const tags = input.match(XML_TAG_PATTERN) ?? [];
+
+  for (const tag of tags) {
+    if (/^<!\[CDATA\[/.test(tag) || /^<!--/.test(tag) || /^<\?/.test(tag) || /^<!DOCTYPE/i.test(tag) || /\/>$/.test(tag)) continue;
+
+    const name = tag.match(/^<\/?\s*([\w:.-]+)/)?.[1];
+    if (!name) continue;
+
+    if (tag.startsWith('</')) {
+      if (stack.pop() !== name) return `Unexpected closing </${name}>.`;
+    } else {
+      stack.push(name);
+    }
+  }
+
+  return stack.length ? `Missing closing </${stack.at(-1)}>.` : '';
+}
+
 function tokenizeCode(input: string, punctuation: string): string[] {
   const tokens: string[] = [];
   let buffer = '';
@@ -336,6 +414,12 @@ function removeJsComments(input: string): string {
 
 function isVoidHtmlTag(tag: string): boolean {
   return /<\s*(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i.test(tag);
+}
+
+function isXmlOpeningTag(token: string): boolean {
+  if (!token.startsWith('<') || token.startsWith('</')) return false;
+  if (token.startsWith('<!') || token.startsWith('<?')) return false;
+  return !token.endsWith('/>');
 }
 
 function pushLine(value: string, lines: string[], depth: number, indent: string): void {

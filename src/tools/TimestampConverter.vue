@@ -8,6 +8,7 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
 import {
   createDateFromParts,
   formatIcalendarDateTime,
@@ -39,6 +40,11 @@ const second = ref(initialParts.second.toString());
 const millisecond = ref(initialParts.millisecond.toString());
 const activeError = ref('');
 let isSyncing = false;
+
+// Only the display preferences persist; the date/time being edited always starts at "now" —
+// restoring a stale in-progress date, plus the Date-valued refs above not being JSON-safe,
+// made restoring the full builder/picker state more trouble than it's worth here.
+usePersistedToolState('timestamp-converter', { displayZone, parseFormat });
 
 const zoneOptions: Array<{ label: string; value: TimestampDisplayZone }> = [
   { label: 'Local', value: 'local' },

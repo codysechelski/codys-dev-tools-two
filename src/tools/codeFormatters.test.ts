@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatHtml, formatJavaScript, formatLua, formatPython } from './codeFormatters';
+import { formatHtml, formatJavaScript, formatLua, formatPython, formatXml } from './codeFormatters';
 
 const options = { mode: 'formatted' as const, indentation: '2-spaces' as const, preserveComments: true };
 
@@ -48,6 +48,50 @@ describe('formatHtml', () => {
 
     expect(result.output).toContain('<img src="x" />');
     expect(result.output).toContain('<p>Hello world');
+  });
+});
+
+describe('formatXml', () => {
+  it('formats nested XML', () => {
+    const result = formatXml('<root><child>Hello</child></root>', options);
+    expect(result.error).toBe('');
+    expect(result.output).toContain('<root>\n  <child>\n    Hello');
+  });
+
+  it('reports mismatched XML tags', () => {
+    expect(formatXml('<root><child>Bad</root>', options).error).toBe('Unexpected closing </root>.');
+  });
+
+  it('minifies XML by collapsing whitespace between tags', () => {
+    const result = formatXml('<root>  <child>Hello</child>  </root>', { ...options, mode: 'compact' });
+    expect(result.output).toBe('<root><child>Hello</child></root>');
+  });
+
+  it('can self-close empty elements', () => {
+    const result = formatXml('<root><empty></empty><child>Text</child></root>', { ...options, xmlSelfCloseEmptyTags: true });
+    expect(result.output).toContain('<empty/>');
+  });
+
+  it('can collapse whitespace before formatting', () => {
+    const result = formatXml('<root>  <child>Hello   world</child>  </root>', { ...options, xmlCollapseWhitespace: true });
+    expect(result.output).toContain('Hello world');
+    expect(result.output).not.toContain('Hello   world');
+  });
+
+  it('can remove XML comments', () => {
+    const result = formatXml('<!-- note -->\n<root/>', { ...options, preserveComments: false });
+    expect(result.output).toBe('<root/>');
+  });
+
+  it('preserves XML comments by default', () => {
+    const result = formatXml('<!-- note --><root/>', options);
+    expect(result.output).toBe('<!-- note -->\n<root/>');
+  });
+
+  it('treats CDATA sections as atomic, ignoring markup-like characters inside them', () => {
+    const result = formatXml('<root><![CDATA[<not-a-tag>]]></root>', options);
+    expect(result.error).toBe('');
+    expect(result.output).toContain('<![CDATA[<not-a-tag>]]>');
   });
 });
 

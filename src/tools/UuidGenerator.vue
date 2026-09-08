@@ -5,12 +5,15 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
 import { clampCount, generateUuids } from './uuidGenerator';
 
 const countInput = ref('5');
 const uppercase = ref(false);
 const removeHyphens = ref(false);
 const uuids = ref(generateUuids({ count: 5, uppercase: false, removeHyphens: false }));
+
+usePersistedToolState('uuid-generator', { countInput, uppercase, removeHyphens });
 
 const output = computed(() => uuids.value.join('\n'));
 const countOptions = [

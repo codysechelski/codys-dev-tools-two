@@ -6,6 +6,7 @@ import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
 import {
   ALL_UNICODE_BLOCK_VALUE,
   MAX_ALL_SEARCH_RESULTS,
@@ -18,6 +19,8 @@ import {
 const selectedBlock = ref('basic-latin');
 const search = ref('');
 const selectedCharacter = ref<UnicodeCharacterInfo | null>(null);
+
+usePersistedToolState('unicode-character-map', { selectedBlock, search });
 
 const blockOptions = [{ label: 'All', value: ALL_UNICODE_BLOCK_VALUE }, ...unicodeBlocks.map((block) => ({ label: block.label, value: block.value }))];
 const query = computed(() => search.value.trim());

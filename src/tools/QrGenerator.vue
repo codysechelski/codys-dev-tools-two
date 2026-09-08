@@ -8,6 +8,7 @@ import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
 import {
   buildQrPayload,
   createDefaultQrValues,
@@ -33,6 +34,10 @@ const lightColor = ref('#ffffff');
 const values = ref(createDefaultQrValues());
 const eventStartDate = ref<Date | null>(null);
 const eventEndDate = ref<Date | null>(null);
+
+// Calendar event dates/times are excluded: they're Date-valued (not JSON-safe) and are
+// re-derived into `values.eventStart`/`eventEnd` by immediate watchers below regardless.
+usePersistedToolState('qr-generator', { schema, outputFormat, errorCorrectionLevel, margin, darkColor, lightColor, values });
 const renderedQr = ref('');
 const renderError = ref('');
 const preview = ref<HTMLElement | null>(null);

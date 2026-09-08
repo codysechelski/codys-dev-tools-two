@@ -5,16 +5,30 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultPreserveBlankLines, defaultPreserveComments } from '@/formatterDefaults';
 import { formatJavaScript, type CodeIndentation, type CodeOutputMode } from './codeFormatters';
 
 const input = ref(`function greet(name){const message='Hello, '+name;return message;}`);
 const outputMode = ref<CodeOutputMode>('formatted');
-const indentation = ref<CodeIndentation>('2-spaces');
-const preserveComments = ref(true);
-const preserveBlankLines = ref(false);
+const indentation = ref<CodeIndentation>(defaultIndentStyle.value);
+const preserveComments = ref(defaultPreserveComments.value);
+const preserveBlankLines = ref(defaultPreserveBlankLines.value);
 const semicolons = ref<'preserve' | 'add' | 'remove'>('preserve');
 const quoteStyle = ref<'preserve' | 'single' | 'double'>('preserve');
 const trailingCommas = ref<'preserve' | 'remove'>('preserve');
+
+usePersistedToolState('javascript-formatter', {
+  input,
+  outputMode,
+  indentation,
+  preserveComments,
+  preserveBlankLines,
+  semicolons,
+  quoteStyle,
+  trailingCommas,
+});
+
 const result = computed(() =>
   formatJavaScript(input.value, {
     mode: outputMode.value,

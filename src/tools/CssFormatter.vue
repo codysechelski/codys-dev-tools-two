@@ -5,15 +5,19 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultPreserveComments, defaultSortKeys } from '@/formatterDefaults';
 import { formatCss, type CssIndentation, type CssOutputMode } from './cssFormatter';
 
 const input = ref(`.card{display:grid;gap:1rem;color:#e5e7eb;background:rgba(7,10,24,.78)}
 
 @media (max-width: 720px){.card{grid-template-columns:1fr}}`);
 const outputMode = ref<CssOutputMode>('expanded');
-const indentation = ref<CssIndentation>('2-spaces');
-const sortDeclarations = ref(false);
-const preserveComments = ref(true);
+const indentation = ref<CssIndentation>(defaultIndentStyle.value);
+const sortDeclarations = ref(defaultSortKeys.value);
+const preserveComments = ref(defaultPreserveComments.value);
+
+usePersistedToolState('css-formatter', { input, outputMode, indentation, sortDeclarations, preserveComments });
 
 const result = computed(() =>
   formatCss(input.value, {

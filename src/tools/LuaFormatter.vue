@@ -5,13 +5,18 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultPreserveBlankLines, defaultPreserveComments } from '@/formatterDefaults';
 import { formatLua, type CodeIndentation } from './codeFormatters';
 
 const input = ref(`local function greet(name)\nlocal message = "Hello, " .. name\nreturn message\nend`);
-const indentation = ref<CodeIndentation>('2-spaces');
-const preserveComments = ref(true);
-const preserveBlankLines = ref(false);
+const indentation = ref<CodeIndentation>(defaultIndentStyle.value);
+const preserveComments = ref(defaultPreserveComments.value);
+const preserveBlankLines = ref(defaultPreserveBlankLines.value);
 const normalizeIndentation = ref(true);
+
+usePersistedToolState('lua-formatter', { input, indentation, preserveComments, preserveBlankLines, normalizeIndentation });
+
 const result = computed(() =>
   formatLua(input.value, {
     mode: 'formatted',

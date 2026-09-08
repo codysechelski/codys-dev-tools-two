@@ -4,12 +4,16 @@ import DataList from '@/components/DataList.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultCaseSensitive } from '@/formatterDefaults';
 import { analyzeText } from './textAnalyzer';
 
 const input = ref(`Cody's Dev Tools is a focused desktop-style utility app for developers.
 
 Paste long-form text here to analyze paragraphs, words, readability, and repeated terms. The word frequency list updates as you type.`);
-const caseSensitive = ref(false);
+const caseSensitive = ref(defaultCaseSensitive.value);
+
+usePersistedToolState('text-analyzer', { input, caseSensitive });
 
 const analysis = computed(() => analyzeText(input.value, caseSensitive.value));
 const summaryStats = computed(() => [

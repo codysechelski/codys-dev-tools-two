@@ -6,6 +6,7 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
 import { buildCronExpression, parseCronExpression } from './cronExpression';
 
 type CronPreset = 'custom' | 'every-minute' | 'hourly' | 'weekdays-9' | 'monthly';
@@ -19,6 +20,8 @@ const month = ref('*');
 const dayOfWeek = ref('mon-fri');
 let isSyncingFields = false;
 let isApplyingPreset = false;
+
+usePersistedToolState('cron-expression-tool', { expression, preset, minute, hour, dayOfMonth, month, dayOfWeek });
 
 const parsed = computed(() => parseCronExpression(expression.value));
 const nextRuns = computed(() => parsed.value.nextRuns.map((date) => formatRunDate(date)));

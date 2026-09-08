@@ -5,16 +5,30 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultPreserveBlankLines, defaultPreserveComments } from '@/formatterDefaults';
 import { formatHtml, type CodeIndentation, type CodeOutputMode } from './codeFormatters';
 
 const input = ref(`<main><h1>Hello</h1><p>Paste HTML here.</p></main>`);
 const outputMode = ref<CodeOutputMode>('formatted');
-const indentation = ref<CodeIndentation>('2-spaces');
-const preserveComments = ref(true);
-const preserveBlankLines = ref(false);
+const indentation = ref<CodeIndentation>(defaultIndentStyle.value);
+const preserveComments = ref(defaultPreserveComments.value);
+const preserveBlankLines = ref(defaultPreserveBlankLines.value);
 const wrapTextNodes = ref(true);
 const collapseWhitespace = ref(false);
 const voidTagStyle = ref<'preserve' | 'xhtml'>('preserve');
+
+usePersistedToolState('html-formatter', {
+  input,
+  outputMode,
+  indentation,
+  preserveComments,
+  preserveBlankLines,
+  wrapTextNodes,
+  collapseWhitespace,
+  voidTagStyle,
+});
+
 const result = computed(() =>
   formatHtml(input.value, {
     mode: outputMode.value,

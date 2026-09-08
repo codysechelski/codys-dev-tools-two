@@ -6,6 +6,7 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
 import { detectDelimiter, formatStringTemplate, type InputDelimiter, type JoinToken } from './stringTemplateFormatter';
 
 const input = ref('1,one\n2,two');
@@ -20,6 +21,19 @@ const staticTextAfter = ref('');
 const joinWith = ref<JoinToken>('lf');
 const showDelimiterAutoBadge = ref(false);
 let delimiterBadgeTimeout: number | undefined;
+
+usePersistedToolState('string-template-formatter', {
+  input,
+  template,
+  delimiter,
+  customDelimiter,
+  skipFirstLine,
+  trimCells,
+  lineEnding,
+  staticTextBefore,
+  staticTextAfter,
+  joinWith,
+});
 
 const delimiterOptions: Array<{ label: string; value: InputDelimiter }> = [
   { label: 'Comma', value: 'comma' },

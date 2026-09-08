@@ -5,6 +5,7 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
 import { transformUrl, type UrlTransformMode } from './urlEncoderDecoder';
 
 const input = ref('https://example.com/search?q=Cody\'s Dev Tools#top');
@@ -12,6 +13,8 @@ const mode = ref<UrlTransformMode>('encode');
 const component = ref(false);
 const formSpaces = ref(false);
 const rfc3986 = ref(false);
+
+usePersistedToolState('url-encoder-decoder', { input, mode, component, formSpaces, rfc3986 });
 
 const modeOptions: Array<{ label: string; value: UrlTransformMode }> = [
   { label: 'Encode', value: 'encode' },

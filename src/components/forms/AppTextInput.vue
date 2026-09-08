@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import HelpPopover from '@/components/HelpPopover.vue';
+import AppIcon from '@/components/AppIcon.vue';
+import type { IconName } from '@/icons';
 
 const props = withDefaults(
   defineProps<{
@@ -19,9 +21,12 @@ const props = withDefaults(
     transformInput?: (value: string) => string;
     allowedCharacters?: RegExp;
     filter?: 'phone';
+    icon?: IconName;
+    iconPosition?: 'start' | 'end';
   }>(),
   {
     type: 'text',
+    iconPosition: 'start',
   },
 );
 
@@ -88,22 +93,24 @@ function isAllowedCharacter(character: string): boolean {
       @change="handleChange"
       @input="handleInput"
     />
-    <input
-      v-else
-      :type="type"
-      :min="min"
-      :max="max"
-      :step="step"
-      :inputmode="inputMode"
-      :placeholder="placeholder"
-      :value="modelValue"
-      :aria-label="hideLabel ? label : undefined"
-      :aria-invalid="displayedError ? 'true' : undefined"
-      @beforeinput="handleBeforeInput"
-      @blur="handleBlur"
-      @change="handleChange"
-      @input="handleInput"
-    />
+    <span v-else class="form-text-input__control" :class="{ [`form-text-input__control--icon-${iconPosition}`]: icon }">
+      <AppIcon v-if="icon" :name="icon" class="form-text-input__icon" />
+      <input
+        :type="type"
+        :min="min"
+        :max="max"
+        :step="step"
+        :inputmode="inputMode"
+        :placeholder="placeholder"
+        :value="modelValue"
+        :aria-label="hideLabel ? label : undefined"
+        :aria-invalid="displayedError ? 'true' : undefined"
+        @beforeinput="handleBeforeInput"
+        @blur="handleBlur"
+        @change="handleChange"
+        @input="handleInput"
+      />
+    </span>
     <span v-if="displayedError" class="form-text-input__error">{{ displayedError }}</span>
   </label>
 </template>

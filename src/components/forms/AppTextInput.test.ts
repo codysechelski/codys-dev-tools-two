@@ -73,6 +73,43 @@ describe('AppTextInput', () => {
     expect(wrapper.text()).not.toContain('Enter a valid URL.');
   });
 
+  it('renders a leading icon by default', () => {
+    const wrapper = mount(AppTextInput, {
+      props: {
+        modelValue: '',
+        label: 'Search',
+        icon: 'search',
+      },
+    });
+
+    expect(wrapper.find('.form-text-input__control--icon-start .form-text-input__icon').exists()).toBe(true);
+  });
+
+  it('renders a trailing icon when iconPosition is end', () => {
+    const wrapper = mount(AppTextInput, {
+      props: {
+        modelValue: '',
+        label: 'Search',
+        icon: 'search',
+        iconPosition: 'end',
+      },
+    });
+
+    expect(wrapper.find('.form-text-input__control--icon-end .form-text-input__icon').exists()).toBe(true);
+    expect(wrapper.find('.form-text-input__control--icon-start').exists()).toBe(false);
+  });
+
+  it('omits the icon wrapper class when no icon is given', () => {
+    const wrapper = mount(AppTextInput, {
+      props: {
+        modelValue: '',
+        label: 'Search',
+      },
+    });
+
+    expect(wrapper.find('.form-text-input__icon').exists()).toBe(false);
+  });
+
   it('filters and transforms phone input', async () => {
     const wrapper = mount(AppTextInput, {
       props: {

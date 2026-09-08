@@ -4,11 +4,14 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
 import { transformHtmlEntities, type HtmlTransformMode } from './htmlEncoderDecoder';
 
 const input = ref('<p class="note">Cody\'s Dev Tools</p>');
 const mode = ref<HtmlTransformMode>('encode');
 const encodeAllCharacters = ref(false);
+
+usePersistedToolState('html-encoder-decoder', { input, mode, encodeAllCharacters });
 
 const modeOptions: Array<{ label: string; value: HtmlTransformMode }> = [
   { label: 'Encode', value: 'encode' },

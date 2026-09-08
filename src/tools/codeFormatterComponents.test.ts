@@ -5,6 +5,7 @@ import HtmlFormatter from './HtmlFormatter.vue';
 import JavaScriptFormatter from './JavaScriptFormatter.vue';
 import LuaFormatter from './LuaFormatter.vue';
 import PythonFormatter from './PythonFormatter.vue';
+import XmlFormatter from './XmlFormatter.vue';
 
 describe('code formatter tools', () => {
   it('renders JavaScript editors with JavaScript syntax mode', () => {
@@ -30,6 +31,18 @@ describe('code formatter tools', () => {
     expect(wrapper.text()).toContain('Collapse whitespace');
     expect(editors[0].props('language')).toBe('html');
     expect(editors[1].props('language')).toBe('html');
+  });
+
+  it('renders XML editors with XML syntax mode', () => {
+    const wrapper = mount(XmlFormatter);
+    const editors = wrapper.findAllComponents(TextEditor);
+
+    expect(wrapper.text()).toContain('Valid XML');
+    expect(wrapper.text()).toContain('Self-close empty tags');
+    expect(wrapper.text()).toContain('Wrap text nodes');
+    expect(wrapper.text()).toContain('Collapse whitespace');
+    expect(editors[0].props('language')).toBe('xml');
+    expect(editors[1].props('language')).toBe('xml');
   });
 
   it('renders Python editors with Python syntax mode', () => {

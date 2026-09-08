@@ -5,6 +5,8 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
 import ToolbarStatusBadge from '@/components/ToolbarStatusBadge.vue';
+import { usePersistedToolState } from '@/toolState';
+import { defaultIndentStyle, defaultSortKeys } from '@/formatterDefaults';
 import { formatJson, type JsonOutputMode } from './jsonFormatter';
 
 const input = ref(`{
@@ -13,8 +15,10 @@ const input = ref(`{
   "offlineReady": true
 }`);
 const outputMode = ref<JsonOutputMode>('formatted');
-const indentation = ref<'2-spaces' | '4-spaces' | 'tabs'>('2-spaces');
-const sortKeys = ref(false);
+const indentation = ref<'2-spaces' | '4-spaces' | 'tabs'>(defaultIndentStyle.value);
+const sortKeys = ref(defaultSortKeys.value);
+
+usePersistedToolState('json-formatter', { input, outputMode, indentation, sortKeys });
 
 const result = computed(() =>
   formatJson(input.value, {

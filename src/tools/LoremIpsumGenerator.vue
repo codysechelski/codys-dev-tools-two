@@ -7,6 +7,7 @@ import AppToggle from '@/components/forms/AppToggle.vue';
 import HtmlPreview from '@/components/HtmlPreview.vue';
 import TextEditor from '@/components/TextEditor.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { usePersistedToolState } from '@/toolState';
 import { generateLoremIpsum, stripHtml, type CountMode, type LoremUnit } from './loremIpsum';
 
 const varyEndingPunctuation = ref(false);
@@ -21,6 +22,21 @@ const wordCount = ref('11');
 const termWordCountMode = ref<CountMode>('exactly');
 const termWordCount = ref('2');
 const refreshSeed = ref(Date.now());
+
+usePersistedToolState('lorem-ipsum-generator', {
+  varyEndingPunctuation,
+  varySentencePunctuation,
+  includeCommonHtmlTags,
+  unitCount,
+  unit,
+  sentenceCountMode,
+  sentenceCount,
+  wordCountMode,
+  wordCount,
+  termWordCountMode,
+  termWordCount,
+  refreshSeed,
+});
 
 const countModeOptions: Array<{ label: string; value: CountMode }> = [
   { label: 'about', value: 'about' },
