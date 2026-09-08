@@ -1,63 +1,114 @@
-<template>
-  <section class="tool-panel attributions-panel">
-    <p class="eyebrow">Open Source</p>
-    <h2>Attributions</h2>
-    <p>
-      This app includes open-source software. Package license files are included in installed dependencies and packaged app
-      metadata where supported by the build tooling.
-    </p>
+<script setup lang="ts">
+import { computed } from 'vue';
+import AppCard from '@/components/AppCard.vue';
+import AppIcon from '@/components/AppIcon.vue';
+import type { IconName } from '@/icons';
 
-    <div class="attribution-list">
-      <article>
-        <strong>CodeMirror</strong>
-        <span>MIT License</span>
-        <p>Used for the shared text editor, line numbers, indentation behavior, and syntax highlighting.</p>
-      </article>
-      <article>
-        <strong>@codemirror/lang-html</strong>
-        <span>MIT License</span>
-        <p>Used for HTML and XML syntax highlighting in the HTML Encoder/Decoder.</p>
-      </article>
-      <article>
-        <strong>Vue</strong>
-        <span>MIT License</span>
-        <p>Used for the application UI.</p>
-      </article>
-      <article>
-        <strong>Electron</strong>
-        <span>MIT License</span>
-        <p>Used for macOS and Windows desktop app packaging and runtime.</p>
-      </article>
-      <article>
-        <strong>YAML</strong>
-        <span>ISC License</span>
-        <p>Used to parse and stringify YAML for the JSON/YAML Converter.</p>
-      </article>
-      <article>
-        <strong>node-qrcode</strong>
-        <span>MIT License</span>
-        <p>Used to generate PNG and SVG QR codes.</p>
-      </article>
-      <article>
-        <strong>@vuepic/vue-datepicker</strong>
-        <span>MIT License</span>
-        <p>Used for the Timestamp Converter date and time picker.</p>
-      </article>
-      <article>
-        <strong>unicode-name</strong>
-        <span>MIT License</span>
-        <p>Used to resolve Unicode character names for the Unicode Character Map.</p>
-      </article>
-      <article>
-        <strong>unicode-properties</strong>
-        <span>MIT License</span>
-        <p>Used to resolve Unicode general categories for the Unicode Character Map.</p>
-      </article>
-      <article>
-        <strong>@unicode/unicode-17.0.0</strong>
-        <span>MIT License</span>
-        <p>Used to provide the full Unicode block list for the Unicode Character Map.</p>
-      </article>
-    </div>
-  </section>
+interface Attribution {
+  name: string;
+  license: string;
+  description: string;
+  repoUrl: string;
+}
+
+const attributions: Attribution[] = [
+  {
+    name: '@unicode/unicode-17.0.0',
+    license: 'MIT License',
+    description: 'Provides the full Unicode block and character data used by the Unicode Character Map.',
+    repoUrl: 'https://github.com/node-unicode/unicode-17.0.0',
+  },
+  {
+    name: '@vuepic/vue-datepicker',
+    license: 'MIT License',
+    description: 'Powers the date and time picker in the Timestamp Converter.',
+    repoUrl: 'https://github.com/Vuepic/vue-datepicker',
+  },
+  {
+    name: 'CodeMirror',
+    license: 'MIT License',
+    description:
+      'Powers the shared text editor: line numbers, indentation, and syntax highlighting for JavaScript, JSON, Python, HTML, CSS, XML, and Lua.',
+    repoUrl: 'https://github.com/codemirror/dev',
+  },
+  {
+    name: 'Electron',
+    license: 'MIT License',
+    description: 'Packages and runs the macOS and Windows desktop app.',
+    repoUrl: 'https://github.com/electron/electron',
+  },
+  {
+    name: 'fast-xml-parser',
+    license: 'MIT License',
+    description: 'Parses and builds XML for the JSON/XML Converter.',
+    repoUrl: 'https://github.com/NaturalIntelligence/fast-xml-parser',
+  },
+  {
+    name: 'Lezer',
+    license: 'MIT License',
+    description: 'Supplies the syntax-highlighting tags used by the shared text editor.',
+    repoUrl: 'https://github.com/lezer-parser/highlight',
+  },
+  {
+    name: 'marked',
+    license: 'MIT License',
+    description: 'Renders the Markdown Table Generator\'s live table preview.',
+    repoUrl: 'https://github.com/markedjs/marked',
+  },
+  {
+    name: 'qrcode',
+    license: 'MIT License',
+    description: 'Generates PNG and SVG QR codes.',
+    repoUrl: 'https://github.com/soldair/node-qrcode',
+  },
+  {
+    name: 'unicode-name',
+    license: 'MIT License',
+    description: 'Resolves Unicode character names for the Unicode Character Map.',
+    repoUrl: 'https://github.com/janlelis/unicode-name.js',
+  },
+  {
+    name: 'unicode-properties',
+    license: 'MIT License',
+    description: 'Resolves Unicode general categories for the Unicode Character Map.',
+    repoUrl: 'https://github.com/devongovett/unicode-properties',
+  },
+  {
+    name: 'Vue',
+    license: 'MIT License',
+    description: 'Used for the application UI.',
+    repoUrl: 'https://github.com/vuejs/core',
+  },
+  {
+    name: 'YAML',
+    license: 'ISC License',
+    description: 'Parses and stringifies YAML for the JSON/YAML Converter.',
+    repoUrl: 'https://github.com/eemeli/yaml',
+  },
+];
+
+const sortedAttributions = computed(() =>
+  [...attributions].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })),
+);
+
+function iconForRepo(repoUrl: string): IconName {
+  const host = new URL(repoUrl).hostname;
+  if (host === 'github.com') return 'github';
+  if (host === 'bitbucket.org') return 'bitbucket';
+  return 'globe';
+}
+</script>
+
+<template>
+  <div class="attribution-list">
+    <AppCard v-for="attribution in sortedAttributions" :key="attribution.name" :heading="attribution.name" :subheading="attribution.license">
+      <p>{{ attribution.description }}</p>
+      <template #footer>
+        <a class="attribution-list__link" :href="attribution.repoUrl" target="_blank" rel="noopener noreferrer">
+          <AppIcon :name="iconForRepo(attribution.repoUrl)" />
+          View Repository
+        </a>
+      </template>
+    </AppCard>
+  </div>
 </template>
