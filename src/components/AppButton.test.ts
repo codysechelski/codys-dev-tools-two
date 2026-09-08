@@ -50,4 +50,25 @@ describe('AppButton', () => {
 
     expect(wrapper.classes()).toContain('app-button--field');
   });
+
+  it('does not add a size modifier class for the default normal size', () => {
+    const wrapper = mount(AppButton, {
+      slots: {
+        default: 'Save',
+      },
+    });
+
+    expect(wrapper.classes().some((className) => className.startsWith('app-button--size-'))).toBe(false);
+  });
+
+  it('supports xs, sm, lg, and xl size modifiers', () => {
+    for (const size of ['xs', 'sm', 'lg', 'xl'] as const) {
+      const wrapper = mount(AppButton, {
+        props: { size },
+        slots: { default: 'Save' },
+      });
+
+      expect(wrapper.classes()).toContain(`app-button--size-${size}`);
+    }
+  });
 });

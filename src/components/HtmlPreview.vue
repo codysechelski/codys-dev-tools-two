@@ -27,7 +27,7 @@ async function copyFormatted(): Promise<void> {
   <section class="html-preview">
     <header class="html-preview__toolbar">
       <strong>{{ label }}</strong>
-      <AppCopyButton :copy="copyFormatted" :disabled="!html" />
+      <AppCopyButton :copy="copyFormatted" size="sm" :disabled="!html" />
     </header>
     <div class="html-preview__body" v-html="html" />
   </section>

@@ -11,6 +11,7 @@ const props = withDefaults(
     copiedLabel?: string;
     errorLabel?: string;
     variant?: 'primary' | 'secondary' | 'muted' | 'ghost' | 'field';
+    size?: 'xs' | 'sm' | 'normal' | 'lg' | 'xl';
     icon?: IconName;
     disabled?: boolean;
     resetKey?: string | number;
@@ -22,6 +23,7 @@ const props = withDefaults(
     copiedLabel: 'Copied',
     errorLabel: 'Copy failed',
     variant: 'muted',
+    size: 'normal',
     icon: 'copy',
     disabled: false,
     resetKey: undefined,
@@ -126,6 +128,7 @@ async function animateWidthChange(mutate: () => void): Promise<void> {
     class="app-copy-button"
     :ref="setButtonRef"
     :variant="displayVariant"
+    :size="size"
     :icon="displayIcon"
     :disabled="disabled"
     @click="handleClick"
