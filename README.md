@@ -56,7 +56,7 @@ Want to run it from source, or contribute a change? Here's what you need.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 20.19 or newer (see the `engines` field in `package.json`)
+- [Node.js](https://nodejs.org/) 22.22.2 or newer (see the `engines` field in `package.json`)
 - npm (ships with Node)
 
 ### Setup
