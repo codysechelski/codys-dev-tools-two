@@ -177,6 +177,46 @@ describe('TextEditor Load File in Electron', () => {
 
     wrapper.unmount();
   });
+
+  it('exposes scrollToLine to move the cursor and focus a given line', () => {
+    const wrapper = mount(TextEditor, { props: { modelValue: 'a\nb\nc', label: 'Input' }, attachTo: document.body });
+
+    wrapper.vm.scrollToLine(2);
+
+    expect(document.activeElement).toBe(wrapper.find('.cm-content').element);
+
+    wrapper.unmount();
+  });
+
+  it('clamps scrollToLine to the document bounds instead of throwing', () => {
+    const wrapper = mount(TextEditor, { props: { modelValue: 'a\nb\nc', label: 'Input' }, attachTo: document.body });
+
+    expect(() => wrapper.vm.scrollToLine(99)).not.toThrow();
+    expect(() => wrapper.vm.scrollToLine(0)).not.toThrow();
+
+    wrapper.unmount();
+  });
+
+  it('holds the target line highlight, then fades it out and removes it', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    const wrapper = mount(TextEditor, { props: { modelValue: 'a\nb\nc', label: 'Input' }, attachTo: document.body });
+
+    wrapper.vm.scrollToLine(2);
+
+    expect(wrapper.findAll('.cm-line-flash')).toHaveLength(1);
+    expect(wrapper.findAll('.cm-line-flash--fading')).toHaveLength(0);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(wrapper.findAll('.cm-line-flash--fading')).toHaveLength(1);
+
+    vi.advanceTimersByTime(900);
+
+    expect(wrapper.findAll('.cm-line-flash')).toHaveLength(0);
+
+    wrapper.unmount();
+    vi.useRealTimers();
+  });
 });
 
 async function dispatchDrop(file: File): Promise<void> {

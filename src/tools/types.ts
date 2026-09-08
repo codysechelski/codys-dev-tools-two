@@ -9,4 +9,6 @@ export interface ToolDefinition {
   instructions?: string;
   icon: IconName;
   component: Component;
+  /** Extra search terms (aliases, synonyms, format names) matched by the sidebar filter, in addition to the tool name. */
+  keywords?: string[];
 }

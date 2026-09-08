@@ -5,10 +5,11 @@ import { html } from '@codemirror/lang-html';
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { python } from '@codemirror/lang-python';
+import { xml } from '@codemirror/lang-xml';
 import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { StreamLanguage } from '@codemirror/language';
-import { EditorState } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
+import { EditorState, StateEffect, StateField } from '@codemirror/state';
+import { Decoration, type DecorationSet, EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { tags } from '@lezer/highlight';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
@@ -23,7 +24,7 @@ const props = withDefaults(
     modelValue: string;
     label: string;
     description?: string;
-    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'text';
+    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'xml' | 'text';
     readonly?: boolean;
     placeholder?: string;
   }>(),
@@ -65,6 +66,31 @@ const codeHighlightStyle = HighlightStyle.define([
   { tag: tags.invalid, color: 'var(--syntax-invalid)' },
 ]);
 
+const LINE_FLASH_HOLD_MS = 1000; // keep in sync with --duration-flash-hold in src/styles/_tokens.scss
+const LINE_FLASH_FADE_MS = 900; // keep in sync with --duration-flash in src/styles/_tokens.scss
+let lineFlashHoldTimeout: number | undefined;
+let lineFlashFadeTimeout: number | undefined;
+
+const lineFlashMark = Decoration.line({ attributes: { class: 'cm-line-flash' } });
+const lineFlashFadingMark = Decoration.line({ attributes: { class: 'cm-line-flash cm-line-flash--fading' } });
+const setLineFlash = StateEffect.define<{ pos: number; fading: boolean } | null>();
+const lineFlashField = StateField.define<DecorationSet>({
+  create() {
+    return Decoration.none;
+  },
+  update(decorations, tr) {
+    decorations = decorations.map(tr.changes);
+    for (const effect of tr.effects) {
+      if (effect.is(setLineFlash)) {
+        decorations =
+          effect.value === null ? Decoration.none : Decoration.set([(effect.value.fading ? lineFlashFadingMark : lineFlashMark).range(effect.value.pos)]);
+      }
+    }
+    return decorations;
+  },
+  provide: (field) => EditorView.decorations.from(field),
+});
+
 onMounted(() => {
   if (!editorRoot.value) return;
 
@@ -75,6 +101,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  window.clearTimeout(lineFlashHoldTimeout);
+  window.clearTimeout(lineFlashFadeTimeout);
   view.value?.destroy();
 });
 
@@ -93,6 +121,33 @@ watch(
     });
   },
 );
+
+function scrollToLine(lineNumber: number): void {
+  const editor = view.value;
+  if (!editor) return;
+
+  const clampedLine = Math.min(Math.max(lineNumber, 1), editor.state.doc.lines);
+  const line = editor.state.doc.line(clampedLine);
+
+  editor.dispatch({
+    selection: { anchor: line.from, head: line.from },
+    scrollIntoView: true,
+    effects: setLineFlash.of({ pos: line.from, fading: false }),
+  });
+  editor.focus();
+
+  window.clearTimeout(lineFlashHoldTimeout);
+  window.clearTimeout(lineFlashFadeTimeout);
+  lineFlashHoldTimeout = window.setTimeout(() => {
+    view.value?.dispatch({ effects: setLineFlash.of({ pos: line.from, fading: true }) });
+
+    lineFlashFadeTimeout = window.setTimeout(() => {
+      view.value?.dispatch({ effects: setLineFlash.of(null) });
+    }, LINE_FLASH_FADE_MS);
+  }, LINE_FLASH_HOLD_MS);
+}
+
+defineExpose({ scrollToLine });
 
 function clearContents(): void {
   if (props.readonly || !props.modelValue) return;
@@ -174,6 +229,7 @@ function createEditorState(): EditorState {
       keymap.of([indentWithTab]),
       indentUnit.of('  '),
       placeholder(props.placeholder),
+      lineFlashField,
       syntaxHighlighting(codeHighlightStyle),
       EditorState.readOnly.of(props.readonly),
       EditorView.editable.of(!props.readonly),
@@ -188,6 +244,7 @@ function createEditorState(): EditorState {
       props.language === 'javascript' ? javascript() : [],
       props.language === 'lua' ? StreamLanguage.define(lua) : [],
       props.language === 'python' ? python() : [],
+      props.language === 'xml' ? xml() : [],
     ],
   });
 }
@@ -201,12 +258,12 @@ function createEditorState(): EditorState {
         <HelpPopover v-if="description" :text="description" :label="`${label} help`" />
       </span>
       <div class="text-editor__actions">
-        <AppButton v-if="!readonly" variant="muted" icon="fileUpload" @click="openLoadFile">Load File</AppButton>
+        <AppButton v-if="!readonly" variant="muted" size="sm" icon="fileUpload" @click="openLoadFile">Load File</AppButton>
         <slot name="toolbar" />
-        <AppButton v-if="!readonly" variant="muted" icon="eraser" :disabled="!modelValue" @click="clearContents">
+        <AppButton v-if="!readonly" variant="muted" size="sm" icon="eraser" :disabled="!modelValue" @click="clearContents">
           Clear
         </AppButton>
-        <AppCopyButton :value="modelValue" :disabled="!modelValue" />
+        <AppCopyButton :value="modelValue" size="sm" :disabled="!modelValue" />
       </div>
     </header>
 
