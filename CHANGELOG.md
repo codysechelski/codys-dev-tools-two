@@ -1,3 +1,10 @@
+## [0.25.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.1...v0.25.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* **ci:** tell electron-builder to publish real releases, not drafts ([35f8797](https://github.com/codysechelski/codys-dev-tools-two/commit/35f8797972ec4c2e444d217a382df186643e4390))
+
 ## [0.25.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.0...v0.25.1) (2026-09-08)
 
 
