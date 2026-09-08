@@ -153,6 +153,7 @@ function clearContents(): void {
   if (props.readonly || !props.modelValue) return;
 
   emit('update:modelValue', '');
+  view.value?.focus();
 }
 
 function openLoadFile(): void {

@@ -36,11 +36,15 @@ describe('TextEditor', () => {
         modelValue: '{"a":1}',
         label: 'Input',
       },
+      attachTo: document.body,
     });
 
     await wrapper.findAll('button').find((button) => button.text() === 'Clear')?.trigger('click');
 
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['']);
+    expect(document.activeElement).toBe(wrapper.find('.cm-content').element);
+
+    wrapper.unmount();
   });
 
   it('copies the editor contents from the toolbar', async () => {
