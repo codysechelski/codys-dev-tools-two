@@ -1,3 +1,10 @@
+## [0.25.4](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.3...v0.25.4) (2026-09-08)
+
+
+### Bug Fixes
+
+* **attributions:** add Font Awesome Free and Ubuntu Font Family ([4ffc6b3](https://github.com/codysechelski/codys-dev-tools-two/commit/4ffc6b3b7480ec10b468c6e7c33456aee08b3135))
+
 ## [0.25.3](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.2...v0.25.3) (2026-09-08)
 
 
