@@ -2,6 +2,7 @@
   "name": "codys-dev-tools-two",
   "version": "0.23.0",
   "private": true,
+  "author": "Cody Sechelski <codysechelski@gmail.com>",
   "type": "module",
   "main": "out/main/index.js",
   "description": "A cross-platform developer tools app built with Vue, TypeScript, Sass, and Electron.",
@@ -16,7 +17,8 @@
     "build:electron": "npm run typecheck && electron-vite build",
     "dist:mac": "npm run build:electron && electron-builder --mac --universal",
     "dist:win": "npm run build:electron && electron-builder --win --x64",
-    "dist:all": "npm run build:electron && electron-builder --mac --universal --win --x64",
+    "dist:linux": "npm run build:electron && electron-builder --linux --x64",
+    "dist:all": "npm run build:electron && electron-builder --mac --universal --win --x64 --linux --x64",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -81,6 +83,13 @@
       "target": [
         "nsis",
         "zip"
+      ]
+    },
+    "linux": {
+      "category": "Development",
+      "desktopName": "codys-dev-tools.desktop",
+      "target": [
+        "deb"
       ]
     },
     "nsis": {
