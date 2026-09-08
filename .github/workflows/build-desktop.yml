@@ -1,0 +1,42 @@
+name: Build Desktop Apps
+
+# Runs after the Release workflow creates a version tag (e.g. v1.2.3), builds the
+# desktop app for each OS, and uploads the installers to that tag's GitHub Release.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            args: --mac --universal
+          - os: windows-latest
+            args: --win --x64
+          - os: ubuntu-latest
+            args: --linux --x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build:electron
+      - run: npx electron-builder --publish always ${{ matrix.args }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # No code-signing certificate is configured, so tell electron-builder not to
+          # search the CI keychain for one — otherwise the macOS build can fail outright.
+          CSC_IDENTITY_AUTO_DISCOVERY: false

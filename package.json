@@ -3,6 +3,16 @@
   "version": "0.24.0",
   "private": true,
   "author": "Cody Sechelski <codysechelski@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codysechelski/codys-dev-tools-two.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codysechelski/codys-dev-tools-two/issues"
+  },
+  "homepage": "https://github.com/codysechelski/codys-dev-tools-two#readme",
+  "desktopName": "codys-dev-tools.desktop",
   "type": "module",
   "main": "out/main/index.js",
   "description": "A cross-platform developer tools app built with Vue, TypeScript, Sass, and Electron.",
@@ -18,7 +28,7 @@
     "dist:mac": "npm run build:electron && electron-builder --mac --universal",
     "dist:win": "npm run build:electron && electron-builder --win --x64",
     "dist:linux": "npm run build:electron && electron-builder --linux --x64",
-    "dist:all": "npm run build:electron && electron-builder --mac --universal --win --x64 --linux --x64",
+    "dist:all": "npm run build:electron && electron-builder --mac --universal && electron-builder --win --x64 && electron-builder --linux --x64",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -47,6 +57,8 @@
   },
   "devDependencies": {
     "@electron-toolkit/preload": "latest",
+    "@semantic-release/changelog": "^7.0.0",
+    "@semantic-release/git": "^11.0.1",
     "@types/node": "latest",
     "@types/qrcode": "^1.5.6",
     "@vue/test-utils": "^2.5.0",
@@ -56,6 +68,7 @@
     "electron-vite": "latest",
     "jsdom": "^30.0.1",
     "sass": "latest",
+    "semantic-release": "^25.0.9",
     "typescript": "^5.9.2",
     "vite": "latest",
     "vitest": "^4.1.11",
@@ -87,7 +100,7 @@
     },
     "linux": {
       "category": "Development",
-      "desktopName": "codys-dev-tools.desktop",
+      "syncDesktopName": true,
       "target": [
         "deb"
       ]
@@ -95,6 +108,9 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
+    },
+    "publish": {
+      "provider": "github"
     }
   },
   "engines": {
