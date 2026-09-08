@@ -326,6 +326,7 @@ function createWindow(): void {
     minWidth: 900,
     minHeight: 620,
     title: "Cody's Dev Tools",
+    icon: join(__dirname, '../../build/icon.png'),
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     vibrancy: process.platform === 'darwin' ? 'sidebar' : undefined,
     backgroundColor: '#0b1026',
