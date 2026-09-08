@@ -3321,7 +3321,6 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   min-width: 0;
   min-height: 0;
   flex-direction: column;
-  overflow: hidden;
   border: var(--border-hairline) solid rgba(199, 210, 254, 0.15);
   border-radius: var(--radius-xl);
   background: linear-gradient(135deg, rgba(103, 232, 249, 0.032), rgba(167, 139, 250, 0.035)), var(--editor-background);
@@ -3347,6 +3346,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   min-height: 3.4rem;
   padding: var(--space-3) var(--space-4);
   border-bottom: var(--border-hairline) solid rgba(199, 210, 254, 0.12);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   background: rgba(12, 16, 41, 0.74);
 }
 
