@@ -77,6 +77,7 @@
   "build": {
     "appId": "com.codysdevtools.app",
     "productName": "Cody's Dev Tools",
+    "artifactName": "${name}-${version}-${arch}.${ext}",
     "directories": {
       "output": "release"
     },
