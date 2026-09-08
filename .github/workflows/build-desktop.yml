@@ -1,17 +1,24 @@
 name: Build Desktop Apps
 
-# Runs after the Release workflow creates a version tag (e.g. v1.2.3), builds the
-# desktop app for each OS, and uploads the installers to that tag's GitHub Release.
+# Runs after the Release workflow finishes, builds the desktop app for each OS, and
+# uploads the installers to the GitHub Release semantic-release just published.
+#
+# This can't just trigger on `push: tags`, because the tag is pushed by the Release
+# workflow using the default GITHUB_TOKEN — and GitHub deliberately does not let a
+# token-authenticated push from one workflow trigger another (it's an anti-loop
+# safeguard). Chaining via workflow_run sidesteps that without needing a PAT.
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch: {}
 
 permissions:
   contents: write
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     strategy:
       fail-fast: false
       matrix:
@@ -24,17 +31,38 @@ jobs:
             args: --linux --x64
     runs-on: ${{ matrix.os }}
     steps:
+      # No explicit ref: this checks out main's current tip, which by now includes the
+      # version-bump commit and tag the Release workflow just pushed.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Only build if the commit we just checked out is actually a tagged release —
+      # the Release workflow "succeeding" doesn't mean it published anything (most
+      # pushes to main don't warrant a release, e.g. docs/chore commits).
+      - id: check_tag
+        shell: bash
+        run: |
+          if git describe --tags --exact-match HEAD 2>/dev/null; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-node@v4
+        if: steps.check_tag.outputs.should_build == 'true'
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
+        if: steps.check_tag.outputs.should_build == 'true'
 
       - run: npm run build:electron
+        if: steps.check_tag.outputs.should_build == 'true'
+
       - run: npx electron-builder --publish always ${{ matrix.args }}
+        if: steps.check_tag.outputs.should_build == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No code-signing certificate is configured, so tell electron-builder not to
