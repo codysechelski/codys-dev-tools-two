@@ -40,6 +40,11 @@ export function buildHtmlSnippet(dataUrl: string): string {
   return `<img src="${dataUrl}" alt="" />`;
 }
 
+export function estimateDecodedByteLength(base64: string): number {
+  const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+  return Math.max(0, Math.floor((base64.length * 3) / 4) - padding);
+}
+
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
 

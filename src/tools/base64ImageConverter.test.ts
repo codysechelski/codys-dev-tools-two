@@ -99,4 +99,46 @@ describe('Base64ImageConverter', () => {
 
     expect(document.body.textContent).toContain("doesn't decode to a valid image");
   });
+
+  it('swaps a loaded image into the decode input when flipped from encode', async () => {
+    const wrapper = mount(Base64ImageConverter);
+    const file = new File([Uint8Array.from(atob(VALID_PNG_BASE64), (c) => c.charCodeAt(0))], 'test.png', { type: 'image/png' });
+    const input = wrapper.find('input[type="file"]');
+    Object.defineProperty(input.element, 'files', { value: [file] });
+
+    await input.trigger('change');
+    await waitFor(() => !wrapper.find('.text-editor-file-drop').exists());
+
+    await wrapper.find('[aria-label="Swap input and output"]').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[role="combobox"]').text()).toContain('Decode');
+    expect(wrapper.findComponent(TextEditor).props('modelValue')).toContain(VALID_PNG_BASE64);
+  });
+
+  it('swaps a decoded preview into the loaded image when flipped from decode', async () => {
+    const wrapper = mount(Base64ImageConverter);
+
+    await wrapper.find('[role="combobox"]').trigger('click');
+    await wrapper.find('[data-value="decode"]').trigger('click');
+
+    const textarea = wrapper.findComponent(TextEditor);
+    await textarea.vm.$emit('update:modelValue', `data:image/png;base64,${VALID_PNG_BASE64}`);
+    await waitFor(() => wrapper.find('img[alt="Decoded image preview"]').exists());
+
+    await wrapper.find('[aria-label="Swap input and output"]').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[role="combobox"]').text()).toContain('Encode');
+    expect(wrapper.find('.text-editor-file-drop').exists()).toBe(false);
+    expect(wrapper.find('.base64-image-preview__image').attributes('src')).toContain(VALID_PNG_BASE64);
+  });
 });
+
+async function waitFor(predicate: () => boolean, timeoutMs = 2000): Promise<void> {
+  const start = Date.now();
+  while (!predicate()) {
+    if (Date.now() - start > timeoutMs) throw new Error('waitFor timed out');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+}

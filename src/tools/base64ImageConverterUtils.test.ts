@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildCssSnippet, buildDataUrl, buildHtmlSnippet, extensionForMime, formatBytes, parseDataUrl } from './base64ImageConverter';
+import { buildCssSnippet, buildDataUrl, buildHtmlSnippet, estimateDecodedByteLength, extensionForMime, formatBytes, parseDataUrl } from './base64ImageConverter';
 
 describe('base64ImageConverter utilities', () => {
   it('parses a well-formed data URL', () => {
@@ -36,6 +36,12 @@ describe('base64ImageConverter utilities', () => {
     expect(extensionForMime('image/jpeg')).toBe('jpg');
     expect(extensionForMime('image/svg+xml')).toBe('svg');
     expect(extensionForMime('application/octet-stream')).toBe('bin');
+  });
+
+  it('estimates decoded byte length from base64 padding', () => {
+    expect(estimateDecodedByteLength('YWJjZGVm')).toBe(6);
+    expect(estimateDecodedByteLength('YWI=')).toBe(2);
+    expect(estimateDecodedByteLength('iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=')).toBe(68);
   });
 
   it('formats byte counts into human-readable sizes', () => {

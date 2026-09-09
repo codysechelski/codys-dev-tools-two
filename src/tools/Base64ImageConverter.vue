@@ -12,6 +12,7 @@ import {
   buildCssSnippet,
   buildDataUrl,
   buildHtmlSnippet,
+  estimateDecodedByteLength,
   extensionForMime,
   formatBytes,
   parseDataUrl,
@@ -161,6 +162,26 @@ watch(
 const canDownloadDecoded = computed(() => Boolean(decodePreviewUrl.value));
 const isSavingDecoded = ref(false);
 
+function flipMode(): void {
+  if (mode.value === 'encode') {
+    if (dataUrl.value) decodeInput.value = dataUrl.value;
+    mode.value = 'decode';
+    return;
+  }
+
+  if (decodePreviewUrl.value) {
+    const parsed = parseDataUrl(decodePreviewUrl.value);
+    const mime = parsed?.mime ?? decodeAssumedMime.value;
+    fileName.value = `decoded-image.${extensionForMime(mime)}`;
+    fileSize.value = parsed ? estimateDecodedByteLength(parsed.base64) : 0;
+    dataUrl.value = decodePreviewUrl.value;
+    imageWidth.value = decodedWidth.value;
+    imageHeight.value = decodedHeight.value;
+    encodeError.value = '';
+  }
+  mode.value = 'encode';
+}
+
 async function downloadDecodedImage(): Promise<void> {
   if (!decodePreviewUrl.value) return;
 
@@ -198,6 +219,7 @@ async function downloadDecodedImage(): Promise<void> {
   <section class="base64-image-tool">
     <ToolToolbar>
       <AppSelect v-model="mode" label="Mode" :options="modeOptions" />
+      <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap input and output" @click="flipMode" />
       <AppSelect
         v-if="mode === 'decode'"
         v-model="decodeAssumedMime"
