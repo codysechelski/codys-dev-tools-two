@@ -1,3 +1,10 @@
+# [0.31.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.30.1...v0.31.0) (2026-09-09)
+
+
+### Features
+
+* **windows:** replace native title/menu bar with a themed custom one ([acd0c11](https://github.com/codysechelski/codys-dev-tools-two/commit/acd0c11099d70f4a16f67724fedf4d9905da9536))
+
 ## [0.30.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.30.0...v0.30.1) (2026-09-09)
 
 
