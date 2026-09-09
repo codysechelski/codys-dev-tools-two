@@ -29,12 +29,15 @@ const props = withDefaults(
     placeholder?: string;
     /** Character ranges (offsets into modelValue) to visually highlight, e.g. regex matches. */
     highlightRanges?: Array<{ from: number; to: number }>;
+    /** Full-width line backgrounds to apply, e.g. added/removed rows in the diff tool. */
+    highlightLines?: Array<{ line: number; className: string }>;
   }>(),
   {
     language: 'text',
     readonly: false,
     placeholder: '',
     highlightRanges: () => [],
+    highlightLines: () => [],
   },
 );
 
@@ -121,6 +124,33 @@ function buildHighlightDecorations(ranges: Array<{ from: number; to: number }>, 
   return Decoration.set(marks, true);
 }
 
+const setHighlightLines = StateEffect.define<Array<{ line: number; className: string }>>();
+const highlightLinesField = StateField.define<DecorationSet>({
+  create(state) {
+    return buildLineDecorations(props.highlightLines, state);
+  },
+  update(decorations, tr) {
+    decorations = decorations.map(tr.changes);
+    for (const effect of tr.effects) {
+      if (effect.is(setHighlightLines)) {
+        decorations = buildLineDecorations(effect.value, tr.state);
+      }
+    }
+    return decorations;
+  },
+  provide: (field) => EditorView.decorations.from(field),
+});
+
+function buildLineDecorations(entries: Array<{ line: number; className: string }>, state: EditorState): DecorationSet {
+  const totalLines = state.doc.lines;
+  const marks = entries
+    .filter((entry) => entry.line >= 1 && entry.line <= totalLines)
+    .sort((a, b) => a.line - b.line)
+    .map((entry) => Decoration.line({ class: entry.className }).range(state.doc.line(entry.line).from));
+
+  return Decoration.set(marks, true);
+}
+
 onMounted(() => {
   if (!editorRoot.value) return;
 
@@ -156,6 +186,14 @@ watch(
   () => props.highlightRanges,
   (ranges) => {
     view.value?.dispatch({ effects: setHighlightRanges.of(ranges) });
+  },
+  { deep: true },
+);
+
+watch(
+  () => props.highlightLines,
+  (lines) => {
+    view.value?.dispatch({ effects: setHighlightLines.of(lines) });
   },
   { deep: true },
 );
@@ -285,6 +323,7 @@ function createEditorState(): EditorState {
       placeholder(props.placeholder),
       lineFlashField,
       highlightRangesField,
+      highlightLinesField,
       syntaxHighlighting(codeHighlightStyle),
       EditorState.readOnly.of(props.readonly),
       EditorView.editable.of(!props.readonly),

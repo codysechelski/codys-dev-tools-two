@@ -32,6 +32,12 @@ const attributions: Attribution[] = [
     repoUrl: 'https://github.com/codemirror/dev',
   },
   {
+    name: 'diff',
+    license: 'BSD-3-Clause License',
+    description: 'Computes the line-level differences shown by the Diff Tool.',
+    repoUrl: 'https://github.com/kpdecker/jsdiff',
+  },
+  {
     name: 'Electron',
     license: 'MIT License',
     description: 'Packages and runs the macOS and Windows desktop app.',

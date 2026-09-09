@@ -243,6 +243,36 @@ describe('TextEditor Load File in Electron', () => {
     wrapper.unmount();
   });
 
+  it('renders highlight lines as full-line decorations with the given class and updates them when the prop changes', async () => {
+    const wrapper = mount(TextEditor, {
+      props: { modelValue: 'a\nb\nc', label: 'Input', highlightLines: [{ line: 2, className: 'cm-diff-line-added' }] },
+      attachTo: document.body,
+    });
+
+    expect(wrapper.findAll('.cm-diff-line-added')).toHaveLength(1);
+
+    await wrapper.setProps({
+      highlightLines: [
+        { line: 1, className: 'cm-diff-line-removed' },
+        { line: 3, className: 'cm-diff-line-added' },
+      ],
+    });
+
+    expect(wrapper.findAll('.cm-diff-line-removed')).toHaveLength(1);
+    expect(wrapper.findAll('.cm-diff-line-added')).toHaveLength(1);
+
+    wrapper.unmount();
+  });
+
+  it('ignores out-of-bounds highlight lines instead of throwing', () => {
+    expect(() =>
+      mount(TextEditor, {
+        props: { modelValue: 'a\nb', label: 'Input', highlightLines: [{ line: 0, className: 'cm-diff-line-added' }, { line: 99, className: 'cm-diff-line-removed' }] },
+        attachTo: document.body,
+      }),
+    ).not.toThrow();
+  });
+
   it('holds the target line highlight, then fades it out and removes it', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const wrapper = mount(TextEditor, { props: { modelValue: 'a\nb\nc', label: 'Input' }, attachTo: document.body });

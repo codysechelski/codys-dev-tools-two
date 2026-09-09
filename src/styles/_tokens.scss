@@ -106,6 +106,12 @@ $easings: (
   --highlight-range-border: rgba(120, 53, 15, 0.9);
   --highlight-range-text: #1c1300;
 
+  // Full-line backgrounds for the Diff Tool's added/removed rows.
+  --diff-added-background: rgba(34, 197, 94, 0.16);
+  --diff-added-border: rgba(34, 197, 94, 0.55);
+  --diff-removed-background: rgba(244, 63, 94, 0.16);
+  --diff-removed-border: rgba(244, 63, 94, 0.55);
+
   // Checkerboard used to represent a transparent background (e.g. the QR preview).
   --checkerboard-base: #2b2d33;
   --checkerboard-tile: rgba(255, 255, 255, 0.06);

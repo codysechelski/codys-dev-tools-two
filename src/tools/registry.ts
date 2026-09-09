@@ -5,6 +5,7 @@ import Base64ImageConverter from './Base64ImageConverter.vue';
 import BaseConverter from './BaseConverter.vue';
 import CronExpressionTool from './CronExpressionTool.vue';
 import CssFormatter from './CssFormatter.vue';
+import DiffTool from './DiffTool.vue';
 import HtmlEncoderDecoder from './HtmlEncoderDecoder.vue';
 import HtmlFormatter from './HtmlFormatter.vue';
 import JavaScriptFormatter from './JavaScriptFormatter.vue';
@@ -289,6 +290,16 @@ export const tools: ToolDefinition[] = [
     icon: 'search',
     component: RegexTester,
     keywords: ['regex', 'regexp', 'regular expression', 'pattern matching', 'match', 'find'],
+  },
+  {
+    id: 'diff-tool',
+    name: 'Diff Tool',
+    section: 'String Utilities',
+    description: 'Compare two texts and highlight the differences.',
+    instructions: 'Paste the original text on the left and the changed text on the right; added and removed lines are highlighted in each editor.',
+    icon: 'notEqual',
+    component: DiffTool,
+    keywords: ['diff', 'compare', 'comparison', 'difference', 'changes'],
   },
   {
     id: 'lorem-ipsum-generator',

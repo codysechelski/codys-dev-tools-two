@@ -47,6 +47,7 @@
     "@vitejs/plugin-vue": "latest",
     "@vuepic/vue-datepicker": "^14.0.0",
     "codemirror": "^6.0.2",
+    "diff": "^9.0.0",
     "fast-xml-parser": "^5.11.1",
     "marked": "^18.0.11",
     "qrcode": "^1.5.4",
