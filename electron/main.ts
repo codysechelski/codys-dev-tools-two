@@ -1,7 +1,14 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell, type MenuItemConstructorOptions } from 'electron';
-import { autoUpdater } from 'electron-updater';
+// electron-updater is CommonJS; Node's ESM loader can't always synthesize its named exports
+// when the package is left external (see electron.vite.config.ts's externalizeDepsPlugin), so
+// this packaged main process only sees a default export at runtime. Destructure from that
+// instead of `import { autoUpdater } from 'electron-updater'`, which throws once packaged
+// even though it type-checks and works fine under electron-vite's dev transform.
+import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+
+const { autoUpdater } = electronUpdaterPkg;
 
 type ThemeMode = 'light' | 'dark' | 'system';
 type RememberToolInput = 'never' | 'session' | 'forever';
