@@ -119,18 +119,18 @@ function flashDelimiterAutoBadge(): void {
       </template>
     </ToolToolbar>
 
+    <TextEditor
+      v-model="template"
+      label="Format String"
+      description="Use {0}, {1}, etc. to insert column values. Use {rowIndex} for the zero-based row number. Use {colIndex} before a column placeholder to print that column index. Escape literal braces as \{ and \}."
+      language="text"
+      placeholder="Use {0}, {1}, {rowIndex}, and {colIndex} placeholders"
+      class="template-tool__format-editor"
+    />
+
     <div class="template-tool__workspace">
       <section class="template-tool__input-panel">
-        <div class="template-tool__editors">
-          <TextEditor
-            v-model="template"
-            label="Format String"
-            description="Use {0}, {1}, etc. to insert column values. Use {rowIndex} for the zero-based row number. Use {colIndex} before a column placeholder to print that column index. Escape literal braces as \{ and \}."
-            language="text"
-            placeholder="Use {0}, {1}, {rowIndex}, and {colIndex} placeholders"
-          />
-          <TextEditor v-model="input" label="Input Data" language="text" placeholder="Paste delimited rows here" />
-        </div>
+        <TextEditor v-model="input" label="Input Data" language="text" placeholder="Paste delimited rows here" />
 
         <div class="template-tool__static-options">
           <AppTextInput v-model="staticTextBefore" label="Static Text Before" placeholder="Text before generated rows" />
