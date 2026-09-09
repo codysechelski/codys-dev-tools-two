@@ -1265,8 +1265,14 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 
 .home-panel__hint {
   margin: 0;
-  color: var(--color-mist-500);
+  color: var(--color-accent);
   font-size: 0.9rem;
+}
+
+// Beats the generic ".workspace p" light-theme rule below, which otherwise wins on specificity
+// and silently forces this back to a muted gray.
+.app-shell[data-theme='light'] p.home-panel__hint {
+  color: var(--color-accent);
 }
 
 .formatter-tool,
