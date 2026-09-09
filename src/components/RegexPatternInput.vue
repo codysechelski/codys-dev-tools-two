@@ -13,13 +13,11 @@ const props = withDefaults(
     label?: string;
     description?: string;
     placeholder?: string;
-    invalid?: boolean;
   }>(),
   {
     label: 'Regular Expression',
     description: undefined,
     placeholder: '',
-    invalid: false,
   },
 );
 
@@ -139,7 +137,7 @@ function createEditorState(): EditorState {
 </script>
 
 <template>
-  <section class="regex-pattern-input text-editor" :class="{ 'regex-pattern-input--invalid': invalid }">
+  <section class="regex-pattern-input text-editor">
     <header class="text-editor__toolbar">
       <span class="text-editor__label-row">
         <strong>{{ label }}</strong>

@@ -76,10 +76,4 @@ describe('RegexPatternInput', () => {
 
     expect(writeText).toHaveBeenCalledWith('\\d+');
   });
-
-  it('applies the invalid modifier class when invalid is true', () => {
-    const wrapper = mount(RegexPatternInput, { props: { modelValue: '(', invalid: true } });
-
-    expect(wrapper.classes()).toContain('regex-pattern-input--invalid');
-  });
 });

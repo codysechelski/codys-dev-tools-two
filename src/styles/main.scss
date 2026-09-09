@@ -163,6 +163,7 @@ code {
 
 .cm-highlight-range {
   border-radius: 0.2em;
+  color: var(--highlight-range-text);
   background-color: var(--highlight-range-background);
   box-shadow: 0 0 0 1px var(--highlight-range-border);
 }
@@ -398,6 +399,7 @@ body[data-theme='light'] {
   --line-flash-background: rgba(37, 99, 235, 0.22);
   --highlight-range-background: rgba(217, 119, 6, 0.4);
   --highlight-range-border: rgba(217, 119, 6, 0.6);
+  --highlight-range-text: #1e293b;
   --checkerboard-base: rgba(255, 255, 255, 0.96);
   --checkerboard-tile: rgba(139, 150, 200, 0.08);
   --color-accent: var(--color-blue-700);
@@ -679,6 +681,7 @@ body[data-theme='light'] .modal .text-editor .cm-lineNumbers .cm-gutterElement {
 }
 
 .app-shell[data-theme='light'] .text-editor .cm-editor,
+body[data-theme='light'] .modal .text-editor .cm-editor,
 .app-shell[data-theme='light'] .html-preview__body,
 .app-shell[data-theme='light'] .markdown-preview__body,
 .app-shell[data-theme='light'] .unicode-card,
@@ -2108,17 +2111,6 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 .text-editor__body.regex-pattern-input__body .cm-content {
   padding-top: var(--space-2);
   padding-bottom: var(--space-2);
-}
-
-.text-editor.regex-pattern-input--invalid {
-  border-color: rgba(244, 63, 94, 0.55);
-}
-
-.text-editor.regex-pattern-input--invalid:focus-within {
-  border-color: rgba(244, 63, 94, 0.65);
-  box-shadow:
-    0 18px 60px rgba(0, 0, 0, 0.22),
-    0 0 0 3px rgba(244, 63, 94, 0.14);
 }
 
 .cm-regex-tok-group {

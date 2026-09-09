@@ -154,12 +154,7 @@ function jumpToMatch(match: RegexMatch): void {
       </template>
     </ToolToolbar>
 
-    <RegexPatternInput
-      ref="patternEditorRef"
-      v-model="pattern"
-      placeholder="Enter a regular expression, e.g. \b\w+@\w+\.\w+\b"
-      :invalid="Boolean(errorMessage)"
-    >
+    <RegexPatternInput ref="patternEditorRef" v-model="pattern" placeholder="Enter a regular expression, e.g. \b\w+@\w+\.\w+\b">
       <template #footer>
         <div class="regex-tool__footer">
           <div v-for="group in snippetGroups" :key="group.label" class="regex-tool__snippet-group">
