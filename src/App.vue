@@ -163,9 +163,8 @@ async function resetSettingsLocation(): Promise<void> {
 
     <section class="workspace">
       <header v-if="selectedTool" class="tool-screen-header">
-        <span class="tool-screen-header__icon"><AppIcon :name="selectedTool.icon" /></span>
         <div>
-          <h1>{{ selectedTool.name }}</h1>
+          <h1><AppIcon class="tool-screen-header__icon" :name="selectedTool.icon" />{{ selectedTool.name }}</h1>
           <p>{{ selectedTool.instructions ?? selectedTool.description }}</p>
         </div>
       </header>

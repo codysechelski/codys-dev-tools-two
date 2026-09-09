@@ -1097,20 +1097,20 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   border-bottom: var(--border-hairline) solid rgba(199, 210, 254, 0.12);
 }
 
-.tool-screen-header__icon {
-  display: grid;
-  flex: 0 0 auto;
-  width: 3.5rem;
-  height: 3.5rem;
-  place-items: center;
-  border-radius: var(--radius-lg);
-  background: rgba(103, 232, 249, 0.1);
-  color: var(--color-cyan-300);
+.tool-screen-header h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.tool-screen-header__icon .app-icon {
-  width: 1.75rem;
-  height: 1.75rem;
+.tool-screen-header__icon {
+  flex: 0 0 auto;
+  width: 1.6em;
+  height: 1.6em;
+  padding: 0.3em;
+  border-radius: var(--radius-md);
+  background: rgba(103, 232, 249, 0.1);
+  color: var(--color-cyan-300);
 }
 
 .app-shell[data-theme='light'] .tool-screen-header__icon {
