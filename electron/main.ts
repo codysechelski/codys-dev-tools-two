@@ -52,7 +52,7 @@ const isMacOS = process.platform === 'darwin';
 // Points at the release the update check found. Used for the manual/"View Release" flow below.
 const GITHUB_RELEASES_URL = 'https://github.com/codysechelski/codys-dev-tools-two/releases';
 const textFileExtensions = [
-  'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'csv', 'log', 'ini', 'conf',
+  'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'svg', 'csv', 'log', 'ini', 'conf',
   'js', 'jsx', 'ts', 'tsx', 'css', 'scss', 'html', 'htm', 'py', 'lua', 'sh', 'sql',
 ];
 let currentThemeMode: ThemeMode = 'system';

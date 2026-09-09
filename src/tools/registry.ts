@@ -36,7 +36,7 @@ export const attributionsTool: ToolDefinition = {
   description: 'Open-source notices.',
   instructions:
     'This app includes open-source software. Package license files are included in installed dependencies and packaged app metadata where supported by the build tooling.',
-  icon: 'questionCircle',
+  icon: 'codeBranch',
   component: Attributions,
 };
 
