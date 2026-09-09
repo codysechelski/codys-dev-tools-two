@@ -1,3 +1,34 @@
+# [0.26.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.5...v0.26.0) (2026-09-09)
+
+
+### Bug Fixes
+
+* **base64-image-converter:** fix dark panel background in light theme ([217baf8](https://github.com/codysechelski/codys-dev-tools-two/commit/217baf8479bc6e3cc231afc259a99eb9a583b75e))
+* **icons:** use align-left for String Template Formatter ([7d6df90](https://github.com/codysechelski/codys-dev-tools-two/commit/7d6df90989f11e13fb1e8be3c121a2793ed3fa8a))
+* **settings:** bump the full-width breakpoint from 1024px to 1200px ([4932126](https://github.com/codysechelski/codys-dev-tools-two/commit/4932126008e364b52a478208c3481de52928f216))
+* **settings:** bump the full-width breakpoint from 1200px to 1300px ([10c104a](https://github.com/codysechelski/codys-dev-tools-two/commit/10c104aa1bc1a36b84cede8973f120745291b83d))
+* **sidebar:** add top padding so the fade doesn't cover the first heading ([705b80a](https://github.com/codysechelski/codys-dev-tools-two/commit/705b80aca78f8137437e99541da489e85fc3271b))
+* **sidebar:** lighten the light-mode starred gold from #b8860b to #cb9614 ([96c8cec](https://github.com/codysechelski/codys-dev-tools-two/commit/96c8ceca064fa9fc4fffc52a09f483a965b5add0)), closes [#b8860b](https://github.com/codysechelski/codys-dev-tools-two/issues/b8860b) [#cb9614](https://github.com/codysechelski/codys-dev-tools-two/issues/cb9614) [#b8860b](https://github.com/codysechelski/codys-dev-tools-two/issues/b8860b)
+* **sidebar:** smooth the scroll fade and add a matching top fade ([2b7669e](https://github.com/codysechelski/codys-dev-tools-two/commit/2b7669e4a1a5b008a137fb2c56d78a2411946ed5))
+* **sidebar:** use a darker gold for starred tools in light mode ([f2ec382](https://github.com/codysechelski/codys-dev-tools-two/commit/f2ec382931cb7de40eae7d96f4ef857462165371)), closes [#f4b400](https://github.com/codysechelski/codys-dev-tools-two/issues/f4b400) [#b8860b](https://github.com/codysechelski/codys-dev-tools-two/issues/b8860b)
+* **tool-header:** make the icon part of the heading, not a separate block ([58955ab](https://github.com/codysechelski/codys-dev-tools-two/commit/58955ab74b64b327f4b054a6c89429d4f65e1634))
+* **tool-header:** shrink the heading icon slightly (1.6em -> 1.35em) ([fae4ed9](https://github.com/codysechelski/codys-dev-tools-two/commit/fae4ed9dad375014409ce927c7cb27f66a0d111b))
+
+
+### Features
+
+* **icons:** give every tool a specific icon instead of generic reuse ([205842e](https://github.com/codysechelski/codys-dev-tools-two/commit/205842e6e18f88725238678a36672d622c4828c6))
+* **settings:** let the settings panel go full width below 1024px ([8e4159b](https://github.com/codysechelski/codys-dev-tools-two/commit/8e4159bed41c18b0e6bc627c246333db83bcc56d))
+* **sidebar:** fade the tool list into the footer, tighten footer spacing ([a1e1478](https://github.com/codysechelski/codys-dev-tools-two/commit/a1e14785ba2c7e981577b117b5f54707732443ef))
+* **string-template-formatter:** make Format String span full width ([3192180](https://github.com/codysechelski/codys-dev-tools-two/commit/31921807c5dcf6713c4eed6a4cb1ce53f5135b5e))
+* **tool-header:** show a larger tool icon next to the heading ([1cb59be](https://github.com/codysechelski/codys-dev-tools-two/commit/1cb59bef5d99ce5c4a32d062a7936149ffdc2e15))
+* **tools:** add Base64 Encoder/Decoder and Base64 Image Converter ([650edf9](https://github.com/codysechelski/codys-dev-tools-two/commit/650edf96c99e5d7456377889dc8107960bb64c05))
+
+
+### Reverts
+
+* **sidebar:** remove the top/bottom scroll fade ([d0a2148](https://github.com/codysechelski/codys-dev-tools-two/commit/d0a214834a355113d4098b9763956c98be689213))
+
 ## [0.25.5](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.4...v0.25.5) (2026-09-09)
 
 
