@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'v
 import { APP_VERSION } from '@/appInfo';
 import AppIcon from '@/components/AppIcon.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
+import CustomTitleBar from '@/components/CustomTitleBar.vue';
 import { resolveTheme } from '@/theme';
 import { DEFAULT_SETTINGS, loadSettingsFromLocalStorage, saveSettingsToLocalStorage, type AppSettings, type RememberToolInput } from '@/settings';
 import { clearAllToolState, hasStoredToolState, initToolState, setRememberToolInputMode, toolStateMode } from '@/toolState';
@@ -160,6 +161,7 @@ function dismissUpdateBanner(): void {
 </script>
 
 <template>
+  <CustomTitleBar v-if="platform === 'win32'" :theme-mode="themeMode" />
   <main class="app-shell" :data-platform="platform" :data-theme="activeTheme">
     <div class="window-drag-region" aria-hidden="true" />
 

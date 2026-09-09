@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, shell, type MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron';
 // electron-updater is CommonJS; Node's ESM loader can't always synthesize its named exports
 // when the package is left external (see electron.vite.config.ts's externalizeDepsPlugin), so
 // this packaged main process only sees a default export at runtime. Destructure from that
@@ -49,8 +49,31 @@ app.setName("Cody's Dev Tools");
 
 const isDev = !app.isPackaged;
 const isMacOS = process.platform === 'darwin';
+const isWindows = process.platform === 'win32';
 // Points at the release the update check found. Used for the manual/"View Release" flow below.
 const GITHUB_RELEASES_URL = 'https://github.com/codysechelski/codys-dev-tools-two/releases';
+
+// Windows only: electron's Window Controls Overlay lets us draw our own titlebar content
+// (icon + menu, see CustomTitleBar.vue) while Windows still paints the native minimize/
+// maximize/close buttons, tinted to match. These hexes mirror the dark/light
+// --app-shell-background and --app-text tokens in src/styles/_tokens.scss / main.scss —
+// duplicated here because the main process can't read the renderer's CSS custom properties.
+const TITLEBAR_OVERLAY_HEIGHT = 32;
+const TITLEBAR_OVERLAY_COLORS = {
+  dark: { color: '#0c0d1f', symbolColor: '#eef2ff' },
+  light: { color: '#e9eef8', symbolColor: '#111936' },
+};
+
+function resolveTitleBarOverlay(): { color: string; symbolColor: string; height: number } {
+  const isDark = currentThemeMode === 'system' ? nativeTheme.shouldUseDarkColors : currentThemeMode === 'dark';
+  return { ...TITLEBAR_OVERLAY_COLORS[isDark ? 'dark' : 'light'], height: TITLEBAR_OVERLAY_HEIGHT };
+}
+
+function applyTitleBarOverlay(): void {
+  if (!isWindows) return;
+  mainWindowRef?.setTitleBarOverlay(resolveTitleBarOverlay());
+}
+
 const textFileExtensions = [
   'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'svg', 'csv', 'log', 'ini', 'conf',
   'js', 'jsx', 'ts', 'tsx', 'css', 'scss', 'html', 'htm', 'py', 'lua', 'sh', 'sql',
@@ -155,11 +178,21 @@ function looksLikeBinary(buffer: Buffer): boolean {
 ipcMain.on('theme-mode-changed', (_event, mode: ThemeMode) => {
   currentThemeMode = mode;
   syncThemeMenuChecked();
+  applyTitleBarOverlay();
+});
+
+ipcMain.on('trigger-menu-action', (_event, id: string) => {
+  Menu.getApplicationMenu()?.getMenuItemById(id)?.click();
+});
+
+nativeTheme.on('updated', () => {
+  if (currentThemeMode === 'system') applyTitleBarOverlay();
 });
 
 function setThemeFromMenu(mode: ThemeMode): void {
   currentThemeMode = mode;
   mainWindowRef?.webContents.send('set-theme', mode);
+  applyTitleBarOverlay();
 }
 
 function showHome(): void {
@@ -378,23 +411,27 @@ function buildAppMenu(): Menu {
       submenu: (isMac
         ? [{ role: 'close' }]
         : [
-            { label: 'Settings', accelerator: 'Ctrl+,', click: () => showSettings() },
+            { id: 'menu-settings', label: 'Settings', accelerator: 'Ctrl+,', click: () => showSettings() },
             { type: 'separator' },
-            { role: 'quit' },
+            { id: 'menu-quit', role: 'quit' },
           ]) as MenuItemConstructorOptions[],
     },
     {
       label: 'Edit',
       submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
+        { id: 'menu-undo', role: 'undo' },
+        { id: 'menu-redo', role: 'redo' },
         { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
+        { id: 'menu-cut', role: 'cut' },
+        { id: 'menu-copy', role: 'copy' },
+        { id: 'menu-paste', role: 'paste' },
         ...(isMac
           ? [{ role: 'pasteAndMatchStyle' }, { role: 'delete' }, { role: 'selectAll' }]
-          : [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+          : [
+              { id: 'menu-delete', role: 'delete' },
+              { type: 'separator' },
+              { id: 'menu-select-all', role: 'selectAll' },
+            ]),
       ] as MenuItemConstructorOptions[],
     },
     {
@@ -402,26 +439,26 @@ function buildAppMenu(): Menu {
       submenu: [
         { label: 'Theme', submenu: themeSubmenu },
         { type: 'separator' },
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
+        { id: 'menu-reload', role: 'reload' },
+        { id: 'menu-force-reload', role: 'forceReload' },
+        { id: 'menu-toggle-devtools', role: 'toggleDevTools' },
         { type: 'separator' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
+        { id: 'menu-reset-zoom', role: 'resetZoom' },
+        { id: 'menu-zoom-in', role: 'zoomIn' },
+        { id: 'menu-zoom-out', role: 'zoomOut' },
         // macOS already adds an "Enter Full Screen" item to the Window menu itself for any
         // fullscreenable window, so a second entry here would just duplicate it.
-        ...(isMac ? [] : [{ type: 'separator' }, { role: 'togglefullscreen' }]),
+        ...(isMac ? [] : [{ type: 'separator' }, { id: 'menu-toggle-fullscreen', role: 'togglefullscreen' }]),
       ] as MenuItemConstructorOptions[],
     },
     {
       label: 'Window',
       submenu: [
-        { role: 'minimize' },
-        { role: 'zoom' },
+        { id: 'menu-minimize', role: 'minimize' },
+        { id: 'menu-maximize', role: 'zoom' },
         ...(isMac
           ? [{ type: 'separator' }, { role: 'front' }, { type: 'separator' }, { role: 'window' }]
-          : [{ role: 'close' }]),
+          : [{ id: 'menu-close', role: 'close' }]),
       ] as MenuItemConstructorOptions[],
     },
     ...(isMac
@@ -430,8 +467,8 @@ function buildAppMenu(): Menu {
           {
             label: 'Help',
             submenu: [
-              { label: `About ${app.name}`, click: () => showHome() },
-              { label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
+              { id: 'menu-about', label: `About ${app.name}`, click: () => showHome() },
+              { id: 'menu-check-updates', label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
             ] as MenuItemConstructorOptions[],
           },
         ]),
@@ -448,8 +485,15 @@ function createWindow(): void {
     minHeight: 620,
     title: "Cody's Dev Tools",
     icon: join(__dirname, '../../build/icon.png'),
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
-    vibrancy: process.platform === 'darwin' ? 'sidebar' : undefined,
+    // mac: native inset title bar with traffic lights. Windows: hidden native title bar +
+    // Window Controls Overlay, so our own CustomTitleBar.vue can draw the icon/menu inline
+    // while Windows still paints (and themes, via titleBarOverlay below) the native
+    // minimize/maximize/close buttons. Linux keeps the plain default chrome for now — no
+    // titleBarOverlay support, and window-control conventions vary too much by desktop
+    // environment to safely draw our own.
+    titleBarStyle: isMacOS ? 'hiddenInset' : isWindows ? 'hidden' : 'default',
+    titleBarOverlay: isWindows ? resolveTitleBarOverlay() : undefined,
+    vibrancy: isMacOS ? 'sidebar' : undefined,
     backgroundColor: '#0b1026',
     trafficLightPosition: { x: 16, y: 16 },
     webPreferences: {
@@ -464,6 +508,11 @@ function createWindow(): void {
     shell.openExternal(url);
     return { action: 'deny' };
   });
+
+  // The native menu bar row is replaced by CustomTitleBar.vue on Windows; Menu.setApplicationMenu
+  // stays wired up below regardless, since keyboard accelerators and the trigger-menu-action
+  // IPC handler both still route through it.
+  if (isWindows) mainWindow.setMenuBarVisibility(false);
 
   mainWindowRef = mainWindow;
   mainWindow.on('closed', () => {

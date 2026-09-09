@@ -50,4 +50,7 @@ contextBridge.exposeInMainWorld('codyDevTools', {
   quitAndInstallUpdate: () => {
     ipcRenderer.send('quit-and-install-update');
   },
+  triggerMenuAction: (id: string) => {
+    ipcRenderer.send('trigger-menu-action', id);
+  },
 });

@@ -20,6 +20,7 @@ function createCodyDevTools(overrides: Partial<NonNullable<Window['codyDevTools'
     clearToolState: vi.fn().mockResolvedValue(undefined),
     onUpdateNotice: vi.fn(),
     quitAndInstallUpdate: vi.fn(),
+    triggerMenuAction: vi.fn(),
     ...overrides,
   };
 }

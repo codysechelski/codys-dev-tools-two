@@ -4431,3 +4431,118 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
     max-width: 100%;
   }
 }
+
+// Windows only (see CustomTitleBar.vue / electron/main.ts's titleBarOverlay): a full-width row
+// that replaces the native title bar + menu bar with our own themed one. Windows still paints
+// the native minimize/maximize/close buttons on top of the right edge, so this row's content is
+// capped to env(titlebar-area-width) to avoid drawing underneath them.
+.app-titlebar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: env(titlebar-area-width, calc(100% - 138px));
+  height: 2rem;
+  padding: 0 var(--space-3);
+  background: var(--sidebar-background);
+  color: var(--app-text);
+  -webkit-app-region: drag;
+}
+
+.app-titlebar__icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 auto;
+}
+
+.app-titlebar__menu {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.app-titlebar__menu-item {
+  position: relative;
+  height: 100%;
+}
+
+.app-titlebar__menu-button {
+  height: 100%;
+  padding: 0 var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--app-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.app-titlebar__menu-button:hover,
+.app-titlebar__menu-button--open {
+  background: var(--row-hover-background);
+}
+
+.app-titlebar__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 15rem;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid rgba(199, 210, 254, 0.14);
+  background: var(--editor-background);
+  box-shadow: var(--shadow-panel);
+}
+
+.app-titlebar__separator {
+  margin: var(--space-2) 0;
+  border: none;
+  border-top: var(--border-hairline) solid rgba(199, 210, 254, 0.14);
+}
+
+.app-titlebar__dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--app-text);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-titlebar__dropdown-item:hover {
+  background: var(--row-hover-background);
+}
+
+.app-titlebar__dropdown-item-check {
+  display: flex;
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: 0 0 auto;
+  color: var(--color-accent);
+}
+
+.app-titlebar__dropdown-item-check .app-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.app-titlebar__dropdown-item-label {
+  flex: 1 1 auto;
+}
+
+.app-titlebar__accelerator {
+  flex: 0 0 auto;
+  color: var(--color-mist-500);
+  font-size: 0.75rem;
+}
+
+.app-shell[data-platform='win32'] {
+  height: calc(100dvh - 2rem);
+}

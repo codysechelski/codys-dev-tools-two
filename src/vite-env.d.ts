@@ -36,6 +36,7 @@ declare global {
       clearToolState: () => Promise<void>;
       onUpdateNotice: (callback: (notice: UpdateNotice) => void) => void;
       quitAndInstallUpdate: () => void;
+      triggerMenuAction: (id: string) => void;
     };
   }
 }
