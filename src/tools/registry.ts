@@ -1,5 +1,7 @@
 import { defineAsyncComponent } from 'vue';
 import Attributions from './Attributions.vue';
+import Base64EncoderDecoder from './Base64EncoderDecoder.vue';
+import Base64ImageConverter from './Base64ImageConverter.vue';
 import BaseConverter from './BaseConverter.vue';
 import CronExpressionTool from './CronExpressionTool.vue';
 import CssFormatter from './CssFormatter.vue';
@@ -183,6 +185,27 @@ export const tools: ToolDefinition[] = [
     icon: 'link',
     component: UrlEncoderDecoder,
     keywords: ['url', 'uri', 'percent encoding', 'query string', 'encode', 'decode'],
+  },
+  {
+    id: 'base64-encoder-decoder',
+    name: 'Base64 Encoder/Decoder',
+    section: 'Encoders/Decoders',
+    description: 'Encode and decode base64 text.',
+    instructions: 'Encode text to base64 or decode base64 back to text, with an optional URL-safe alphabet.',
+    icon: 'barcode',
+    component: Base64EncoderDecoder,
+    keywords: ['base64', 'encode', 'decode', 'binary', 'text'],
+  },
+  {
+    id: 'base64-image-converter',
+    name: 'Base64 Image Converter',
+    section: 'Encoders/Decoders',
+    description: 'Convert images to base64 and back.',
+    instructions:
+      'Drop an image to get its base64, data URL, CSS, and HTML output, or paste base64 image data to preview and download it as an image.',
+    icon: 'fileImage',
+    component: Base64ImageConverter,
+    keywords: ['base64', 'image', 'data url', 'data uri', 'css', 'background-image', 'encode', 'decode', 'png', 'jpeg'],
   },
   {
     id: 'string-template-formatter',
