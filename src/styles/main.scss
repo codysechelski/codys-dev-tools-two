@@ -398,6 +398,10 @@ body[data-theme='light'] {
   border-right-color: rgba(51, 65, 85, 0.16);
 }
 
+.app-shell[data-theme='light'] .sidebar__scroll-fade {
+  background: linear-gradient(to bottom, transparent, rgba(212, 222, 237, 0.94));
+}
+
 .app-shell[data-theme='light'] .tool-nav__section h2 {
   color: rgba(51, 65, 85, 0.72);
 }
@@ -888,6 +892,14 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   font-size: 0.82rem;
 }
 
+.sidebar__nav-wrap {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
 .tool-nav {
   display: grid;
   flex: 1;
@@ -897,6 +909,17 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   overflow: auto;
   margin-right: calc(var(--space-4) * -1);
   padding-right: var(--space-4);
+  padding-bottom: 2rem;
+}
+
+.sidebar__scroll-fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, rgba(12, 13, 31, 0.92));
 }
 
 .tool-nav__section {
@@ -922,7 +945,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   justify-content: space-between;
   gap: var(--space-3);
   margin-top: auto;
-  padding: var(--space-3) var(--space-2) 0;
+  padding: 0 var(--space-2);
   color: rgba(139, 150, 200, 0.72);
   font-size: 0.76rem;
 }
