@@ -75,7 +75,8 @@ const groupedTools = computed(() =>
         </section>
         <p v-if="!groupedTools.length" class="tool-nav__empty">No tools match "{{ filter.trim() }}".</p>
       </nav>
-      <div class="sidebar__scroll-fade" aria-hidden="true" />
+      <div class="sidebar__scroll-fade sidebar__scroll-fade--top" aria-hidden="true" />
+      <div class="sidebar__scroll-fade sidebar__scroll-fade--bottom" aria-hidden="true" />
     </div>
 
     <footer class="sidebar__footer">
