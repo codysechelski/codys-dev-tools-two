@@ -16,6 +16,28 @@ describe('TextEditor', () => {
     expect(wrapper.find('.cm-gutters').exists()).toBe(true);
   });
 
+  it('applies keyword syntax highlighting for the sql language, including SOQL-only clauses', () => {
+    const wrapper = mount(TextEditor, {
+      props: { modelValue: "SELECT Id FROM Account WHERE Name = 'Acme' WITH SECURITY_ENFORCED", label: 'Input', language: 'sql' },
+    });
+
+    // CodeMirror generates its own highlight class names, so assert on structure (same class for every
+    // recognized keyword, a different one for the string literal) rather than a specific class string.
+    const spans = wrapper.findAll('.cm-line span');
+    const classOf = (text: string): string | undefined => spans.find((span) => span.text() === text)?.classes()[0];
+
+    const keywordClass = classOf('SELECT');
+    expect(keywordClass).toBeTruthy();
+    expect(classOf('FROM')).toBe(keywordClass);
+    expect(classOf('WHERE')).toBe(keywordClass);
+    expect(classOf('WITH')).toBe(keywordClass);
+    expect(classOf('SECURITY_ENFORCED')).toBe(keywordClass);
+
+    const stringClass = classOf("'Acme'");
+    expect(stringClass).toBeTruthy();
+    expect(stringClass).not.toBe(keywordClass);
+  });
+
   it('renders readonly editors as non-editable', () => {
     const wrapper = mount(TextEditor, {
       props: {

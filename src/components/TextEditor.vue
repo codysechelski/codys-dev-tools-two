@@ -11,6 +11,7 @@ import { StreamLanguage } from '@codemirror/language';
 import { EditorState, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, type DecorationSet, EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { lua } from '@codemirror/legacy-modes/mode/lua';
+import { sql } from '@codemirror/legacy-modes/mode/sql';
 import { tags } from '@lezer/highlight';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
@@ -24,7 +25,7 @@ const props = withDefaults(
     modelValue: string;
     label: string;
     description?: string;
-    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'xml' | 'text';
+    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'sql' | 'xml' | 'text';
     readonly?: boolean;
     placeholder?: string;
     /** Character ranges (offsets into modelValue) to visually highlight, e.g. regex matches. */
@@ -71,6 +72,24 @@ const codeHighlightStyle = HighlightStyle.define([
   { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket, tags.paren], color: 'var(--syntax-punctuation)' },
   { tag: tags.invalid, color: 'var(--syntax-invalid)' },
 ]);
+
+// A generic ANSI SQL keyword set extended with the SOQL (Salesforce) clauses the SQL Formatter
+// tool needs to round-trip: WITH SECURITY_ENFORCED, USING SCOPE, FOR VIEW/REFERENCE, TYPEOF.
+const SQL_KEYWORDS =
+  'select from where and or not in like between is null nulls first last as distinct case when then else end exists ' +
+  'group by order having limit offset union all insert into values update set delete with returning ' +
+  'join inner left right full outer cross on using scope for view reference typeof security_enforced ' +
+  'asc desc top default create alter drop table truncate cascade primary key foreign references constraint database schema';
+const SQL_ATOMS = 'true false';
+const SQL_BUILTINS = 'count sum avg min max upper lower trim coalesce cast convert now current_date current_timestamp';
+
+function wordSet(words: string): Record<string, boolean> {
+  const result: Record<string, boolean> = {};
+  for (const word of words.split(' ')) result[word] = true;
+  return result;
+}
+
+const sqlMode = sql({ keywords: wordSet(SQL_KEYWORDS), atoms: wordSet(SQL_ATOMS), builtin: wordSet(SQL_BUILTINS) });
 
 const LINE_FLASH_HOLD_MS = 1000; // keep in sync with --duration-flash-hold in src/styles/_tokens.scss
 const LINE_FLASH_FADE_MS = 900; // keep in sync with --duration-flash in src/styles/_tokens.scss
@@ -338,6 +357,7 @@ function createEditorState(): EditorState {
       props.language === 'javascript' ? javascript() : [],
       props.language === 'lua' ? StreamLanguage.define(lua) : [],
       props.language === 'python' ? python() : [],
+      props.language === 'sql' ? StreamLanguage.define(sqlMode) : [],
       props.language === 'xml' ? xml() : [],
     ],
   });

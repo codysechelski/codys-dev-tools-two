@@ -70,11 +70,11 @@ const keywordCaseOptions: Array<{ label: string; value: SqlKeywordCase }> = [
     </ToolToolbar>
 
     <div class="formatter-tool__editors">
-      <TextEditor v-model="input" label="Input" language="text" placeholder="Paste a SQL or SOQL query here" />
+      <TextEditor v-model="input" label="Input" language="sql" placeholder="Paste a SQL or SOQL query here" />
       <TextEditor
         :model-value="formattedOutput"
         label="Formatted Output"
-        language="text"
+        language="sql"
         readonly
         placeholder="Formatted SQL/SOQL will appear here"
       />
