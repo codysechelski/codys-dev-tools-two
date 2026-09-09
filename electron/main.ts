@@ -484,7 +484,11 @@ function createWindow(): void {
     minWidth: 900,
     minHeight: 620,
     title: "Cody's Dev Tools",
-    icon: join(__dirname, '../../build/icon.png'),
+    // Windows' installer/exe resource icon comes from build/icon.ico automatically at package
+    // time, but the *running* window/taskbar icon is whatever this option points at — point it
+    // at the same .ico there so they match instead of the running window falling back to the
+    // plain (mac/linux) icon.png.
+    icon: join(__dirname, '../../build/', isWindows ? 'icon.ico' : 'icon.png'),
     // mac: native inset title bar with traffic lights. Windows: hidden native title bar +
     // Window Controls Overlay, so our own CustomTitleBar.vue can draw the icon/menu inline
     // while Windows still paints (and themes, via titleBarOverlay below) the native

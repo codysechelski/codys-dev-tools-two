@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
-import logoForDarkBg from '@/assets/images/logo-dark-bg.svg';
+import titlebarIcon from '@/assets/images/titlebar-icon.png';
 import type { AppSettings } from '@/settings';
 
 const props = defineProps<{
@@ -110,7 +110,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="rootEl" class="app-titlebar">
-    <img :src="logoForDarkBg" alt="" class="app-titlebar__icon" />
+    <img :src="titlebarIcon" alt="" class="app-titlebar__icon" />
     <nav class="app-titlebar__menu">
       <div v-for="menu in menus" :key="menu.label" class="app-titlebar__menu-item">
         <button
