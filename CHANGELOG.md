@@ -1,3 +1,10 @@
+## [0.28.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.1...v0.28.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* **regex-tester:** fix modal text contrast app-wide, drop red border, punch up dark highlight ([48de6b7](https://github.com/codysechelski/codys-dev-tools-two/commit/48de6b7cab4121be379d61277dc9d201289e96a0))
+
 ## [0.28.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.0...v0.28.1) (2026-09-09)
 
 
