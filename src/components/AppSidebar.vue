@@ -46,38 +46,34 @@ const groupedTools = computed(() =>
       <AppTextInput v-model="filter" label="Search tools" hide-label placeholder="Search tools…" icon="search" />
     </div>
 
-    <div class="sidebar__nav-wrap">
-      <nav class="tool-nav" aria-label="Developer tools">
-        <section v-if="pinnedTools.length" class="tool-nav__section">
-          <h2>Starred</h2>
-          <ToolNavItem
-            v-for="tool in pinnedTools"
-            :key="tool.id"
-            :tool="tool"
-            :active="tool.id === selectedToolId"
-            :pinned="true"
-            @select="$emit('selectTool', tool.id)"
-            @toggle-pin="$emit('togglePin', tool.id)"
-          />
-        </section>
+    <nav class="tool-nav" aria-label="Developer tools">
+      <section v-if="pinnedTools.length" class="tool-nav__section">
+        <h2>Starred</h2>
+        <ToolNavItem
+          v-for="tool in pinnedTools"
+          :key="tool.id"
+          :tool="tool"
+          :active="tool.id === selectedToolId"
+          :pinned="true"
+          @select="$emit('selectTool', tool.id)"
+          @toggle-pin="$emit('togglePin', tool.id)"
+        />
+      </section>
 
-        <section v-for="group in groupedTools" :key="group.section" class="tool-nav__section">
-          <h2>{{ group.section }}</h2>
-          <ToolNavItem
-            v-for="tool in group.tools"
-            :key="tool.id"
-            :tool="tool"
-            :active="tool.id === selectedToolId"
-            :pinned="pinnedToolIds.includes(tool.id)"
-            @select="$emit('selectTool', tool.id)"
-            @toggle-pin="$emit('togglePin', tool.id)"
-          />
-        </section>
-        <p v-if="!groupedTools.length" class="tool-nav__empty">No tools match "{{ filter.trim() }}".</p>
-      </nav>
-      <div class="sidebar__scroll-fade sidebar__scroll-fade--top" aria-hidden="true" />
-      <div class="sidebar__scroll-fade sidebar__scroll-fade--bottom" aria-hidden="true" />
-    </div>
+      <section v-for="group in groupedTools" :key="group.section" class="tool-nav__section">
+        <h2>{{ group.section }}</h2>
+        <ToolNavItem
+          v-for="tool in group.tools"
+          :key="tool.id"
+          :tool="tool"
+          :active="tool.id === selectedToolId"
+          :pinned="pinnedToolIds.includes(tool.id)"
+          @select="$emit('selectTool', tool.id)"
+          @toggle-pin="$emit('togglePin', tool.id)"
+        />
+      </section>
+      <p v-if="!groupedTools.length" class="tool-nav__empty">No tools match "{{ filter.trim() }}".</p>
+    </nav>
 
     <footer class="sidebar__footer">
       <div class="sidebar__footer-links">
