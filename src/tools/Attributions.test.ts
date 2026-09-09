@@ -10,7 +10,7 @@ describe('Attributions', () => {
     expect(names).toContain('Vue');
     expect(names).toContain('Electron');
     expect(names).toContain('CodeMirror');
-    expect(names).toContain('Font Awesome Free');
+    expect(names).toContain('Font Awesome');
     expect(names).toContain('Ubuntu Font Family');
   });
 

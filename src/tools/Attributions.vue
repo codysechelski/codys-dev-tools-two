@@ -44,10 +44,10 @@ const attributions: Attribution[] = [
     repoUrl: 'https://github.com/NaturalIntelligence/fast-xml-parser',
   },
   {
-    name: 'Font Awesome Free',
-    license: 'CC BY 4.0 License',
-    description: 'Icon shapes used throughout the app interface are vendored from Font Awesome Free.',
-    repoUrl: 'https://github.com/FortAwesome/Font-Awesome',
+    name: 'Font Awesome',
+    license: 'Font Awesome Pro License',
+    description: "Icon shapes used throughout the app interface are vendored from the maintainer's Font Awesome Pro subscription.",
+    repoUrl: 'https://fontawesome.com/license',
   },
   {
     name: 'Lezer',
