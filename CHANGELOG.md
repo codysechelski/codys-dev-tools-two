@@ -1,3 +1,15 @@
+# [0.33.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.32.0...v0.33.0) (2026-09-09)
+
+
+### Bug Fixes
+
+* **layout:** stop .workspace from ignoring the shorter grid row on Windows ([bb22e85](https://github.com/codysechelski/codys-dev-tools-two/commit/bb22e85a0d5cc7bb5ba26bd0197a6a938e5bc5f4))
+
+
+### Features
+
+* **installer:** add branded header/sidebar banners and a license page ([27d813a](https://github.com/codysechelski/codys-dev-tools-two/commit/27d813a2ac69ce35e520ef10e1553072c8af9599))
+
 # [0.32.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.31.0...v0.32.0) (2026-09-09)
 
 
