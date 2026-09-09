@@ -425,6 +425,10 @@ body[data-theme='light'] {
   color: #475569;
 }
 
+.app-shell[data-theme='light'] .tool-nav__pin--active {
+  color: var(--color-star-gold);
+}
+
 .app-shell[data-theme='light'] .tool-nav__pin:hover {
   background: rgba(79, 70, 229, 0.12);
 }
