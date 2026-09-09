@@ -1,3 +1,15 @@
+# [0.32.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.31.0...v0.32.0) (2026-09-09)
+
+
+### Bug Fixes
+
+* **icons:** use simplified small-size icon for Windows titlebar/install, mac app icon ([2f67449](https://github.com/codysechelski/codys-dev-tools-two/commit/2f67449c185c60f6af2fac1f2e39a641838787d4))
+
+
+### Features
+
+* **icons:** rebuild all app/web icons from new detail/rounding-aware renders ([85ffb14](https://github.com/codysechelski/codys-dev-tools-two/commit/85ffb14b4f9e97e3b85035f003b164d4345420af))
+
 # [0.31.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.30.1...v0.31.0) (2026-09-09)
 
 
