@@ -1,3 +1,10 @@
+# [0.28.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.27.0...v0.28.0) (2026-09-09)
+
+
+### Features
+
+* **regex-tester:** add a Regex Tester tool ([32f36cf](https://github.com/codysechelski/codys-dev-tools-two/commit/32f36cfc69dd6b63004c0dcc56350e00ba455239))
+
 # [0.27.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.26.0...v0.27.0) (2026-09-09)
 
 
