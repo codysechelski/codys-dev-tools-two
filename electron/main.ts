@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS: AppSettings = {
 const REMEMBER_TOOL_INPUT_MODES: RememberToolInput[] = ['never', 'session', 'forever'];
 const INDENT_STYLES: IndentStyle[] = ['2-spaces', '4-spaces', 'tabs'];
 
-// Electron falls back to package.json's "name" field ("codys-dev-tools-two") for the
+// Electron falls back to package.json's "name" field ("codys-dev-tools") for the
 // app/menu-bar name during development, since productName is only read from the
 // electron-builder config once packaged. Force it here so dev and packaged builds match.
 app.setName("Cody's Dev Tools");
