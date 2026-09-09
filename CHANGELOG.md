@@ -1,3 +1,10 @@
+## [0.28.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.0...v0.28.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* **regex-tester:** fix pattern editor scrollbar, footer theming, and move presets ([c324ea1](https://github.com/codysechelski/codys-dev-tools-two/commit/c324ea102ac65b3c97744ba7824631d47c35faa8))
+
 # [0.28.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.27.0...v0.28.0) (2026-09-09)
 
 
