@@ -27,28 +27,51 @@ Prefer the browser? The app also runs as a static website — see [Building the 
 
 ## Tools
 
+**Formatters**
+
 - JSON Formatter validates, formats, minifies, and sorts JSON.
 - CSS Formatter outputs expanded, nested, compact, or compressed CSS and can sort declarations or preserve comments.
 - JavaScript Formatter formats and compacts JavaScript with syntax-highlighted editors.
 - HTML Formatter formats and minifies HTML with syntax-highlighted editors.
+- XML Formatter formats and minifies XML.
 - Python Formatter formats Python with syntax-highlighted editors.
 - Lua Formatter formats Lua scripts with syntax-highlighted editors.
-- UUID Generator creates UUID v4 identifiers.
+- SQL Formatter formats and validates SQL and SOQL (Salesforce) queries — expanded, compact, or minified output, configurable keyword case, and SOQL child relationship subqueries indented as nested blocks.
+
+**Converters**
+
 - JSON/YAML Converter converts between JSON and YAML.
 - JSON/XML Converter converts between JSON and XML.
-- XML Formatter formats and minifies XML.
+- Base Converter converts numbers between binary, octal, decimal, hexadecimal, and any base from 2 to 36.
+
+**Encoders/Decoders**
+
 - HTML Encoder/Decoder encodes and decodes HTML entities.
 - URL Encoder/Decoder encodes and decodes URLs and URL components.
+- Base64 Encoder/Decoder encodes and decodes base64 text.
+- Base64 Image Converter converts images to base64 (and back), with CSS/HTML snippet output.
+
+**String Utilities**
+
 - String Template Formatter formats delimited rows using template placeholders.
+- Text Analyzer counts paragraphs, words, characters, readability-style stats, and ranked word frequency.
+- Line Sorter/Deduplicator sorts and de-duplicates lines of text.
+- Regex Tester builds and tests regular expressions, with syntax highlighting, token-insert helpers, and every match highlighted and listed against your test text.
+- Diff Tool compares two texts and highlights added/removed lines directly in each editor.
 - Lorem Ipsum Generator creates words, paragraphs, lists, and definition lists with optional punctuation and inline HTML variation.
-- QR Code Generator creates PNG and SVG QR codes for text, URLs, Wi-Fi, contacts, email, SMS, phone, and calendar events.
-- Unicode Character Map browses Unicode blocks, filters by character name, and copies character encodings.
+
+**Date Utilities**
+
 - Timestamp Converter builds dates from parts, picks dates with a custom themed picker, parses timestamps, and converts common timestamp formats.
 - Cron Builder/Parser builds and explains cron schedules with upcoming local run times.
-- Text Analyzer counts paragraphs, words, characters, readability-style stats, and ranked word frequency.
-- Base Converter converts numbers between binary, octal, decimal, and hexadecimal.
-- Line Sorter/Deduplicator sorts and de-duplicates lines of text.
+
+**Miscellaneous**
+
+- UUID Generator creates UUID v4 identifiers.
 - Markdown Table Generator builds Markdown tables from a simple grid editor.
+- QR Code Generator creates PNG and SVG QR codes for text, URLs, Wi-Fi, contacts, email, SMS, phone, and calendar events.
+- SVG Viewer previews SVG markup live as you edit it, next to an XML-highlighted source editor.
+- Unicode Character Map browses Unicode blocks, filters by character name, and copies character encodings.
 
 ## Development
 
