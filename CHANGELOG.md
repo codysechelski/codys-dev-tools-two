@@ -1,3 +1,11 @@
+## [0.30.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.30.0...v0.30.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* **updater:** fall back to manual update link on unsigned macOS builds ([0f7d34d](https://github.com/codysechelski/codys-dev-tools-two/commit/0f7d34dcb46a0d622cf9df6344095b1f9ee6df87))
+* use code-branch icon for Attributions, allow .svg in text file picker ([e43384e](https://github.com/codysechelski/codys-dev-tools-two/commit/e43384ee1208b07dea3f5c6d49aa870f7865248d))
+
 # [0.30.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.29.0...v0.30.0) (2026-09-09)
 
 
