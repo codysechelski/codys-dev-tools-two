@@ -112,6 +112,13 @@ $easings: (
   --diff-removed-background: rgba(244, 63, 94, 0.16);
   --diff-removed-border: rgba(244, 63, 94, 0.55);
 
+  // Word-level highlight for exactly what changed within an edited diff line — a stronger shade
+  // than the full-line background above so it stands out against it.
+  --diff-word-added-background: rgba(34, 197, 94, 0.45);
+  --diff-word-added-border: rgba(34, 197, 94, 0.75);
+  --diff-word-removed-background: rgba(244, 63, 94, 0.45);
+  --diff-word-removed-border: rgba(244, 63, 94, 0.75);
+
   // Checkerboard used to represent a transparent background (e.g. the QR preview).
   --checkerboard-base: #2b2d33;
   --checkerboard-tile: rgba(255, 255, 255, 0.06);

@@ -16,6 +16,21 @@ describe('TextEditor', () => {
     expect(wrapper.find('.cm-gutters').exists()).toBe(true);
   });
 
+  it('applies syntax highlighting for the yaml language', () => {
+    const wrapper = mount(TextEditor, {
+      props: { modelValue: 'name: Acme\ncount: 42', label: 'Input', language: 'yaml' },
+    });
+
+    const spans = wrapper.findAll('.cm-line span');
+    const classOf = (text: string): string | undefined => spans.find((span) => span.text() === text)?.classes()[0];
+
+    const keyClass = classOf('name');
+    expect(keyClass).toBeTruthy();
+    expect(classOf('count')).toBe(keyClass);
+    expect(classOf('42')).toBeTruthy();
+    expect(classOf('42')).not.toBe(keyClass);
+  });
+
   it('applies keyword syntax highlighting for the sql language, including SOQL-only clauses', () => {
     const wrapper = mount(TextEditor, {
       props: { modelValue: "SELECT Id FROM Account WHERE Name = 'Acme' WITH SECURITY_ENFORCED", label: 'Input', language: 'sql' },

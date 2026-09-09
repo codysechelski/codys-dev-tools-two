@@ -178,6 +178,18 @@ code {
   box-shadow: inset 3px 0 0 var(--diff-removed-border);
 }
 
+.cm-diff-word-added {
+  border-radius: 0.2em;
+  background-color: var(--diff-word-added-background);
+  box-shadow: 0 0 0 1px var(--diff-word-added-border);
+}
+
+.cm-diff-word-removed {
+  border-radius: 0.2em;
+  background-color: var(--diff-word-removed-background);
+  box-shadow: 0 0 0 1px var(--diff-word-removed-border);
+}
+
 .app-button {
   display: inline-flex;
   align-items: center;
@@ -414,6 +426,10 @@ body[data-theme='light'] {
   --diff-added-border: rgba(22, 163, 74, 0.5);
   --diff-removed-background: rgba(220, 38, 38, 0.12);
   --diff-removed-border: rgba(220, 38, 38, 0.5);
+  --diff-word-added-background: rgba(22, 163, 74, 0.32);
+  --diff-word-added-border: rgba(22, 163, 74, 0.6);
+  --diff-word-removed-background: rgba(220, 38, 38, 0.28);
+  --diff-word-removed-border: rgba(220, 38, 38, 0.55);
   --checkerboard-base: rgba(255, 255, 255, 0.96);
   --checkerboard-tile: rgba(139, 150, 200, 0.08);
   --color-accent: var(--color-blue-700);
@@ -2386,19 +2402,13 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   display: grid;
   min-height: 0;
   flex: 1;
-  grid-template-columns: minmax(20rem, 1fr) auto minmax(20rem, 1fr);
+  grid-template-columns: minmax(20rem, 1fr) minmax(20rem, 1fr);
   align-items: stretch;
   gap: var(--space-4);
 }
 
 .diff-tool__workspace > .text-editor {
   min-height: 0;
-}
-
-.diff-tool__swap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .cron-tool {

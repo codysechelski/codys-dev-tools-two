@@ -12,6 +12,7 @@ import { EditorState, StateEffect, StateField } from '@codemirror/state';
 import { Decoration, type DecorationSet, EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { sql } from '@codemirror/legacy-modes/mode/sql';
+import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import { tags } from '@lezer/highlight';
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
@@ -25,11 +26,11 @@ const props = withDefaults(
     modelValue: string;
     label: string;
     description?: string;
-    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'sql' | 'xml' | 'text';
+    language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'sql' | 'xml' | 'yaml' | 'text';
     readonly?: boolean;
     placeholder?: string;
-    /** Character ranges (offsets into modelValue) to visually highlight, e.g. regex matches. */
-    highlightRanges?: Array<{ from: number; to: number }>;
+    /** Character ranges (offsets into modelValue) to visually highlight, e.g. regex matches or diff word changes. */
+    highlightRanges?: Array<{ from: number; to: number; className?: string }>;
     /** Full-width line backgrounds to apply, e.g. added/removed rows in the diff tool. */
     highlightLines?: Array<{ line: number; className: string }>;
   }>(),
@@ -116,8 +117,7 @@ const lineFlashField = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 });
 
-const highlightRangeMark = Decoration.mark({ class: 'cm-highlight-range' });
-const setHighlightRanges = StateEffect.define<Array<{ from: number; to: number }>>();
+const setHighlightRanges = StateEffect.define<Array<{ from: number; to: number; className?: string }>>();
 const highlightRangesField = StateField.define<DecorationSet>({
   create(state) {
     return buildHighlightDecorations(props.highlightRanges, state.doc.length);
@@ -134,11 +134,11 @@ const highlightRangesField = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 });
 
-function buildHighlightDecorations(ranges: Array<{ from: number; to: number }>, docLength: number): DecorationSet {
+function buildHighlightDecorations(ranges: Array<{ from: number; to: number; className?: string }>, docLength: number): DecorationSet {
   const marks = ranges
     .filter((range) => range.to > range.from && range.from >= 0 && range.to <= docLength)
     .sort((a, b) => a.from - b.from)
-    .map((range) => highlightRangeMark.range(range.from, range.to));
+    .map((range) => Decoration.mark({ class: range.className ?? 'cm-highlight-range' }).range(range.from, range.to));
 
   return Decoration.set(marks, true);
 }
@@ -359,6 +359,7 @@ function createEditorState(): EditorState {
       props.language === 'python' ? python() : [],
       props.language === 'sql' ? StreamLanguage.define(sqlMode) : [],
       props.language === 'xml' ? xml() : [],
+      props.language === 'yaml' ? StreamLanguage.define(yaml) : [],
     ],
   });
 }

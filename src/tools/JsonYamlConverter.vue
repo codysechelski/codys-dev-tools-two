@@ -36,8 +36,8 @@ const result = computed(() =>
 );
 const output = computed(() => result.value.output);
 const error = computed(() => result.value.error);
-const inputLanguage = computed(() => (direction.value === 'json-to-yaml' ? 'json' : 'text'));
-const outputLanguage = computed(() => (direction.value === 'yaml-to-json' ? 'json' : 'text'));
+const inputLanguage = computed(() => (direction.value === 'json-to-yaml' ? 'json' : 'yaml'));
+const outputLanguage = computed(() => (direction.value === 'yaml-to-json' ? 'json' : 'yaml'));
 
 const directionOptions: Array<{ label: string; value: JsonYamlDirection }> = [
   { label: 'JSON to YAML', value: 'json-to-yaml' },

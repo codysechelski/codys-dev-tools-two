@@ -25,6 +25,26 @@ describe('DiffTool', () => {
     expect(wrapper.text()).toContain('No differences');
     expect(editors[0].props('highlightLines')).toEqual([]);
     expect(editors[1].props('highlightLines')).toEqual([]);
+    expect(editors[0].props('highlightRanges')).toEqual([]);
+    expect(editors[1].props('highlightRanges')).toEqual([]);
+  });
+
+  it('highlights only the changed word within an edited line, using distinct word-level classes', async () => {
+    const wrapper = mount(DiffTool);
+    const editors = wrapper.findAllComponents(TextEditor);
+
+    await editors[0].vm.$emit('update:modelValue', 'hello world');
+    await editors[1].vm.$emit('update:modelValue', 'hello there');
+
+    const removedRanges = editors[0].props('highlightRanges') as Array<{ from: number; to: number; className: string }>;
+    const addedRanges = editors[1].props('highlightRanges') as Array<{ from: number; to: number; className: string }>;
+
+    expect(removedRanges).toHaveLength(1);
+    expect(addedRanges).toHaveLength(1);
+    expect(removedRanges[0].className).toBe('cm-diff-word-removed');
+    expect(addedRanges[0].className).toBe('cm-diff-word-added');
+    expect('hello world'.slice(removedRanges[0].from, removedRanges[0].to)).toBe('world');
+    expect('hello there'.slice(addedRanges[0].from, addedRanges[0].to)).toBe('there');
   });
 
   it('swaps the original and changed text when the swap button is clicked', async () => {

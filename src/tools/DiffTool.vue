@@ -22,8 +22,15 @@ usePersistedToolState('diff-tool', { original, changed, ignoreWhitespace });
 
 const diff = computed(() => computeLineDiff(original.value, changed.value, { ignoreWhitespace: ignoreWhitespace.value }));
 
-const removedHighlights = computed(() => diff.value.removedLines.map((line) => ({ line, className: 'cm-diff-line-removed' })));
-const addedHighlights = computed(() => diff.value.addedLines.map((line) => ({ line, className: 'cm-diff-line-added' })));
+const removedLineHighlights = computed(() => diff.value.removedLines.map((line) => ({ line, className: 'cm-diff-line-removed' })));
+const addedLineHighlights = computed(() => diff.value.addedLines.map((line) => ({ line, className: 'cm-diff-line-added' })));
+
+const removedWordHighlights = computed(() =>
+  diff.value.removedWordRanges.map((range) => ({ from: range.from, to: range.to, className: 'cm-diff-word-removed' })),
+);
+const addedWordHighlights = computed(() =>
+  diff.value.addedWordRanges.map((range) => ({ from: range.from, to: range.to, className: 'cm-diff-word-added' })),
+);
 
 const statusLabel = computed(() => {
   if (!original.value.trim() && !changed.value.trim()) return 'Paste text on both sides to compare';
@@ -45,6 +52,7 @@ function swapSides(): void {
 <template>
   <section class="diff-tool">
     <ToolToolbar class="diff-tool__toolbar">
+      <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap original and changed text" @click="swapSides" />
       <AppToggle v-model="ignoreWhitespace" label="Ignore whitespace" description="Treat lines that differ only in leading/trailing whitespace as unchanged." />
       <template #badge>
         <ToolbarStatusBadge :label="statusLabel" />
@@ -52,13 +60,23 @@ function swapSides(): void {
     </ToolToolbar>
 
     <div class="diff-tool__workspace">
-      <TextEditor v-model="original" label="Original" language="text" placeholder="Paste the original text here" :highlight-lines="removedHighlights" />
+      <TextEditor
+        v-model="original"
+        label="Original"
+        language="text"
+        placeholder="Paste the original text here"
+        :highlight-lines="removedLineHighlights"
+        :highlight-ranges="removedWordHighlights"
+      />
 
-      <div class="diff-tool__swap">
-        <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap original and changed text" @click="swapSides" />
-      </div>
-
-      <TextEditor v-model="changed" label="Changed" language="text" placeholder="Paste the changed text here" :highlight-lines="addedHighlights" />
+      <TextEditor
+        v-model="changed"
+        label="Changed"
+        language="text"
+        placeholder="Paste the changed text here"
+        :highlight-lines="addedLineHighlights"
+        :highlight-ranges="addedWordHighlights"
+      />
     </div>
   </section>
 </template>
