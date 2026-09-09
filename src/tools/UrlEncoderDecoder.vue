@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import AppButton from '@/components/AppButton.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
@@ -32,12 +33,20 @@ const output = computed(() => result.value.output);
 const error = computed(() => result.value.error);
 const inputPlaceholder = computed(() => (mode.value === 'encode' ? 'Paste URL text to encode' : 'Paste encoded URL text to decode'));
 const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded URL output will appear here' : 'Decoded URL output will appear here'));
+
+function flipMode(): void {
+  const previousOutput = output.value;
+
+  mode.value = mode.value === 'encode' ? 'decode' : 'encode';
+  if (previousOutput) input.value = previousOutput;
+}
 </script>
 
 <template>
   <section class="converter-tool">
     <ToolToolbar>
       <AppSelect v-model="mode" label="Mode" :options="modeOptions" />
+      <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap input and output" @click="flipMode" />
       <AppToggle
         v-model="component"
         label="URL component"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import AppButton from '@/components/AppButton.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import TextEditor from '@/components/TextEditor.vue';
@@ -23,12 +24,20 @@ const inputPlaceholder = computed(() => (mode.value === 'encode' ? 'Paste text o
 const outputPlaceholder = computed(() => (mode.value === 'encode' ? 'Encoded HTML entities will appear here' : 'Decoded text will appear here'));
 const inputLanguage = computed(() => (mode.value === 'encode' ? 'html' : 'text'));
 const outputLanguage = computed(() => (mode.value === 'encode' ? 'text' : 'html'));
+
+function flipMode(): void {
+  const previousOutput = output.value;
+
+  mode.value = mode.value === 'encode' ? 'decode' : 'encode';
+  if (previousOutput) input.value = previousOutput;
+}
 </script>
 
 <template>
   <section class="converter-tool">
     <ToolToolbar>
       <AppSelect v-model="mode" label="Mode" :options="modeOptions" />
+      <AppButton variant="field" icon="exchangeAlt" icon-only aria-label="Swap input and output" @click="flipMode" />
       <AppToggle
         v-if="mode === 'encode'"
         v-model="encodeAllCharacters"
