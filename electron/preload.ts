@@ -34,4 +34,10 @@ contextBridge.exposeInMainWorld('codyDevTools', {
   loadToolState: () => ipcRenderer.invoke('load-tool-state'),
   saveToolState: (state: Record<string, Record<string, unknown>>) => ipcRenderer.invoke('save-tool-state', state),
   clearToolState: () => ipcRenderer.invoke('clear-tool-state'),
+  onUpdateDownloaded: (callback: (version: string) => void) => {
+    ipcRenderer.on('update-downloaded', (_event, version: string) => callback(version));
+  },
+  quitAndInstallUpdate: () => {
+    ipcRenderer.send('quit-and-install-update');
+  },
 });

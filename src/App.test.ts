@@ -18,6 +18,8 @@ function createCodyDevTools(overrides: Partial<NonNullable<Window['codyDevTools'
     loadToolState: vi.fn().mockResolvedValue({}),
     saveToolState: vi.fn().mockResolvedValue(undefined),
     clearToolState: vi.fn().mockResolvedValue(undefined),
+    onUpdateDownloaded: vi.fn(),
+    quitAndInstallUpdate: vi.fn(),
     ...overrides,
   };
 }
@@ -188,6 +190,69 @@ describe('App remember-tool-input persistence', () => {
     await flushPromises();
 
     expect(clearToolState).toHaveBeenCalled();
+  });
+});
+
+describe('App update banner', () => {
+  afterEach(() => {
+    delete (window as { codyDevTools?: unknown }).codyDevTools;
+    resetToolStateForTests();
+  });
+
+  it('shows the update banner once a downloaded version is pushed from the main process', async () => {
+    let pushUpdate: ((version: string) => void) | null = null;
+    window.codyDevTools = createCodyDevTools({
+      onUpdateDownloaded: (callback) => {
+        pushUpdate = callback;
+      },
+    });
+
+    const wrapper = mount(App);
+
+    expect(wrapper.find('.update-banner').exists()).toBe(false);
+    expect(pushUpdate).not.toBeNull();
+
+    pushUpdate?.('1.2.3');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('.update-banner').exists()).toBe(true);
+    expect(wrapper.text()).toContain('1.2.3');
+  });
+
+  it('quits and installs via the bridge when "Restart & Update" is clicked', async () => {
+    let pushUpdate: ((version: string) => void) | null = null;
+    const quitAndInstallUpdate = vi.fn();
+    window.codyDevTools = createCodyDevTools({
+      onUpdateDownloaded: (callback) => {
+        pushUpdate = callback;
+      },
+      quitAndInstallUpdate,
+    });
+
+    const wrapper = mount(App);
+    pushUpdate?.('1.2.3');
+    await wrapper.vm.$nextTick();
+
+    await wrapper.findAll('button').find((button) => button.text().includes('Restart'))?.trigger('click');
+
+    expect(quitAndInstallUpdate).toHaveBeenCalled();
+  });
+
+  it('dismisses the update banner without installing', async () => {
+    let pushUpdate: ((version: string) => void) | null = null;
+    window.codyDevTools = createCodyDevTools({
+      onUpdateDownloaded: (callback) => {
+        pushUpdate = callback;
+      },
+    });
+
+    const wrapper = mount(App);
+    pushUpdate?.('1.2.3');
+    await wrapper.vm.$nextTick();
+
+    await wrapper.find('[aria-label="Dismiss update notification"]').trigger('click');
+
+    expect(wrapper.find('.update-banner').exists()).toBe(false);
   });
 });
 

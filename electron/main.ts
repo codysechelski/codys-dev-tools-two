@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, shell, type MenuItemConstructorOptions } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
@@ -42,6 +43,63 @@ const textFileExtensions = [
 ];
 let currentThemeMode: ThemeMode = 'system';
 let mainWindowRef: BrowserWindow | null = null;
+
+// Checked once shortly after launch (so it doesn't compete with initial window load) and then
+// periodically, in case the app is left open for a long time.
+const UPDATE_CHECK_DELAY_MS = 10_000;
+const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
+
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+
+autoUpdater.on('update-downloaded', (info) => {
+  mainWindowRef?.webContents.send('update-downloaded', info.version);
+});
+
+autoUpdater.on('error', (error) => {
+  // Background checks fail silently (no network, rate-limited, unsupported platform, etc.) —
+  // only the user-initiated "Check for Updates..." menu action surfaces a dialog.
+  console.error('Auto-update error:', error);
+});
+
+function checkForUpdatesInBackground(): void {
+  if (!app.isPackaged) return;
+
+  autoUpdater.checkForUpdates().catch((error: unknown) => {
+    console.error('Failed to check for updates:', error);
+  });
+}
+
+async function checkForUpdatesFromMenu(): Promise<void> {
+  if (!app.isPackaged) {
+    await dialog.showMessageBox({ type: 'info', message: 'Updates are not available in development builds.' });
+    return;
+  }
+
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    const latestVersion = result?.updateInfo.version;
+    if (!latestVersion || latestVersion === app.getVersion()) {
+      await dialog.showMessageBox({
+        type: 'info',
+        message: "You're up to date",
+        detail: `${app.name} ${app.getVersion()} is the latest version.`,
+      });
+    }
+    // If a newer version *was* found, autoUpdater's own "update-downloaded" event (wired above)
+    // notifies the renderer once it finishes downloading — same as a background check.
+  } catch (error) {
+    await dialog.showMessageBox({
+      type: 'error',
+      message: 'Unable to check for updates',
+      detail: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+ipcMain.on('quit-and-install-update', () => {
+  autoUpdater.quitAndInstall();
+});
 
 ipcMain.handle('load-text-file', async () => {
   const result = await dialog.showOpenDialog({
@@ -271,6 +329,7 @@ function buildAppMenu(): Menu {
             label: app.name,
             submenu: [
               { label: `About ${app.name}`, click: () => showHome() },
+              { label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
               { type: 'separator' },
               { label: 'Settings', accelerator: 'Cmd+,', click: () => showSettings() },
               { type: 'separator' },
@@ -341,7 +400,10 @@ function buildAppMenu(): Menu {
       : [
           {
             label: 'Help',
-            submenu: [{ label: `About ${app.name}`, click: () => showHome() }] as MenuItemConstructorOptions[],
+            submenu: [
+              { label: `About ${app.name}`, click: () => showHome() },
+              { label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
+            ] as MenuItemConstructorOptions[],
           },
         ]),
   ];
@@ -394,6 +456,9 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
+  setTimeout(checkForUpdatesInBackground, UPDATE_CHECK_DELAY_MS);
+  setInterval(checkForUpdatesInBackground, UPDATE_CHECK_INTERVAL_MS);
 });
 
 app.on('window-all-closed', () => {

@@ -25,6 +25,8 @@ declare global {
       loadToolState: () => Promise<Record<string, Record<string, unknown>>>;
       saveToolState: (state: Record<string, Record<string, unknown>>) => Promise<void>;
       clearToolState: () => Promise<void>;
+      onUpdateDownloaded: (callback: (version: string) => void) => void;
+      quitAndInstallUpdate: () => void;
     };
   }
 }

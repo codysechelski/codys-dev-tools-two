@@ -8,6 +8,7 @@ import { DEFAULT_SETTINGS, loadSettingsFromLocalStorage, saveSettingsToLocalStor
 import { clearAllToolState, hasStoredToolState, initToolState, setRememberToolInputMode, toolStateMode } from '@/toolState';
 import { applyFormatterDefaults } from '@/formatterDefaults';
 import HomePanel from '@/components/HomePanel.vue';
+import UpdateBanner from '@/components/UpdateBanner.vue';
 import { allTools, attributionsTool, settingsTool, tools } from '@/tools/registry';
 
 const selectedToolId = ref<string | null>(null);
@@ -22,6 +23,7 @@ const themeMode = computed(() => settings.value.themeMode);
 const rememberToolInput = computed(() => settings.value.rememberToolInput);
 const hasSavedToolData = computed(() => hasStoredToolState());
 const systemPrefersDark = ref(true);
+const downloadedUpdateVersion = ref<string | null>(null);
 const activeTheme = computed(() => resolveTheme(themeMode.value, systemPrefersDark.value));
 let mediaQuery: MediaQueryList | null = null;
 let isLoadingSettings = false;
@@ -46,6 +48,9 @@ onMounted(async () => {
 
   window.codyDevTools?.onNavigateHome?.(() => selectTool(null));
   window.codyDevTools?.onNavigateSettings?.(() => selectTool(settingsTool.id));
+  window.codyDevTools?.onUpdateDownloaded?.((version) => {
+    downloadedUpdateVersion.value = version;
+  });
 
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
   if (mediaQuery) {
@@ -144,6 +149,14 @@ async function resetSettingsLocation(): Promise<void> {
   settingsLocationWarning.value = result.warning ?? '';
   await persistSettings();
 }
+
+function installUpdate(): void {
+  window.codyDevTools?.quitAndInstallUpdate?.();
+}
+
+function dismissUpdateBanner(): void {
+  downloadedUpdateVersion.value = null;
+}
 </script>
 
 <template>
@@ -190,5 +203,7 @@ async function resetSettingsLocation(): Promise<void> {
       />
       <HomePanel v-else :theme="activeTheme" :version="APP_VERSION" />
     </section>
+
+    <UpdateBanner v-if="downloadedUpdateVersion" :version="downloadedUpdateVersion" @install="installUpdate" @dismiss="dismissUpdateBanner" />
   </main>
 </template>
