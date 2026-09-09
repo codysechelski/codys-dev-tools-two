@@ -6,7 +6,7 @@ import AppIcon from '@/components/AppIcon.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
-import type { AppSettings, IndentStyle, RememberToolInput } from '@/settings';
+import type { AppSettings, IndentStyle, RememberToolInput, SidebarDensity } from '@/settings';
 import type { ThemeMode } from '@/theme';
 
 defineProps<{
@@ -90,6 +90,26 @@ const indentStyleOptions: Array<{ label: string; value: IndentStyle }> = [
   { label: 'Tabs', value: 'tabs' },
 ];
 
+const sidebarDensityOptions: Array<{
+  value: SidebarDensity;
+  label: string;
+  description: string;
+  icon: 'listUl' | 'gripLines';
+}> = [
+  {
+    value: 'comfortable',
+    label: 'Comfortable',
+    description: 'More breathing room around each tool.',
+    icon: 'listUl',
+  },
+  {
+    value: 'compact',
+    label: 'Compact',
+    description: 'Smaller rows so more tools fit on screen at once.',
+    icon: 'gripLines',
+  },
+];
+
 function confirmReset(): void {
   showResetConfirm.value = false;
   emit('resetSettings');
@@ -112,6 +132,28 @@ function confirmReset(): void {
           :class="{ 'settings-theme-card--active': themeMode === option.mode }"
           type="button"
           @click="$emit('setTheme', option.mode)"
+        >
+          <span class="settings-theme-card__icon"><AppIcon :name="option.icon" /></span>
+          <strong>{{ option.label }}</strong>
+          <span>{{ option.description }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div>
+        <h2>Sidebar Density</h2>
+        <p>Choose how much space each item in the tool list takes up.</p>
+      </div>
+
+      <div class="settings-theme-grid">
+        <button
+          v-for="option in sidebarDensityOptions"
+          :key="option.value"
+          class="settings-theme-card"
+          :class="{ 'settings-theme-card--active': settings.sidebarDensity === option.value }"
+          type="button"
+          @click="emit('updateSetting', { sidebarDensity: option.value })"
         >
           <span class="settings-theme-card__icon"><AppIcon :name="option.icon" /></span>
           <strong>{{ option.label }}</strong>
@@ -211,7 +253,7 @@ function confirmReset(): void {
     <div class="settings-section">
       <div>
         <h2>Reset</h2>
-        <p>Revert theme, remembered-input mode, formatting defaults, and pinned tools back to their factory values.</p>
+        <p>Revert theme, sidebar density, remembered-input mode, formatting defaults, and pinned tools back to their factory values.</p>
       </div>
 
       <div class="settings-file-actions">

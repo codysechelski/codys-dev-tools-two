@@ -3,16 +3,23 @@ import { computed, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import ToolNavItem from '@/components/ToolNavItem.vue';
+import type { SidebarDensity } from '@/settings';
 import type { ToolDefinition } from '@/tools/types';
 
-const props = defineProps<{
-  tools: ToolDefinition[];
-  selectedToolId: string | null;
-  version: string;
-  attributionsToolId: string;
-  settingsToolId: string;
-  pinnedToolIds: string[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    tools: ToolDefinition[];
+    selectedToolId: string | null;
+    version: string;
+    attributionsToolId: string;
+    settingsToolId: string;
+    pinnedToolIds: string[];
+    density?: SidebarDensity;
+  }>(),
+  {
+    density: 'comfortable',
+  },
+);
 
 defineEmits<{
   selectTool: [toolId: string | null];
@@ -40,7 +47,7 @@ const groupedTools = computed(() =>
 </script>
 
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar" :data-density="density">
     <div class="sidebar__drag-region" />
     <div class="sidebar__filter">
       <AppTextInput v-model="filter" label="Search tools" hide-label placeholder="Search tools…" icon="search" />

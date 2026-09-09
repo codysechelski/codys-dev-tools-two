@@ -37,6 +37,34 @@ describe('Settings', () => {
     expect(wrapper.emitted('setTheme')?.[0]).toEqual(['light']);
   });
 
+  it('renders sidebar density choices and marks the active option', () => {
+    const wrapper = mount(Settings, { props: baseProps });
+
+    expect(wrapper.text()).toContain('Sidebar Density');
+    expect(wrapper.text()).toContain('Comfortable');
+    expect(wrapper.text()).toContain('Compact');
+
+    const densityCards = wrapper.findAll('.settings-theme-card').filter((card) => card.text().includes('Comfortable') || card.text().includes('Compact'));
+    const activeCard = densityCards.find((card) => card.classes().includes('settings-theme-card--active'));
+    expect(activeCard?.text()).toContain('Comfortable');
+  });
+
+  it('emits updateSetting when a different sidebar density is chosen', async () => {
+    const wrapper = mount(Settings, { props: baseProps });
+
+    const compactCard = wrapper.findAll('.settings-theme-card').find((card) => card.text().includes('Compact'));
+    await compactCard?.trigger('click');
+
+    expect(wrapper.emitted('updateSetting')?.[0]).toEqual([{ sidebarDensity: 'compact' }]);
+  });
+
+  it('marks compact as active when settings.sidebarDensity is compact', () => {
+    const wrapper = mount(Settings, { props: { ...baseProps, settings: { ...DEFAULT_SETTINGS, sidebarDensity: 'compact' } } });
+
+    const compactCard = wrapper.findAll('.settings-theme-card').find((card) => card.text().includes('Compact'));
+    expect(compactCard?.classes()).toContain('settings-theme-card--active');
+  });
+
   it('renders formatting defaults reflecting the current settings', () => {
     const wrapper = mount(Settings, {
       props: { ...baseProps, settings: { ...DEFAULT_SETTINGS, defaultIndentStyle: '4-spaces', defaultCaseSensitive: true } },

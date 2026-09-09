@@ -13,6 +13,7 @@ const { autoUpdater } = electronUpdaterPkg;
 type ThemeMode = 'light' | 'dark' | 'system';
 type RememberToolInput = 'never' | 'session' | 'forever';
 type IndentStyle = '2-spaces' | '4-spaces' | 'tabs';
+type SidebarDensity = 'comfortable' | 'compact';
 
 interface AppSettings {
   themeMode: ThemeMode;
@@ -23,6 +24,7 @@ interface AppSettings {
   defaultCaseSensitive: boolean;
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
+  sidebarDensity: SidebarDensity;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -34,9 +36,11 @@ const DEFAULT_SETTINGS: AppSettings = {
   defaultCaseSensitive: false,
   defaultSortKeys: false,
   pinnedToolIds: [],
+  sidebarDensity: 'comfortable',
 };
 const REMEMBER_TOOL_INPUT_MODES: RememberToolInput[] = ['never', 'session', 'forever'];
 const INDENT_STYLES: IndentStyle[] = ['2-spaces', '4-spaces', 'tabs'];
+const SIDEBAR_DENSITIES: SidebarDensity[] = ['comfortable', 'compact'];
 
 // Electron falls back to package.json's "name" field ("codys-dev-tools") for the
 // app/menu-bar name during development, since productName is only read from the
@@ -234,6 +238,9 @@ function mergeSettings(raw: unknown): AppSettings {
   const pinnedToolIds = Array.isArray(candidate.pinnedToolIds)
     ? [...new Set(candidate.pinnedToolIds.filter((id): id is string => typeof id === 'string'))]
     : DEFAULT_SETTINGS.pinnedToolIds;
+  const sidebarDensity: SidebarDensity = SIDEBAR_DENSITIES.includes(candidate.sidebarDensity as SidebarDensity)
+    ? (candidate.sidebarDensity as SidebarDensity)
+    : DEFAULT_SETTINGS.sidebarDensity;
 
   return {
     themeMode,
@@ -244,6 +251,7 @@ function mergeSettings(raw: unknown): AppSettings {
     defaultCaseSensitive,
     defaultSortKeys,
     pinnedToolIds,
+    sidebarDensity,
   };
 }
 

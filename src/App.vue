@@ -170,6 +170,7 @@ function dismissUpdateBanner(): void {
       :attributions-tool-id="attributionsTool.id"
       :settings-tool-id="settingsTool.id"
       :pinned-tool-ids="settings.pinnedToolIds"
+      :density="settings.sidebarDensity"
       @select-tool="selectTool"
       @toggle-pin="togglePin"
     />

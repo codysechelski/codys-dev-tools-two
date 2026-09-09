@@ -65,6 +65,16 @@ describe('mergeWithDefaults', () => {
     expect(mergeWithDefaults({ pinnedToolIds: 'not-an-array' })).toEqual(DEFAULT_SETTINGS);
     expect(mergeWithDefaults({ pinnedToolIds: [1, 2, 3] })).toEqual({ ...DEFAULT_SETTINGS, pinnedToolIds: [] });
   });
+
+  it('keeps a valid sidebarDensity', () => {
+    expect(mergeWithDefaults({ sidebarDensity: 'compact' })).toEqual({ ...DEFAULT_SETTINGS, sidebarDensity: 'compact' });
+    expect(mergeWithDefaults({ sidebarDensity: 'comfortable' })).toEqual(DEFAULT_SETTINGS);
+  });
+
+  it('falls back to the default sidebarDensity for missing or invalid values', () => {
+    expect(mergeWithDefaults({ sidebarDensity: 'cozy' })).toEqual(DEFAULT_SETTINGS);
+    expect(mergeWithDefaults({ sidebarDensity: 123 })).toEqual(DEFAULT_SETTINGS);
+  });
 });
 
 describe('localStorage persistence', () => {

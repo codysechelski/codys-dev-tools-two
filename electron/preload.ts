@@ -9,6 +9,7 @@ interface AppSettings {
   defaultCaseSensitive: boolean;
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
+  sidebarDensity: 'comfortable' | 'compact';
 }
 
 contextBridge.exposeInMainWorld('codyDevTools', {

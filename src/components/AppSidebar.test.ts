@@ -141,4 +141,16 @@ describe('AppSidebar', () => {
 
     expect(pinButton?.classes()).toContain('tool-nav__pin--active');
   });
+
+  it('defaults to comfortable density when no density prop is given', () => {
+    const wrapper = mount(AppSidebar, { props: baseProps });
+
+    expect(wrapper.find('.sidebar').attributes('data-density')).toBe('comfortable');
+  });
+
+  it('reflects the compact density prop as a data attribute', () => {
+    const wrapper = mount(AppSidebar, { props: { ...baseProps, density: 'compact' } });
+
+    expect(wrapper.find('.sidebar').attributes('data-density')).toBe('compact');
+  });
 });

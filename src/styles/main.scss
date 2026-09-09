@@ -1181,6 +1181,46 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   white-space: nowrap;
 }
 
+// Compact sidebar density (Settings > Sidebar Density): shrinks the gaps, icon, and pin button
+// on each row so more of the tool list is visible at once.
+.sidebar[data-density='compact'] .tool-nav {
+  gap: var(--space-2);
+}
+
+.sidebar[data-density='compact'] .tool-nav__section {
+  gap: var(--space-1);
+}
+
+.sidebar[data-density='compact'] .tool-nav__item {
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-2);
+}
+
+.sidebar[data-density='compact'] .tool-nav__item-button {
+  grid-template-columns: 1.6rem 1fr;
+  gap: var(--space-2);
+}
+
+.sidebar[data-density='compact'] .tool-nav__icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+}
+
+.sidebar[data-density='compact'] .tool-nav__pin {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.sidebar[data-density='compact'] .tool-nav__pin .app-icon {
+  width: 0.65rem;
+  height: 0.65rem;
+}
+
+.sidebar[data-density='compact'] .tool-nav strong {
+  font-size: 0.86rem;
+}
+
 .workspace {
   display: flex;
   min-width: 0;

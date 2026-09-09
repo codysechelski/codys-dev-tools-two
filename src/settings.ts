@@ -2,6 +2,7 @@ import type { ThemeMode } from '@/theme';
 
 export type RememberToolInput = 'never' | 'session' | 'forever';
 export type IndentStyle = '2-spaces' | '4-spaces' | 'tabs';
+export type SidebarDensity = 'comfortable' | 'compact';
 
 export interface AppSettings {
   themeMode: ThemeMode;
@@ -12,6 +13,7 @@ export interface AppSettings {
   defaultCaseSensitive: boolean;
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
+  sidebarDensity: SidebarDensity;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -23,12 +25,14 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultCaseSensitive: false,
   defaultSortKeys: false,
   pinnedToolIds: [],
+  sidebarDensity: 'comfortable',
 };
 
 const LOCAL_STORAGE_KEY = 'codys-dev-tools:settings';
 const THEME_MODES: ThemeMode[] = ['light', 'dark', 'system'];
 const REMEMBER_TOOL_INPUT_MODES: RememberToolInput[] = ['never', 'session', 'forever'];
 const INDENT_STYLES: IndentStyle[] = ['2-spaces', '4-spaces', 'tabs'];
+const SIDEBAR_DENSITIES: SidebarDensity[] = ['comfortable', 'compact'];
 
 export function mergeWithDefaults(raw: unknown): AppSettings {
   if (typeof raw !== 'object' || raw === null) return { ...DEFAULT_SETTINGS };
@@ -49,6 +53,9 @@ export function mergeWithDefaults(raw: unknown): AppSettings {
   const pinnedToolIds = Array.isArray(candidate.pinnedToolIds)
     ? [...new Set(candidate.pinnedToolIds.filter((id): id is string => typeof id === 'string'))]
     : DEFAULT_SETTINGS.pinnedToolIds;
+  const sidebarDensity = SIDEBAR_DENSITIES.includes(candidate.sidebarDensity as SidebarDensity)
+    ? (candidate.sidebarDensity as SidebarDensity)
+    : DEFAULT_SETTINGS.sidebarDensity;
 
   return {
     themeMode,
@@ -59,6 +66,7 @@ export function mergeWithDefaults(raw: unknown): AppSettings {
     defaultCaseSensitive,
     defaultSortKeys,
     pinnedToolIds,
+    sidebarDensity,
   };
 }
 
