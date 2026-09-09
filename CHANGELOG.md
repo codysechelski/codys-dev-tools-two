@@ -1,3 +1,14 @@
+# [0.29.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.2...v0.29.0) (2026-09-09)
+
+
+### Features
+
+* **diff-tool): add word-level highlighting, move swap button to toolbar; fix(json-yaml:** add YAML syntax highlighting ([aa130ba](https://github.com/codysechelski/codys-dev-tools-two/commit/aa130ba4f000ad814235a71c154d0da1a4a13e92))
+* **diff-tool:** add a Diff Tool ([6deacb1](https://github.com/codysechelski/codys-dev-tools-two/commit/6deacb1b951bddad5417908e4f074ebf8900f5d3))
+* **sql-formatter:** add a SQL/SOQL Formatter tool ([7d9b712](https://github.com/codysechelski/codys-dev-tools-two/commit/7d9b712d35e38142bc672000ea5da6712cf67817))
+* **sql-formatter:** add SQL/SOQL syntax highlighting ([7b3ffc7](https://github.com/codysechelski/codys-dev-tools-two/commit/7b3ffc7ac6d051c7884983e9e72eeb639af72a30))
+* **svg-viewer:** add an SVG Viewer tool ([8e4a6f1](https://github.com/codysechelski/codys-dev-tools-two/commit/8e4a6f1ff0086e494c57f618e16a820422eaa847))
+
 ## [0.28.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.1...v0.28.2) (2026-09-09)
 
 
