@@ -2266,6 +2266,96 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   text-align: center;
 }
 
+.svg-viewer-tool {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.svg-viewer-tool__workspace {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(20rem, 1fr) minmax(20rem, 1fr);
+  gap: var(--space-4);
+}
+
+.svg-viewer-tool__workspace > .text-editor {
+  min-height: 0;
+}
+
+.svg-viewer-preview-panel {
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+  flex-direction: column;
+  padding: var(--space-5);
+  border: var(--border-hairline) solid rgba(199, 210, 254, 0.14);
+  border-radius: var(--radius-xl);
+  background: rgba(3, 4, 14, 0.72);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+}
+
+.app-shell[data-theme='light'] .svg-viewer-preview-panel {
+  border-color: rgba(79, 70, 229, 0.12);
+  background: #e2e8f4;
+  box-shadow: none;
+}
+
+.svg-viewer-preview {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(45deg, var(--checkerboard-tile) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--checkerboard-tile) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--checkerboard-tile) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--checkerboard-tile) 75%),
+    var(--checkerboard-base);
+  background-position:
+    0 0,
+    0 0.6rem,
+    0.6rem -0.6rem,
+    -0.6rem 0;
+  background-size: 1.2rem 1.2rem;
+}
+
+.svg-viewer-preview__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.svg-viewer-preview--empty {
+  gap: var(--space-3);
+  color: var(--color-mist-500);
+  text-align: center;
+}
+
+.app-shell[data-theme='light'] .svg-viewer-preview--empty {
+  color: var(--color-ink-700);
+}
+
+.svg-viewer-preview--empty .app-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  opacity: 0.5;
+}
+
+.svg-viewer-preview--empty p {
+  margin: 0;
+  max-width: 18rem;
+}
+
 .cron-tool {
   display: flex;
   min-height: 0;
@@ -4135,6 +4225,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   .text-analyzer-stats,
   .line-tool__workspace,
   .regex-tool__workspace,
+  .svg-viewer-tool__workspace,
   .cron-tool__workspace,
   .cron-field-grid,
   .timestamp-tool__toolbar,

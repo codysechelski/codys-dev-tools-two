@@ -20,6 +20,7 @@ import QrGenerator from './QrGenerator.vue';
 import RegexTester from './RegexTester.vue';
 import Settings from './Settings.vue';
 import StringTemplateFormatter from './StringTemplateFormatter.vue';
+import SvgViewer from './SvgViewer.vue';
 import TextAnalyzer from './TextAnalyzer.vue';
 import TimestampConverter from './TimestampConverter.vue';
 import UrlEncoderDecoder from './UrlEncoderDecoder.vue';
@@ -227,6 +228,16 @@ export const tools: ToolDefinition[] = [
     icon: 'qrcode',
     component: QrGenerator,
     keywords: ['qr', 'qr code', 'barcode', 'wifi', 'vcard'],
+  },
+  {
+    id: 'svg-viewer',
+    name: 'SVG Viewer',
+    section: 'Miscellaneous',
+    description: 'Preview SVG markup as you edit it.',
+    instructions: 'Paste or write SVG markup in the editor and see it rendered live in the preview panel.',
+    icon: 'vectorSquare',
+    component: SvgViewer,
+    keywords: ['svg', 'vector', 'image', 'preview', 'xml'],
   },
   {
     id: 'unicode-character-map',
