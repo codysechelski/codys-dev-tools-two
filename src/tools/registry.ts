@@ -20,6 +20,7 @@ import PythonFormatter from './PythonFormatter.vue';
 import QrGenerator from './QrGenerator.vue';
 import RegexTester from './RegexTester.vue';
 import Settings from './Settings.vue';
+import SqlFormatter from './SqlFormatter.vue';
 import StringTemplateFormatter from './StringTemplateFormatter.vue';
 import SvgViewer from './SvgViewer.vue';
 import TextAnalyzer from './TextAnalyzer.vue';
@@ -118,6 +119,17 @@ export const tools: ToolDefinition[] = [
     icon: 'terminal',
     component: LuaFormatter,
     keywords: ['lua', 'script', 'indent', 'beautify'],
+  },
+  {
+    id: 'sql-formatter',
+    name: 'SQL Formatter',
+    section: 'Formatters',
+    description: 'Format and validate SQL and SOQL queries.',
+    instructions:
+      'Paste a SQL or SOQL query into the input editor, choose formatting options, then copy the formatted output. SOQL child relationship subqueries are indented as nested blocks.',
+    icon: 'database',
+    component: SqlFormatter,
+    keywords: ['sql', 'soql', 'salesforce', 'query', 'beautify', 'pretty print'],
   },
   {
     id: 'uuid-generator',
