@@ -1,3 +1,16 @@
+# [0.30.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.29.0...v0.30.0) (2026-09-09)
+
+
+### Bug Fixes
+
+* **desktop:** fix crash on launch from electron-updater's ESM/CJS interop ([e215cf7](https://github.com/codysechelski/codys-dev-tools-two/commit/e215cf7caab2dc00482b4cec3bc64849f90aab61))
+
+
+### Features
+
+* **desktop:** add auto-update ([4821623](https://github.com/codysechelski/codys-dev-tools-two/commit/4821623072b0dea3adb46968b60092c01eda6651))
+* **settings:** add a sidebar density setting ([1848d37](https://github.com/codysechelski/codys-dev-tools-two/commit/1848d376af666c531d566297c75707922ea17a3c))
+
 # [0.29.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.28.2...v0.29.0) (2026-09-09)
 
 
