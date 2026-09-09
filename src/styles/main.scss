@@ -3913,7 +3913,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 
 // Settings is centered at half width on large screens (see .settings-panel); below this it
 // starts feeling cramped well before the sidebar collapses at the 820px breakpoint above.
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .settings-panel {
     max-width: 100%;
   }
