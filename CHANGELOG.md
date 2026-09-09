@@ -1,3 +1,11 @@
+# [0.27.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.26.0...v0.27.0) (2026-09-09)
+
+
+### Features
+
+* **base64-image-converter:** add a swap button between encode/decode ([f45d654](https://github.com/codysechelski/codys-dev-tools-two/commit/f45d65479fb29c7bf3e04242a3cf59ce32a3257c))
+* **encoders:** add a swap button to flip mode and input/output ([921f3a6](https://github.com/codysechelski/codys-dev-tools-two/commit/921f3a6244b68072f60f1e7587ab6fe0116d0260))
+
 # [0.26.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.5...v0.26.0) (2026-09-09)
 
 
