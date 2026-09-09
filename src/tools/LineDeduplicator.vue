@@ -112,7 +112,7 @@ function jumpToLine(lineNumber: number): void {
               <AppButton
                 variant="muted"
                 size="xs"
-                icon="barsStaggered"
+                icon="alignLeft"
                 class="line-tool-duplicate__remove-button"
                 :disabled="!analysis.duplicates.length"
                 @click="applyRemoveDuplicates"
@@ -134,7 +134,7 @@ function jumpToLine(lineNumber: number): void {
               <AppButton
                 variant="muted"
                 size="xs"
-                icon="barsStaggered"
+                icon="alignLeft"
                 class="line-tool-duplicate__remove-button"
                 :aria-label="`Remove duplicates of ${duplicate.text || 'this blank line'}`"
                 @click="removeDuplicate(duplicate)"

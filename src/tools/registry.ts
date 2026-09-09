@@ -190,7 +190,7 @@ export const tools: ToolDefinition[] = [
     section: 'String Utilities',
     description: 'Format delimited rows with template placeholders.',
     instructions: 'Paste tabular or delimited data, define a format string, and automatically generate templated output.',
-    icon: 'clone',
+    icon: 'alignLeft',
     component: StringTemplateFormatter,
     keywords: ['template', 'mail merge', 'csv', 'tsv', 'delimited', 'placeholders'],
   },
