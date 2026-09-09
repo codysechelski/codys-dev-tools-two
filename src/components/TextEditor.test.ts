@@ -201,6 +201,48 @@ describe('TextEditor Load File in Electron', () => {
     wrapper.unmount();
   });
 
+  it('renders highlight ranges as marks and updates them when the prop changes', async () => {
+    const wrapper = mount(TextEditor, {
+      props: { modelValue: 'hello world', label: 'Input', highlightRanges: [{ from: 0, to: 5 }] },
+      attachTo: document.body,
+    });
+
+    expect(wrapper.findAll('.cm-highlight-range')).toHaveLength(1);
+
+    await wrapper.setProps({ highlightRanges: [{ from: 0, to: 5 }, { from: 6, to: 11 }] });
+
+    expect(wrapper.findAll('.cm-highlight-range')).toHaveLength(2);
+
+    wrapper.unmount();
+  });
+
+  it('ignores out-of-bounds or zero-length highlight ranges instead of throwing', () => {
+    expect(() =>
+      mount(TextEditor, {
+        props: { modelValue: 'hi', label: 'Input', highlightRanges: [{ from: 5, to: 9 }, { from: 1, to: 1 }] },
+        attachTo: document.body,
+      }),
+    ).not.toThrow();
+  });
+
+  it('exposes scrollToRange to select a character range and focus the editor', () => {
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello world', label: 'Input' }, attachTo: document.body });
+
+    wrapper.vm.scrollToRange(6, 11);
+
+    expect(document.activeElement).toBe(wrapper.find('.cm-content').element);
+
+    wrapper.unmount();
+  });
+
+  it('clamps scrollToRange to the document bounds instead of throwing', () => {
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hi', label: 'Input' }, attachTo: document.body });
+
+    expect(() => wrapper.vm.scrollToRange(-5, 999)).not.toThrow();
+
+    wrapper.unmount();
+  });
+
   it('holds the target line highlight, then fades it out and removes it', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     const wrapper = mount(TextEditor, { props: { modelValue: 'a\nb\nc', label: 'Input' }, attachTo: document.body });

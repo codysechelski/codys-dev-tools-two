@@ -27,11 +27,14 @@ const props = withDefaults(
     language?: 'css' | 'html' | 'javascript' | 'json' | 'lua' | 'python' | 'xml' | 'text';
     readonly?: boolean;
     placeholder?: string;
+    /** Character ranges (offsets into modelValue) to visually highlight, e.g. regex matches. */
+    highlightRanges?: Array<{ from: number; to: number }>;
   }>(),
   {
     language: 'text',
     readonly: false,
     placeholder: '',
+    highlightRanges: () => [],
   },
 );
 
@@ -91,6 +94,33 @@ const lineFlashField = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 });
 
+const highlightRangeMark = Decoration.mark({ class: 'cm-highlight-range' });
+const setHighlightRanges = StateEffect.define<Array<{ from: number; to: number }>>();
+const highlightRangesField = StateField.define<DecorationSet>({
+  create(state) {
+    return buildHighlightDecorations(props.highlightRanges, state.doc.length);
+  },
+  update(decorations, tr) {
+    decorations = decorations.map(tr.changes);
+    for (const effect of tr.effects) {
+      if (effect.is(setHighlightRanges)) {
+        decorations = buildHighlightDecorations(effect.value, tr.state.doc.length);
+      }
+    }
+    return decorations;
+  },
+  provide: (field) => EditorView.decorations.from(field),
+});
+
+function buildHighlightDecorations(ranges: Array<{ from: number; to: number }>, docLength: number): DecorationSet {
+  const marks = ranges
+    .filter((range) => range.to > range.from && range.from >= 0 && range.to <= docLength)
+    .sort((a, b) => a.from - b.from)
+    .map((range) => highlightRangeMark.range(range.from, range.to));
+
+  return Decoration.set(marks, true);
+}
+
 onMounted(() => {
   if (!editorRoot.value) return;
 
@@ -122,6 +152,29 @@ watch(
   },
 );
 
+watch(
+  () => props.highlightRanges,
+  (ranges) => {
+    view.value?.dispatch({ effects: setHighlightRanges.of(ranges) });
+  },
+  { deep: true },
+);
+
+function scrollToRange(from: number, to: number): void {
+  const editor = view.value;
+  if (!editor) return;
+
+  const docLength = editor.state.doc.length;
+  const clampedFrom = Math.min(Math.max(from, 0), docLength);
+  const clampedTo = Math.min(Math.max(to, clampedFrom), docLength);
+
+  editor.dispatch({
+    selection: { anchor: clampedFrom, head: clampedTo },
+    scrollIntoView: true,
+  });
+  editor.focus();
+}
+
 function scrollToLine(lineNumber: number): void {
   const editor = view.value;
   if (!editor) return;
@@ -147,7 +200,7 @@ function scrollToLine(lineNumber: number): void {
   }, LINE_FLASH_HOLD_MS);
 }
 
-defineExpose({ scrollToLine });
+defineExpose({ scrollToLine, scrollToRange });
 
 function clearContents(): void {
   if (props.readonly || !props.modelValue) return;
@@ -231,6 +284,7 @@ function createEditorState(): EditorState {
       indentUnit.of('  '),
       placeholder(props.placeholder),
       lineFlashField,
+      highlightRangesField,
       syntaxHighlighting(codeHighlightStyle),
       EditorState.readOnly.of(props.readonly),
       EditorView.editable.of(!props.readonly),

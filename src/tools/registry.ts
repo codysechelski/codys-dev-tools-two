@@ -17,6 +17,7 @@ import LuaFormatter from './LuaFormatter.vue';
 import MarkdownTableGenerator from './MarkdownTableGenerator.vue';
 import PythonFormatter from './PythonFormatter.vue';
 import QrGenerator from './QrGenerator.vue';
+import RegexTester from './RegexTester.vue';
 import Settings from './Settings.vue';
 import StringTemplateFormatter from './StringTemplateFormatter.vue';
 import TextAnalyzer from './TextAnalyzer.vue';
@@ -266,6 +267,17 @@ export const tools: ToolDefinition[] = [
     icon: 'sortAlt',
     component: LineDeduplicator,
     keywords: ['sort', 'dedupe', 'deduplicate', 'duplicate', 'lines', 'unique'],
+  },
+  {
+    id: 'regex-tester',
+    name: 'Regex Tester',
+    section: 'String Utilities',
+    description: 'Build and test regular expressions.',
+    instructions:
+      'Type a pattern into the regular expression editor, use the footer buttons to insert common tokens, then paste text below to see every match highlighted and listed.',
+    icon: 'search',
+    component: RegexTester,
+    keywords: ['regex', 'regexp', 'regular expression', 'pattern matching', 'match', 'find'],
   },
   {
     id: 'lorem-ipsum-generator',
