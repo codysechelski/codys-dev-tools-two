@@ -48,6 +48,9 @@ const SIDEBAR_DENSITIES: SidebarDensity[] = ['comfortable', 'compact'];
 app.setName("Cody's Dev Tools");
 
 const isDev = !app.isPackaged;
+const isMacOS = process.platform === 'darwin';
+// Points at the release the update check found. Used for the manual/"View Release" flow below.
+const GITHUB_RELEASES_URL = 'https://github.com/codysechelski/codys-dev-tools-two/releases';
 const textFileExtensions = [
   'txt', 'md', 'json', 'yml', 'yaml', 'xml', 'csv', 'log', 'ini', 'conf',
   'js', 'jsx', 'ts', 'tsx', 'css', 'scss', 'html', 'htm', 'py', 'lua', 'sh', 'sql',
@@ -60,11 +63,22 @@ let mainWindowRef: BrowserWindow | null = null;
 const UPDATE_CHECK_DELAY_MS = 10_000;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
-autoUpdater.autoDownload = true;
+// macOS's native updater (Squirrel.Mac/ShipIt) refuses to install an update whose code signature
+// doesn't validate, and this app isn't code-signed — so on mac, downloading (let alone
+// installing) an update automatically would just fail silently every time. Instead, mac gets a
+// lighter "a new version exists" notice that sends the user to the Releases page to download and
+// reinstall by hand; Windows/Linux keep the full automatic download-and-install flow.
+autoUpdater.autoDownload = !isMacOS;
 autoUpdater.autoInstallOnAppQuit = true;
 
+autoUpdater.on('update-available', (info) => {
+  if (!isMacOS) return; // non-mac waits for "update-downloaded" below instead
+
+  mainWindowRef?.webContents.send('update-notice', { version: info.version, action: 'manual', releasesUrl: GITHUB_RELEASES_URL });
+});
+
 autoUpdater.on('update-downloaded', (info) => {
-  mainWindowRef?.webContents.send('update-downloaded', info.version);
+  mainWindowRef?.webContents.send('update-notice', { version: info.version, action: 'install', releasesUrl: GITHUB_RELEASES_URL });
 });
 
 autoUpdater.on('error', (error) => {

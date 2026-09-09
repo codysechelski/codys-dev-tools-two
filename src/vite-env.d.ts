@@ -9,6 +9,15 @@ declare global {
     warning?: string;
   }
 
+  interface UpdateNotice {
+    version: string;
+    // 'install': downloaded and ready — quitAndInstallUpdate() applies it.
+    // 'manual': found but this platform can't auto-install (unsigned macOS build) — send the
+    // user to releasesUrl to download and reinstall by hand.
+    action: 'install' | 'manual';
+    releasesUrl: string;
+  }
+
   interface Window {
     codyDevTools?: {
       platform: NodeJS.Platform;
@@ -25,7 +34,7 @@ declare global {
       loadToolState: () => Promise<Record<string, Record<string, unknown>>>;
       saveToolState: (state: Record<string, Record<string, unknown>>) => Promise<void>;
       clearToolState: () => Promise<void>;
-      onUpdateDownloaded: (callback: (version: string) => void) => void;
+      onUpdateNotice: (callback: (notice: UpdateNotice) => void) => void;
       quitAndInstallUpdate: () => void;
     };
   }

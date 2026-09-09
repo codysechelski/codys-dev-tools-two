@@ -23,7 +23,7 @@ const themeMode = computed(() => settings.value.themeMode);
 const rememberToolInput = computed(() => settings.value.rememberToolInput);
 const hasSavedToolData = computed(() => hasStoredToolState());
 const systemPrefersDark = ref(true);
-const downloadedUpdateVersion = ref<string | null>(null);
+const updateNotice = ref<UpdateNotice | null>(null);
 const activeTheme = computed(() => resolveTheme(themeMode.value, systemPrefersDark.value));
 let mediaQuery: MediaQueryList | null = null;
 let isLoadingSettings = false;
@@ -48,8 +48,8 @@ onMounted(async () => {
 
   window.codyDevTools?.onNavigateHome?.(() => selectTool(null));
   window.codyDevTools?.onNavigateSettings?.(() => selectTool(settingsTool.id));
-  window.codyDevTools?.onUpdateDownloaded?.((version) => {
-    downloadedUpdateVersion.value = version;
+  window.codyDevTools?.onUpdateNotice?.((notice) => {
+    updateNotice.value = notice;
   });
 
   mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)') ?? null;
@@ -155,7 +155,7 @@ function installUpdate(): void {
 }
 
 function dismissUpdateBanner(): void {
-  downloadedUpdateVersion.value = null;
+  updateNotice.value = null;
 }
 </script>
 
@@ -205,6 +205,6 @@ function dismissUpdateBanner(): void {
       <HomePanel v-else :theme="activeTheme" :version="APP_VERSION" />
     </section>
 
-    <UpdateBanner v-if="downloadedUpdateVersion" :version="downloadedUpdateVersion" @install="installUpdate" @dismiss="dismissUpdateBanner" />
+    <UpdateBanner v-if="updateNotice" :notice="updateNotice" @install="installUpdate" @dismiss="dismissUpdateBanner" />
   </main>
 </template>

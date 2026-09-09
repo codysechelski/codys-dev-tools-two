@@ -18,7 +18,7 @@ function createCodyDevTools(overrides: Partial<NonNullable<Window['codyDevTools'
     loadToolState: vi.fn().mockResolvedValue({}),
     saveToolState: vi.fn().mockResolvedValue(undefined),
     clearToolState: vi.fn().mockResolvedValue(undefined),
-    onUpdateDownloaded: vi.fn(),
+    onUpdateNotice: vi.fn(),
     quitAndInstallUpdate: vi.fn(),
     ...overrides,
   };
@@ -199,38 +199,39 @@ describe('App update banner', () => {
     resetToolStateForTests();
   });
 
-  it('shows the update banner once a downloaded version is pushed from the main process', async () => {
-    let pushUpdate: ((version: string) => void) | null = null;
+  it('shows the "install" banner once a downloaded update is pushed from the main process', async () => {
+    let pushNotice: ((notice: UpdateNotice) => void) | null = null;
     window.codyDevTools = createCodyDevTools({
-      onUpdateDownloaded: (callback) => {
-        pushUpdate = callback;
+      onUpdateNotice: (callback) => {
+        pushNotice = callback;
       },
     });
 
     const wrapper = mount(App);
 
     expect(wrapper.find('.update-banner').exists()).toBe(false);
-    expect(pushUpdate).not.toBeNull();
+    expect(pushNotice).not.toBeNull();
 
-    pushUpdate?.('1.2.3');
+    pushNotice?.({ version: '1.2.3', action: 'install', releasesUrl: 'https://example.com/releases' });
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('.update-banner').exists()).toBe(true);
     expect(wrapper.text()).toContain('1.2.3');
+    expect(wrapper.text()).toContain('Restart & Update');
   });
 
   it('quits and installs via the bridge when "Restart & Update" is clicked', async () => {
-    let pushUpdate: ((version: string) => void) | null = null;
+    let pushNotice: ((notice: UpdateNotice) => void) | null = null;
     const quitAndInstallUpdate = vi.fn();
     window.codyDevTools = createCodyDevTools({
-      onUpdateDownloaded: (callback) => {
-        pushUpdate = callback;
+      onUpdateNotice: (callback) => {
+        pushNotice = callback;
       },
       quitAndInstallUpdate,
     });
 
     const wrapper = mount(App);
-    pushUpdate?.('1.2.3');
+    pushNotice?.({ version: '1.2.3', action: 'install', releasesUrl: 'https://example.com/releases' });
     await wrapper.vm.$nextTick();
 
     await wrapper.findAll('button').find((button) => button.text().includes('Restart'))?.trigger('click');
@@ -238,16 +239,35 @@ describe('App update banner', () => {
     expect(quitAndInstallUpdate).toHaveBeenCalled();
   });
 
-  it('dismisses the update banner without installing', async () => {
-    let pushUpdate: ((version: string) => void) | null = null;
+  it('shows a "View Release" link to the releases page for a manual (e.g. unsigned macOS) notice', async () => {
+    let pushNotice: ((notice: UpdateNotice) => void) | null = null;
     window.codyDevTools = createCodyDevTools({
-      onUpdateDownloaded: (callback) => {
-        pushUpdate = callback;
+      onUpdateNotice: (callback) => {
+        pushNotice = callback;
       },
     });
 
     const wrapper = mount(App);
-    pushUpdate?.('1.2.3');
+    pushNotice?.({ version: '1.2.3', action: 'manual', releasesUrl: 'https://example.com/releases' });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.text()).toContain('Update available');
+    expect(wrapper.text()).toContain('View Release');
+    const link = wrapper.find('.update-banner a');
+    expect(link.attributes('href')).toBe('https://example.com/releases');
+    expect(link.attributes('target')).toBe('_blank');
+  });
+
+  it('dismisses the update banner without installing', async () => {
+    let pushNotice: ((notice: UpdateNotice) => void) | null = null;
+    window.codyDevTools = createCodyDevTools({
+      onUpdateNotice: (callback) => {
+        pushNotice = callback;
+      },
+    });
+
+    const wrapper = mount(App);
+    pushNotice?.({ version: '1.2.3', action: 'install', releasesUrl: 'https://example.com/releases' });
     await wrapper.vm.$nextTick();
 
     await wrapper.find('[aria-label="Dismiss update notification"]').trigger('click');

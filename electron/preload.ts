@@ -12,6 +12,15 @@ interface AppSettings {
   sidebarDensity: 'comfortable' | 'compact';
 }
 
+interface UpdateNotice {
+  version: string;
+  // 'install': downloaded and ready — quitAndInstallUpdate() applies it.
+  // 'manual': found but this platform can't auto-install (unsigned macOS build) — send the user
+  // to releasesUrl to download and reinstall by hand.
+  action: 'install' | 'manual';
+  releasesUrl: string;
+}
+
 contextBridge.exposeInMainWorld('codyDevTools', {
   platform: process.platform,
   isElectron: true,
@@ -35,8 +44,8 @@ contextBridge.exposeInMainWorld('codyDevTools', {
   loadToolState: () => ipcRenderer.invoke('load-tool-state'),
   saveToolState: (state: Record<string, Record<string, unknown>>) => ipcRenderer.invoke('save-tool-state', state),
   clearToolState: () => ipcRenderer.invoke('clear-tool-state'),
-  onUpdateDownloaded: (callback: (version: string) => void) => {
-    ipcRenderer.on('update-downloaded', (_event, version: string) => callback(version));
+  onUpdateNotice: (callback: (notice: UpdateNotice) => void) => {
+    ipcRenderer.on('update-notice', (_event, notice: UpdateNotice) => callback(notice));
   },
   quitAndInstallUpdate: () => {
     ipcRenderer.send('quit-and-install-update');
