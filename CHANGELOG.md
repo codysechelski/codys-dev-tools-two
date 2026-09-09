@@ -1,3 +1,10 @@
+## [0.25.5](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.4...v0.25.5) (2026-09-09)
+
+
+### Bug Fixes
+
+* **sidebar:** restore gold color for starred tools in light mode ([b896b38](https://github.com/codysechelski/codys-dev-tools-two/commit/b896b387c25a4fade2da580ee79addbd0ea418f1))
+
 ## [0.25.4](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.25.3...v0.25.4) (2026-09-08)
 
 
