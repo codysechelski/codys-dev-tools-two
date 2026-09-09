@@ -164,6 +164,7 @@ code {
 .cm-highlight-range {
   border-radius: 0.2em;
   background-color: var(--highlight-range-background);
+  box-shadow: 0 0 0 1px var(--highlight-range-border);
 }
 
 .app-button {
@@ -395,7 +396,8 @@ body[data-theme='light'] {
   --scrollbar-thumb-hover-end: rgba(15, 23, 42, 0.92);
   --row-hover-background: rgba(79, 70, 229, 0.1);
   --line-flash-background: rgba(37, 99, 235, 0.22);
-  --highlight-range-background: rgba(217, 119, 6, 0.28);
+  --highlight-range-background: rgba(217, 119, 6, 0.4);
+  --highlight-range-border: rgba(217, 119, 6, 0.6);
   --checkerboard-base: rgba(255, 255, 255, 0.96);
   --checkerboard-tile: rgba(139, 150, 200, 0.08);
   --color-accent: var(--color-blue-700);
@@ -641,6 +643,27 @@ body[data-theme='light'] .modal .text-editor .cm-content ::selection {
 body[data-theme='light'] .modal .text-editor__toolbar {
   border-bottom-color: rgba(79, 70, 229, 0.12);
   background: #e2e8f4;
+}
+
+.app-shell[data-theme='light'] .regex-pattern-input__footer {
+  border-top-color: rgba(79, 70, 229, 0.12);
+  background: #e2e8f4;
+}
+
+.app-shell[data-theme='light'] .regex-tool__snippet-group-label {
+  color: #475569;
+}
+
+.app-shell[data-theme='light'] .regex-tool__snippet-button {
+  border-color: rgba(79, 70, 229, 0.18);
+  color: #1e293b;
+  background: rgba(79, 70, 229, 0.06);
+}
+
+.app-shell[data-theme='light'] .regex-tool__snippet-button:hover {
+  border-color: rgba(79, 70, 229, 0.34);
+  color: var(--app-text);
+  background: rgba(79, 70, 229, 0.1);
 }
 
 .app-shell[data-theme='light'] .text-editor .cm-gutters,
@@ -2075,7 +2098,16 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 
 .text-editor__body.regex-pattern-input__body {
   flex: 0 0 auto;
-  height: 3.1rem;
+  height: 2.9rem;
+}
+
+.text-editor__body.regex-pattern-input__body .cm-scroller {
+  overflow-y: hidden;
+}
+
+.text-editor__body.regex-pattern-input__body .cm-content {
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
 }
 
 .text-editor.regex-pattern-input--invalid {
@@ -2175,10 +2207,6 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   border-color: rgba(103, 232, 249, 0.42);
   color: var(--color-frost-100);
   background: rgba(103, 232, 249, 0.1);
-}
-
-.regex-tool__snippet-group--presets {
-  margin-left: auto;
 }
 
 .regex-tool__workspace {

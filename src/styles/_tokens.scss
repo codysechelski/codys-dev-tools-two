@@ -101,7 +101,8 @@ $easings: (
   --line-flash-background: rgba(103, 232, 249, 0.35);
 
   // Persistent highlight for matched text (e.g. the Regex Tester's found strings).
-  --highlight-range-background: rgba(250, 204, 21, 0.32);
+  --highlight-range-background: rgba(250, 204, 21, 0.55);
+  --highlight-range-border: rgba(250, 204, 21, 0.75);
 
   // Checkerboard used to represent a transparent background (e.g. the QR preview).
   --checkerboard-base: #2b2d33;

@@ -136,6 +136,12 @@ function jumpToMatch(match: RegexMatch): void {
 <template>
   <section class="regex-tool">
     <ToolToolbar class="regex-tool__toolbar">
+      <AppSelect
+        v-model="presetSelection"
+        label="Common Patterns"
+        description="Replace the pattern with a ready-made example and set its recommended flags."
+        :options="presetOptions"
+      />
       <AppToggle v-model="flags.global" label="Global (g)" description="Find every match in the test text instead of stopping at the first." />
       <AppToggle v-model="flags.ignoreCase" label="Ignore Case (i)" description="Match letters without regard to uppercase or lowercase." />
       <AppToggle v-model="flags.multiline" label="Multiline (m)" description="^ and $ match the start and end of each line, not just the whole string." />
@@ -168,10 +174,6 @@ function jumpToMatch(match: RegexMatch): void {
             >
               {{ snippet.label }}
             </button>
-          </div>
-          <div class="regex-tool__snippet-group regex-tool__snippet-group--presets">
-            <span class="regex-tool__snippet-group-label">Common Patterns</span>
-            <AppSelect v-model="presetSelection" label="Common Patterns" hide-label :options="presetOptions" />
           </div>
         </div>
       </template>
