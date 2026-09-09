@@ -1097,6 +1097,27 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   border-bottom: var(--border-hairline) solid rgba(199, 210, 254, 0.12);
 }
 
+.tool-screen-header__icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  background: rgba(103, 232, 249, 0.1);
+  color: var(--color-cyan-300);
+}
+
+.tool-screen-header__icon .app-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.app-shell[data-theme='light'] .tool-screen-header__icon {
+  color: var(--color-cyan-300);
+  background: rgba(15, 23, 42, 0.82);
+}
+
 .tool-screen-header h1,
 .tool-screen-header p {
   margin: 0;

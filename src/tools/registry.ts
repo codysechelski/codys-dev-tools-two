@@ -130,7 +130,7 @@ export const tools: ToolDefinition[] = [
     section: 'Converters',
     description: 'Convert between JSON and YAML.',
     instructions: 'Paste JSON or YAML, choose the conversion direction, then copy the converted output from the editor.',
-    icon: 'exchangeAlt',
+    icon: 'retweet',
     component: JsonYamlConverter,
     keywords: ['json', 'yaml', 'yml', 'convert', 'converter'],
   },

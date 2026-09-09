@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { APP_VERSION } from '@/appInfo';
+import AppIcon from '@/components/AppIcon.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
 import { resolveTheme } from '@/theme';
 import { DEFAULT_SETTINGS, loadSettingsFromLocalStorage, saveSettingsToLocalStorage, type AppSettings, type RememberToolInput } from '@/settings';
@@ -162,6 +163,7 @@ async function resetSettingsLocation(): Promise<void> {
 
     <section class="workspace">
       <header v-if="selectedTool" class="tool-screen-header">
+        <span class="tool-screen-header__icon"><AppIcon :name="selectedTool.icon" /></span>
         <div>
           <h1>{{ selectedTool.name }}</h1>
           <p>{{ selectedTool.instructions ?? selectedTool.description }}</p>
