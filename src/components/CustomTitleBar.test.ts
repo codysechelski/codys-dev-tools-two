@@ -44,6 +44,22 @@ describe('CustomTitleBar', () => {
     expect(lightItem?.find('.app-icon').exists()).toBe(false);
   });
 
+  it('switches to the hovered top-level menu while one is already open, but not when none is open', async () => {
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' } });
+    const buttons = wrapper.findAll('.app-titlebar__menu-button');
+    const fileButton = buttons.find((button) => button.text() === 'File')!;
+    const editButton = buttons.find((button) => button.text() === 'Edit')!;
+
+    await editButton.trigger('mouseenter');
+    expect(wrapper.find('.app-titlebar__dropdown').exists()).toBe(false);
+
+    await fileButton.trigger('click');
+    await editButton.trigger('mouseenter');
+
+    const dropdown = wrapper.find('.app-titlebar__dropdown');
+    expect(dropdown.text()).toContain('Undo');
+  });
+
   it('closes an open menu when clicking outside it', async () => {
     const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' }, attachTo: document.body });
     await wrapper.findAll('.app-titlebar__menu-button').find((button) => button.text() === 'File')?.trigger('click');

@@ -4471,7 +4471,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   border: none;
   background: transparent;
   color: var(--app-text);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -4510,7 +4510,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--app-text);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   text-align: left;
   cursor: pointer;
 }
@@ -4539,7 +4539,7 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 .app-titlebar__accelerator {
   flex: 0 0 auto;
   color: var(--color-mist-500);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
 }
 
 .app-shell[data-platform='win32'] {

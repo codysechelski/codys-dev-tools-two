@@ -84,6 +84,12 @@ function toggleMenu(label: string): void {
   openMenu.value = openMenu.value === label ? null : label;
 }
 
+// Mirrors native Windows menu bars: once a menu is open, moving the pointer over a sibling
+// top-level item switches straight to it instead of requiring another click.
+function handleMenuHover(label: string): void {
+  if (openMenu.value !== null && openMenu.value !== label) openMenu.value = label;
+}
+
 function trigger(id: string): void {
   window.codyDevTools?.triggerMenuAction?.(id);
   openMenu.value = null;
@@ -118,6 +124,7 @@ onBeforeUnmount(() => {
           class="app-titlebar__menu-button"
           :class="{ 'app-titlebar__menu-button--open': openMenu === menu.label }"
           @click="toggleMenu(menu.label)"
+          @mouseenter="handleMenuHover(menu.label)"
         >
           {{ menu.label }}
         </button>
