@@ -602,7 +602,9 @@ body[data-theme='light'] {
 .app-shell[data-theme='light'] .form-text-input input,
 .app-shell[data-theme='light'] .form-text-input textarea,
 .app-shell[data-theme='light'] .form-select__trigger,
-.app-shell[data-theme='light'] .timestamp-picker-row .dp--input {
+.app-shell[data-theme='light'] .timestamp-picker-row .dp--input,
+body[data-theme='light'] .modal .form-text-input input,
+body[data-theme='light'] .modal .form-text-input textarea {
   border-color: rgba(79, 70, 229, 0.26);
   color: var(--app-text);
   background: linear-gradient(135deg, rgba(103, 232, 249, 0.06), rgba(124, 58, 237, 0.045)), rgba(248, 250, 252, 0.94);
@@ -611,7 +613,11 @@ body[data-theme='light'] {
 .app-shell[data-theme='light'] .form-text-input input:hover,
 .app-shell[data-theme='light'] .form-text-input textarea:hover,
 .app-shell[data-theme='light'] .form-text-input input:focus-visible,
-.app-shell[data-theme='light'] .form-text-input textarea:focus-visible {
+.app-shell[data-theme='light'] .form-text-input textarea:focus-visible,
+body[data-theme='light'] .modal .form-text-input input:hover,
+body[data-theme='light'] .modal .form-text-input textarea:hover,
+body[data-theme='light'] .modal .form-text-input input:focus-visible,
+body[data-theme='light'] .modal .form-text-input textarea:focus-visible {
   border-color: rgba(79, 70, 229, 0.46);
   box-shadow: none;
 }

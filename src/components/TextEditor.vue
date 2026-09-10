@@ -19,6 +19,7 @@ import AppButton from '@/components/AppButton.vue';
 import AppCopyButton from '@/components/AppCopyButton.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import AppModal from '@/components/AppModal.vue';
+import AppTextInput from '@/components/forms/AppTextInput.vue';
 import HelpPopover from '@/components/HelpPopover.vue';
 
 const props = withDefaults(
@@ -76,6 +77,8 @@ const isLoadFileModalOpen = ref(false);
 const isDragOver = ref(false);
 const fileLoadError = ref('');
 const saveError = ref('');
+const isSaveModalOpen = ref(false);
+const saveFilenameInput = ref('');
 const hasNativeFilePicker = Boolean(window.codyDevTools?.isElectron && window.codyDevTools.loadTextFile);
 
 const codeHighlightStyle = HighlightStyle.define([
@@ -363,27 +366,46 @@ async function saveToFile(): Promise<void> {
     return;
   }
 
-  await saveInBrowser(saveFilename.value, props.modelValue);
-}
-
-async function saveInBrowser(filename: string, content: string): Promise<void> {
+  // showSaveFilePicker already opens a real, rename-capable native dialog (like Electron's), so
+  // it doesn't need our own modal in front of it. The plain <a download> fallback below has no
+  // such prompt at all — it just saves immediately with whatever name it's given — so that's the
+  // one case where we ask first.
   if (window.showSaveFilePicker) {
-    try {
-      const handle = await window.showSaveFilePicker({ suggestedName: filename });
-      const writable = await handle.createWritable();
-      await writable.write(content);
-      await writable.close();
-      return;
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return; // user canceled
-      saveError.value = 'Unable to save that file.';
-      return;
-    }
+    await saveWithFilePicker(saveFilename.value, props.modelValue);
+    return;
   }
 
-  // No File System Access API support (e.g. Firefox/Safari): fall back to a synthetic download
-  // link. Whether this then prompts a save dialog or drops straight into Downloads is up to the
-  // browser's own settings — there's no way to force either from here.
+  saveFilenameInput.value = saveFilename.value;
+  isSaveModalOpen.value = true;
+}
+
+function closeSaveModal(): void {
+  isSaveModalOpen.value = false;
+}
+
+function confirmSaveFromModal(): void {
+  const filename = saveFilenameInput.value.trim() || saveFilename.value;
+  isSaveModalOpen.value = false;
+  saveViaDownloadLink(filename, props.modelValue);
+}
+
+async function saveWithFilePicker(filename: string, content: string): Promise<void> {
+  if (!window.showSaveFilePicker) return;
+
+  try {
+    const handle = await window.showSaveFilePicker({ suggestedName: filename });
+    const writable = await handle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return; // user canceled
+    saveError.value = 'Unable to save that file.';
+  }
+}
+
+// Whether this then prompts a save dialog or drops straight into Downloads is up to the
+// browser's own settings — there's no way to force either from here.
+function saveViaDownloadLink(filename: string, content: string): void {
   const blob = new Blob([content], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -468,6 +490,14 @@ function createEditorState(): EditorState {
         <input v-if="!hasNativeFilePicker" ref="fileInputRef" type="file" class="text-editor-file-drop__input" @change="handleFileInputChange" />
       </div>
       <p v-if="fileLoadError" class="form-text-input__error">{{ fileLoadError }}</p>
+    </AppModal>
+
+    <AppModal :open="isSaveModalOpen" title="Save File" subtitle="Choose a filename before saving." icon="save" @close="closeSaveModal">
+      <AppTextInput v-model="saveFilenameInput" label="Filename" hide-label @keydown.enter="confirmSaveFromModal" />
+      <template #footer>
+        <AppButton variant="ghost" @click="closeSaveModal">Cancel</AppButton>
+        <AppButton variant="primary" @click="confirmSaveFromModal">Save</AppButton>
+      </template>
     </AppModal>
   </section>
 </template>

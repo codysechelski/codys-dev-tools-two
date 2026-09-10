@@ -232,21 +232,71 @@ describe('TextEditor Save button', () => {
     expect(wrapper.text()).not.toContain('Unable to save');
   });
 
-  it('falls back to a download link when neither Electron nor the File System Access API is available', async () => {
+  it('opens a filename modal (prefilled with the guessed name) instead of saving immediately when neither Electron nor the File System Access API is available', async () => {
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' }, attachTo: document.body });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    const filenameInput = document.body.querySelector<HTMLInputElement>('.form-text-input input');
+    expect(filenameInput?.value).toBe('output.json');
+    expect(clickSpy).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+    vi.restoreAllMocks();
+  });
+
+  it('downloads with an edited filename after confirming the modal', async () => {
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
     const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
     const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const originalCreateElement = document.createElement.bind(document);
+    let capturedAnchor: HTMLAnchorElement | null = null;
+    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+      const element = originalCreateElement(tagName);
+      if (tagName === 'a') capturedAnchor = element as HTMLAnchorElement;
+      return element;
+    });
 
-    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' } });
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' }, attachTo: document.body });
     await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    const filenameInput = document.body.querySelector<HTMLInputElement>('.form-text-input input');
+    filenameInput!.value = 'my-notes.json';
+    filenameInput!.dispatchEvent(new Event('input', { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    const saveButton = Array.from(document.body.querySelectorAll('.modal button')).find((button) => button.textContent?.trim() === 'Save');
+    saveButton?.dispatchEvent(new Event('click', { bubbles: true }));
+    await wrapper.vm.$nextTick();
 
     expect(createObjectURLSpy).toHaveBeenCalled();
     expect(clickSpy).toHaveBeenCalled();
     expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:mock-url');
+    expect(capturedAnchor?.download).toBe('my-notes.json');
+    expect(document.body.querySelector('.modal')).toBeNull();
 
-    clickSpy.mockRestore();
-    createObjectURLSpy.mockRestore();
-    revokeObjectURLSpy.mockRestore();
+    wrapper.unmount();
+    vi.restoreAllMocks();
+  });
+
+  it('does not save anything when the filename modal is canceled', async () => {
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' }, attachTo: document.body });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    const cancelButton = Array.from(document.body.querySelectorAll('.modal button')).find((button) => button.textContent?.trim() === 'Cancel');
+    cancelButton?.dispatchEvent(new Event('click', { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    expect(clickSpy).not.toHaveBeenCalled();
+    expect(document.body.querySelector('.modal')).toBeNull();
+
+    wrapper.unmount();
+    vi.restoreAllMocks();
   });
 });
 
