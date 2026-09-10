@@ -1,3 +1,10 @@
+## [0.35.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.35.0...v0.35.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **base64:** label decoded image button Save Image ([abfc781](https://github.com/codysechelski/codys-dev-tools-two/commit/abfc7813b02fadad908953156a86565f3bc1028d))
+
 # [0.35.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.34.1...v0.35.0) (2026-09-10)
 
 
