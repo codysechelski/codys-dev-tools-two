@@ -92,6 +92,36 @@ describe('App settings persistence', () => {
     expect(saveSettings).toHaveBeenCalledWith({ ...DEFAULT_SETTINGS, themeMode: 'dark' });
   });
 
+  it('sends a structured-cloneable plain object to saveSettings, not a reactive proxy', async () => {
+    // Regression test: settings used to be a deep `ref`, which wraps nested properties like
+    // pinnedToolIds in a reactive Proxy. `{ ...settings.value }` only unwraps the top-level
+    // proxy, so the nested array stayed a Proxy — Electron's ipcRenderer.invoke (real structured
+    // clone, reproduced here with the same global) rejected with "could not be cloned" on every
+    // save, silently, since persistSettings() is called via `void` from a watcher. A plain
+    // `toHaveBeenCalledWith` deep-equality check doesn't catch this (Proxies read the same),
+    // so this test clones the argument for real instead.
+    let cloneError: unknown = null;
+    const saveSettings = vi.fn(async (settings: unknown) => {
+      try {
+        structuredClone(settings);
+      } catch (error) {
+        cloneError = error;
+      }
+      return { settingsPath: '/settings.json' };
+    });
+    window.codyDevTools = createCodyDevTools({ saveSettings });
+
+    const wrapper = mount(App);
+    await flushPromises();
+
+    await wrapper.find('.sidebar__settings-button').trigger('click');
+    await wrapper.findAll('.settings-theme-card')[1].trigger('click');
+    await flushPromises();
+
+    expect(saveSettings).toHaveBeenCalled();
+    expect(cloneError).toBeNull();
+  });
+
   it('shows the settings file path and a location warning when the custom directory is unavailable', async () => {
     window.codyDevTools = createCodyDevTools({
       loadSettings: vi.fn().mockResolvedValue({

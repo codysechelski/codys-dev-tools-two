@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch, watchEffect } from 'vue';
 import { APP_VERSION } from '@/appInfo';
 import AppIcon from '@/components/AppIcon.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
@@ -16,7 +16,12 @@ const selectedToolId = ref<string | null>(null);
 const selectedTool = computed(() => allTools.find((tool) => tool.id === selectedToolId.value) ?? null);
 const platform = window.codyDevTools?.platform ?? 'web';
 const isElectron = Boolean(window.codyDevTools?.isElectron);
-const settings = ref<AppSettings>({ ...DEFAULT_SETTINGS });
+// shallowRef, not ref: every update below fully reassigns settings.value (never mutates a
+// nested property in place), and a deep ref would wrap pinnedToolIds in a reactive Proxy that
+// ipcRenderer.invoke's structured-clone step can't serialize — persistSettings would throw
+// "An object could not be cloned" every time, silently, since it's called via `void` from a
+// watcher (see the themeMode watch below).
+const settings = shallowRef<AppSettings>({ ...DEFAULT_SETTINGS });
 const settingsPath = ref('');
 const isCustomSettingsLocation = ref(false);
 const settingsLocationWarning = ref('');
@@ -122,8 +127,8 @@ async function resetSettings(): Promise<void> {
 
 async function persistSettings(): Promise<void> {
   if (isElectron) {
-    // settings.value is a Vue reactive proxy; contextBridge/ipcRenderer requires a
-    // structured-cloneable plain object, so spread it into one before sending.
+    // The spread isn't strictly needed now that settings is a shallowRef (settings.value is
+    // already a plain object), but it's a cheap guard against this becoming unsendable again.
     const result = await window.codyDevTools!.saveSettings({ ...settings.value });
     settingsPath.value = result.settingsPath;
   } else {
