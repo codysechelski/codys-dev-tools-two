@@ -8,7 +8,7 @@ describe('CustomTitleBar', () => {
   });
 
   it('opens a menu on click and shows its items', async () => {
-    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' } });
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark', theme: 'dark' } });
 
     expect(wrapper.find('.app-titlebar__dropdown').exists()).toBe(false);
 
@@ -24,7 +24,7 @@ describe('CustomTitleBar', () => {
     const triggerMenuAction = vi.fn();
     window.codyDevTools = { platform: 'win32', isElectron: true, triggerMenuAction } as unknown as NonNullable<Window['codyDevTools']>;
 
-    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' } });
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark', theme: 'dark' } });
     await wrapper.findAll('.app-titlebar__menu-button').find((button) => button.text() === 'File')?.trigger('click');
     await wrapper.findAll('.app-titlebar__dropdown-item').find((item) => item.text().includes('Settings'))?.trigger('click');
 
@@ -33,7 +33,7 @@ describe('CustomTitleBar', () => {
   });
 
   it('marks the theme item matching the current theme-mode prop as checked', async () => {
-    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' } });
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark', theme: 'dark' } });
     await wrapper.findAll('.app-titlebar__menu-button').find((button) => button.text() === 'View')?.trigger('click');
 
     const items = wrapper.findAll('.app-titlebar__dropdown-item');
@@ -45,7 +45,7 @@ describe('CustomTitleBar', () => {
   });
 
   it('switches to the hovered top-level menu while one is already open, but not when none is open', async () => {
-    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' } });
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark', theme: 'dark' } });
     const buttons = wrapper.findAll('.app-titlebar__menu-button');
     const fileButton = buttons.find((button) => button.text() === 'File')!;
     const editButton = buttons.find((button) => button.text() === 'Edit')!;
@@ -60,8 +60,18 @@ describe('CustomTitleBar', () => {
     expect(dropdown.text()).toContain('Undo');
   });
 
+  it('swaps the titlebar icon for the resolved theme, not the raw theme-mode setting', () => {
+    const darkWrapper = mount(CustomTitleBar, { props: { themeMode: 'system', theme: 'dark' } });
+    const lightWrapper = mount(CustomTitleBar, { props: { themeMode: 'system', theme: 'light' } });
+
+    const darkSrc = darkWrapper.find('.app-titlebar__icon').attributes('src');
+    const lightSrc = lightWrapper.find('.app-titlebar__icon').attributes('src');
+
+    expect(darkSrc).not.toBe(lightSrc);
+  });
+
   it('closes an open menu when clicking outside it', async () => {
-    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark' }, attachTo: document.body });
+    const wrapper = mount(CustomTitleBar, { props: { themeMode: 'dark', theme: 'dark' }, attachTo: document.body });
     await wrapper.findAll('.app-titlebar__menu-button').find((button) => button.text() === 'File')?.trigger('click');
     expect(wrapper.find('.app-titlebar__dropdown').exists()).toBe(true);
 

@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
-import titlebarIcon from '@/assets/images/titlebar-icon.png';
+import titlebarIconDark from '@/assets/images/titlebar-icon-dark.png';
+import titlebarIconLight from '@/assets/images/titlebar-icon-light.png';
 import type { AppSettings } from '@/settings';
 
 const props = defineProps<{
   themeMode: AppSettings['themeMode'];
+  // The resolved light/dark theme (with 'system' already resolved against the OS setting) —
+  // distinct from themeMode above, which stays 'light' | 'dark' | 'system' for the View menu's
+  // theme radio checkmarks.
+  theme: 'light' | 'dark';
 }>();
+
+const icon = computed(() => (props.theme === 'light' ? titlebarIconLight : titlebarIconDark));
 
 type MenuItem =
   | { type: 'separator' }
@@ -116,7 +123,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="rootEl" class="app-titlebar">
-    <img :src="titlebarIcon" alt="" class="app-titlebar__icon" />
+    <img :src="icon" alt="" class="app-titlebar__icon" />
     <nav class="app-titlebar__menu">
       <div v-for="menu in menus" :key="menu.label" class="app-titlebar__menu-item">
         <button

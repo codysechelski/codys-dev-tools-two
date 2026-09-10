@@ -161,7 +161,7 @@ function dismissUpdateBanner(): void {
 </script>
 
 <template>
-  <CustomTitleBar v-if="platform === 'win32'" :theme-mode="themeMode" />
+  <CustomTitleBar v-if="platform === 'win32'" :theme-mode="themeMode" :theme="activeTheme" />
   <main class="app-shell" :data-platform="platform" :data-theme="activeTheme">
     <div class="window-drag-region" aria-hidden="true" />
 
