@@ -1,3 +1,10 @@
+# [0.34.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.33.1...v0.34.0) (2026-09-10)
+
+
+### Features
+
+* **windows:** swap titlebar icon by resolved light/dark theme ([804836c](https://github.com/codysechelski/codys-dev-tools-two/commit/804836c9820aa713627c236d26531db8e757ccca))
+
 ## [0.33.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.33.0...v0.33.1) (2026-09-10)
 
 
