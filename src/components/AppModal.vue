@@ -40,7 +40,7 @@ function handleKeydown(event: KeyboardEvent): void {
             <h2 :id="titleId">{{ title }}</h2>
             <p v-if="subtitle">{{ subtitle }}</p>
           </div>
-          <AppButton class="modal__close" variant="ghost" icon="times" aria-label="Close modal" @click="$emit('close')" />
+          <AppButton class="modal__close" variant="ghost" icon="times" icon-only aria-label="Close modal" @click="$emit('close')" />
         </header>
 
         <div class="modal__body">

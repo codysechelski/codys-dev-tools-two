@@ -247,8 +247,6 @@ code {
 }
 
 .app-button--ghost {
-  min-width: 2.45rem;
-  padding: 0;
   color: var(--color-mist-500);
 }
 
@@ -313,6 +311,11 @@ code {
 
 .app-button:hover:not(:disabled) {
   border-color: rgba(103, 232, 249, 0.48);
+}
+
+// Ghost is meant to stay bare — no border in any state, unlike every other variant.
+.app-button--ghost:hover:not(:disabled) {
+  border-color: transparent;
 }
 
 .app-card {
@@ -868,8 +871,7 @@ body[data-theme='light'] .modal .text-editor .cm-editor,
 }
 
 .app-shell[data-theme='light'] .app-button--secondary,
-.app-shell[data-theme='light'] .app-button--muted,
-.app-shell[data-theme='light'] .app-button--ghost {
+.app-shell[data-theme='light'] .app-button--muted {
   border-color: rgba(79, 70, 229, 0.3);
   color: #1e293b;
   background: rgba(248, 250, 252, 0.82);
@@ -877,7 +879,6 @@ body[data-theme='light'] .modal .text-editor .cm-editor,
 
 .app-shell[data-theme='light'] .app-button--secondary:hover:not(:disabled),
 .app-shell[data-theme='light'] .app-button--muted:hover:not(:disabled),
-.app-shell[data-theme='light'] .app-button--ghost:hover:not(:disabled),
 .app-shell[data-theme='light'] .app-button--field:hover:not(:disabled) {
   border-color: rgba(79, 70, 229, 0.46);
   color: var(--app-text);
@@ -939,16 +940,14 @@ body[data-theme='light'] .modal__heading p {
 }
 
 body[data-theme='light'] .modal .app-button--secondary,
-body[data-theme='light'] .modal .app-button--muted,
-body[data-theme='light'] .modal .app-button--ghost {
+body[data-theme='light'] .modal .app-button--muted {
   border-color: rgba(79, 70, 229, 0.3);
   color: #1e293b;
   background: rgba(248, 250, 252, 0.82);
 }
 
 body[data-theme='light'] .modal .app-button--secondary:hover:not(:disabled),
-body[data-theme='light'] .modal .app-button--muted:hover:not(:disabled),
-body[data-theme='light'] .modal .app-button--ghost:hover:not(:disabled) {
+body[data-theme='light'] .modal .app-button--muted:hover:not(:disabled) {
   border-color: rgba(79, 70, 229, 0.46);
   color: var(--app-text);
   background: rgba(226, 234, 247, 0.96);
