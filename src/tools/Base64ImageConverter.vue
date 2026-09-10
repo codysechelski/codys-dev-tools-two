@@ -287,7 +287,7 @@ async function downloadDecodedImage(): Promise<void> {
             :disabled="!canDownloadDecoded || isSavingDecoded"
             @click="downloadDecodedImage"
           >
-            {{ isSavingDecoded ? 'Saving' : 'Download Image' }}
+            {{ isSavingDecoded ? 'Saving' : 'Save Image' }}
           </AppButton>
         </div>
       </section>
