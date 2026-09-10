@@ -1,3 +1,10 @@
+## [0.34.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.34.0...v0.34.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **settings:** stop silently failing to save settings on every change ([a387669](https://github.com/codysechelski/codys-dev-tools-two/commit/a3876696b0551cd72025ace064261fa76447ca3a))
+
 # [0.34.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.33.1...v0.34.0) (2026-09-10)
 
 
