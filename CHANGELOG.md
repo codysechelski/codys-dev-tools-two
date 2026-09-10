@@ -1,3 +1,10 @@
+## [0.33.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.33.0...v0.33.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* **windows:** shrink titlebar menu font and add hover-to-switch between menus ([739723c](https://github.com/codysechelski/codys-dev-tools-two/commit/739723cd3b2b4e1c420fab58faf6f51894b80296))
+
 # [0.33.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.32.0...v0.33.0) (2026-09-09)
 
 
