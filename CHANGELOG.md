@@ -1,3 +1,16 @@
+# [0.35.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.34.1...v0.35.0) (2026-09-10)
+
+
+### Bug Fixes
+
+* **ui:** ghost buttons keep a bare look with text labels, not just icons ([77c0913](https://github.com/codysechelski/codys-dev-tools-two/commit/77c09139a9e8dc88b6130eda19c9b0c4e29fd7f2))
+
+
+### Features
+
+* **text-editor:** add a Save button with per-tool file extension guessing ([0e43e9a](https://github.com/codysechelski/codys-dev-tools-two/commit/0e43e9a34bcfbd333f3cf5e8aeab6d3424965841))
+* **text-editor:** confirm filename in a modal before browser downloads ([5d31acd](https://github.com/codysechelski/codys-dev-tools-two/commit/5d31acd5fc61d0b219593d8820b8c3f9c726c90d))
+
 ## [0.34.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.34.0...v0.34.1) (2026-09-10)
 
 
