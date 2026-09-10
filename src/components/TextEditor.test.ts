@@ -163,6 +163,93 @@ describe('TextEditor', () => {
   });
 });
 
+describe('TextEditor Save button', () => {
+  afterEach(() => {
+    delete (window as { codyDevTools?: unknown }).codyDevTools;
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
+
+  it('is disabled when the editor is empty', () => {
+    const wrapper = mount(TextEditor, { props: { modelValue: '', label: 'Input' } });
+
+    const saveButton = wrapper.findAll('button').find((button) => button.text() === 'Save');
+    expect(saveButton?.attributes('disabled')).toBeDefined();
+  });
+
+  it('defaults the filename extension from the language prop', async () => {
+    const saveTextFile = vi.fn().mockResolvedValue({ canceled: true });
+    window.codyDevTools = { platform: 'darwin', isElectron: true, saveTextFile } as unknown as NonNullable<Window['codyDevTools']>;
+
+    const wrapper = mount(TextEditor, { props: { modelValue: '<a/>', label: 'Input', language: 'xml' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    expect(saveTextFile).toHaveBeenCalledWith('output.xml', '<a/>');
+  });
+
+  it('falls back to a .txt extension when the language has no better guess', async () => {
+    const saveTextFile = vi.fn().mockResolvedValue({ canceled: true });
+    window.codyDevTools = { platform: 'darwin', isElectron: true, saveTextFile } as unknown as NonNullable<Window['codyDevTools']>;
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    expect(saveTextFile).toHaveBeenCalledWith('output.txt', 'hello');
+  });
+
+  it('lets file-extension override the language-derived guess, e.g. SVG Viewer using xml highlighting', async () => {
+    const saveTextFile = vi.fn().mockResolvedValue({ canceled: true });
+    window.codyDevTools = { platform: 'darwin', isElectron: true, saveTextFile } as unknown as NonNullable<Window['codyDevTools']>;
+
+    const wrapper = mount(TextEditor, { props: { modelValue: '<svg/>', label: 'Input', language: 'xml', fileExtension: 'svg' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    expect(saveTextFile).toHaveBeenCalledWith('output.svg', '<svg/>');
+  });
+
+  it('uses the File System Access API in the browser when available', async () => {
+    const write = vi.fn().mockResolvedValue(undefined);
+    const close = vi.fn().mockResolvedValue(undefined);
+    const showSaveFilePicker = vi.fn().mockResolvedValue({ createWritable: vi.fn().mockResolvedValue({ write, close }) });
+    window.showSaveFilePicker = showSaveFilePicker;
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+    await vi.waitFor(() => expect(write).toHaveBeenCalled());
+
+    expect(showSaveFilePicker).toHaveBeenCalledWith({ suggestedName: 'output.json' });
+    expect(write).toHaveBeenCalledWith('hello');
+    expect(close).toHaveBeenCalled();
+  });
+
+  it('silently does nothing when the user cancels the browser save picker', async () => {
+    const showSaveFilePicker = vi.fn().mockRejectedValue(new DOMException('The user aborted a request.', 'AbortError'));
+    window.showSaveFilePicker = showSaveFilePicker;
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+    await vi.waitFor(() => expect(showSaveFilePicker).toHaveBeenCalled());
+
+    expect(wrapper.text()).not.toContain('Unable to save');
+  });
+
+  it('falls back to a download link when neither Electron nor the File System Access API is available', async () => {
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
+    const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    const wrapper = mount(TextEditor, { props: { modelValue: 'hello', label: 'Input', language: 'json' } });
+    await wrapper.findAll('button').find((button) => button.text() === 'Save')?.trigger('click');
+
+    expect(createObjectURLSpy).toHaveBeenCalled();
+    expect(clickSpy).toHaveBeenCalled();
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:mock-url');
+
+    clickSpy.mockRestore();
+    createObjectURLSpy.mockRestore();
+    revokeObjectURLSpy.mockRestore();
+  });
+});
+
 describe('TextEditor Load File in Electron', () => {
   afterEach(() => {
     delete (window as { codyDevTools?: unknown }).codyDevTools;

@@ -18,6 +18,7 @@ function createCodyDevTools(overrides: Partial<NonNullable<Window['codyDevTools'
     platform: 'darwin',
     isElectron: true,
     loadTextFile: vi.fn(),
+    saveTextFile: vi.fn(),
     onSetTheme: vi.fn(),
     notifyThemeChanged: vi.fn(),
     loadSettings: vi.fn(),

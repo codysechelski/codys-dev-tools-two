@@ -19,10 +19,16 @@ declare global {
   }
 
   interface Window {
+    // The File System Access API's types (FileSystemFileHandle etc.) are in lib.dom.d.ts, but
+    // this entry point isn't — it's still Chromium-desktop-only. Used by TextEditor.vue's web
+    // "Save" fallback to get a real native save dialog when available, instead of always
+    // dropping straight into Downloads.
+    showSaveFilePicker?: (options?: { suggestedName?: string }) => Promise<FileSystemFileHandle>;
     codyDevTools?: {
       platform: NodeJS.Platform;
       isElectron: true;
       loadTextFile: () => Promise<{ name: string; content?: string; error?: string } | null>;
+      saveTextFile: (defaultFilename: string, content: string) => Promise<{ canceled: boolean; filePath?: string }>;
       onSetTheme: (callback: (mode: 'light' | 'dark' | 'system') => void) => void;
       notifyThemeChanged: (mode: 'light' | 'dark' | 'system') => void;
       onNavigateHome: (callback: () => void) => void;

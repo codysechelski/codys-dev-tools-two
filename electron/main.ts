@@ -171,6 +171,14 @@ ipcMain.handle('load-text-file', async () => {
   return { name, content: buffer.toString('utf-8') };
 });
 
+ipcMain.handle('save-text-file', async (_event, defaultFilename: string, content: string) => {
+  const result = await dialog.showSaveDialog({ defaultPath: defaultFilename });
+  if (result.canceled || !result.filePath) return { canceled: true };
+
+  await writeFile(result.filePath, content, 'utf-8');
+  return { canceled: false, filePath: result.filePath };
+});
+
 function looksLikeBinary(buffer: Buffer): boolean {
   return buffer.subarray(0, 8000).includes(0);
 }

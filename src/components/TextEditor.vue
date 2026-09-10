@@ -14,7 +14,7 @@ import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { sql } from '@codemirror/legacy-modes/mode/sql';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import { tags } from '@lezer/highlight';
-import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 import AppCopyButton from '@/components/AppCopyButton.vue';
 import AppIcon from '@/components/AppIcon.vue';
@@ -33,6 +33,13 @@ const props = withDefaults(
     highlightRanges?: Array<{ from: number; to: number; className?: string }>;
     /** Full-width line backgrounds to apply, e.g. added/removed rows in the diff tool. */
     highlightLines?: Array<{ line: number; className: string }>;
+    /**
+     * Overrides the file extension the "Save" button's default filename uses, for cases where
+     * the CodeMirror `language` doesn't match the file type this editor actually represents
+     * (e.g. the SVG Viewer highlights as `xml` but should save as `.svg`) or where it depends on
+     * something other than `language` (e.g. a converter tool's current mode).
+     */
+    fileExtension?: string;
   }>(),
   {
     language: 'text',
@@ -42,6 +49,21 @@ const props = withDefaults(
     highlightLines: () => [],
   },
 );
+
+const EXTENSION_BY_LANGUAGE: Record<NonNullable<typeof props.language>, string> = {
+  css: 'css',
+  html: 'html',
+  javascript: 'js',
+  json: 'json',
+  lua: 'lua',
+  python: 'py',
+  sql: 'sql',
+  xml: 'xml',
+  yaml: 'yaml',
+  text: 'txt',
+};
+
+const saveFilename = computed(() => `output.${props.fileExtension || EXTENSION_BY_LANGUAGE[props.language]}`);
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
@@ -53,6 +75,7 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const isLoadFileModalOpen = ref(false);
 const isDragOver = ref(false);
 const fileLoadError = ref('');
+const saveError = ref('');
 const hasNativeFilePicker = Boolean(window.codyDevTools?.isElectron && window.codyDevTools.loadTextFile);
 
 const codeHighlightStyle = HighlightStyle.define([
@@ -332,6 +355,44 @@ function looksLikeBinary(buffer: ArrayBuffer): boolean {
   return new Uint8Array(buffer.slice(0, 8000)).includes(0);
 }
 
+async function saveToFile(): Promise<void> {
+  saveError.value = '';
+
+  if (window.codyDevTools?.isElectron && window.codyDevTools.saveTextFile) {
+    await window.codyDevTools.saveTextFile(saveFilename.value, props.modelValue);
+    return;
+  }
+
+  await saveInBrowser(saveFilename.value, props.modelValue);
+}
+
+async function saveInBrowser(filename: string, content: string): Promise<void> {
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({ suggestedName: filename });
+      const writable = await handle.createWritable();
+      await writable.write(content);
+      await writable.close();
+      return;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return; // user canceled
+      saveError.value = 'Unable to save that file.';
+      return;
+    }
+  }
+
+  // No File System Access API support (e.g. Firefox/Safari): fall back to a synthetic download
+  // link. Whether this then prompts a save dialog or drops straight into Downloads is up to the
+  // browser's own settings — there's no way to force either from here.
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function createEditorState(): EditorState {
   return EditorState.create({
     doc: props.modelValue,
@@ -374,6 +435,8 @@ function createEditorState(): EditorState {
       </span>
       <div class="text-editor__actions">
         <AppButton v-if="!readonly" variant="muted" size="sm" icon="fileUpload" @click="openLoadFile">Load File</AppButton>
+        <AppButton variant="muted" size="sm" icon="save" :disabled="!modelValue" @click="saveToFile">Save</AppButton>
+        <p v-if="saveError" class="form-text-input__error">{{ saveError }}</p>
         <slot name="toolbar" />
         <AppButton v-if="!readonly" variant="muted" size="sm" icon="eraser" :disabled="!modelValue" @click="clearContents">
           Clear

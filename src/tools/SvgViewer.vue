@@ -40,7 +40,7 @@ const emptyPreviewMessage = computed(() => (input.value.trim() ? 'Fix the markup
     </ToolToolbar>
 
     <div class="svg-viewer-tool__workspace">
-      <TextEditor v-model="input" label="SVG Source" language="xml" placeholder="Paste SVG markup here" />
+      <TextEditor v-model="input" label="SVG Source" language="xml" file-extension="svg" placeholder="Paste SVG markup here" />
 
       <section class="svg-viewer-preview-panel">
         <div v-if="previewUrl" class="svg-viewer-preview">

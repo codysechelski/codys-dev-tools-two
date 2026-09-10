@@ -98,7 +98,7 @@ const outputModeOptions: Array<{ label: string; value: TableOutputMode }> = [
     <div class="formatter-tool__editors markdown-table-tool__editors">
       <TextEditor v-model="input" label="Input" language="text" placeholder="Paste a table copied from a webpage, spreadsheet, CSV, TSV, or markdown" />
       <div class="markdown-table-tool__output-column">
-        <TextEditor :model-value="output" label="Markdown Table" language="text" readonly placeholder="The generated markdown table will appear here" />
+        <TextEditor :model-value="output" label="Markdown Table" language="text" file-extension="md" readonly placeholder="The generated markdown table will appear here" />
         <MarkdownPreview :markdown="output" label="Table Preview" />
       </div>
     </div>

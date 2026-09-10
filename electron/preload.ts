@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('codyDevTools', {
   platform: process.platform,
   isElectron: true,
   loadTextFile: () => ipcRenderer.invoke('load-text-file'),
+  saveTextFile: (defaultFilename: string, content: string) => ipcRenderer.invoke('save-text-file', defaultFilename, content),
   onSetTheme: (callback: (mode: 'light' | 'dark' | 'system') => void) => {
     ipcRenderer.on('set-theme', (_event, mode: 'light' | 'dark' | 'system') => callback(mode));
   },
