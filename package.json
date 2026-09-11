@@ -87,7 +87,8 @@
       "dist/**",
       "out/**",
       "build/icon.png",
-      "build/icon.ico"
+      "build/icon.ico",
+      "build/icons/**"
     ],
     "mac": {
       "category": "public.app-category.developer-tools",

@@ -494,9 +494,14 @@ function createWindow(): void {
     title: "Cody's Dev Tools",
     // Windows' installer/exe resource icon comes from build/icon.ico automatically at package
     // time, but the *running* window/taskbar icon is whatever this option points at — point it
-    // at the same .ico there so they match instead of the running window falling back to the
-    // plain (mac/linux) icon.png.
-    icon: join(__dirname, '../../build/', isWindows ? 'icon.ico' : 'icon.png'),
+    // at the same .ico there so they match. Linux uses the pre-rounded variant from build/icons
+    // (the same set electron-builder packages into the .deb) since Linux desktop environments
+    // don't apply their own icon masking the way macOS/Windows do; mac falls back to icon.png.
+    icon: join(
+      __dirname,
+      '../../build/',
+      isWindows ? 'icon.ico' : isMacOS ? 'icon.png' : 'icons/512x512.png',
+    ),
     // mac: native inset title bar with traffic lights. Windows: hidden native title bar +
     // Window Controls Overlay, so our own CustomTitleBar.vue can draw the icon/menu inline
     // while Windows still paints (and themes, via titleBarOverlay below) the native
