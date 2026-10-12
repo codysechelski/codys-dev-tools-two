@@ -1,3 +1,10 @@
+# [0.36.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.35.1...v0.36.0) (2026-09-11)
+
+
+### Features
+
+* **icons:** regenerate app icons and favicons from new icon set ([3be80a6](https://github.com/codysechelski/codys-dev-tools-two/commit/3be80a6284b1ff52ccd529792e6630daa5c68bc2))
+
 ## [0.35.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.35.0...v0.35.1) (2026-09-10)
 
 
