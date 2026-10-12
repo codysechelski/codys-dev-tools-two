@@ -23,7 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          # macos-26 for Xcode 26's actool, which electron-builder needs to compile
+          # build/AppIcon.icon (Icon Composer) into the app's Liquid Glass icon.
+          - os: macos-26
             args: --mac --universal
           - os: windows-latest
             args: --win --x64

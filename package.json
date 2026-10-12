@@ -92,6 +92,7 @@
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
+      "icon": "build/AppIcon.icon",
       "target": [
         "dmg",
         "zip"

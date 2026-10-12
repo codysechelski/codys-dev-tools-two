@@ -4453,8 +4453,9 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 }
 
 .app-titlebar__icon {
-  width: 1.1rem;
-  height: 1.1rem;
+  // Whole pixels, so the icon's hand-tuned 16px art lands on the pixel grid at 100% scaling.
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
 }
 

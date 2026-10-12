@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
-import titlebarIconDark from '@/assets/images/titlebar-icon-dark.png';
-import titlebarIconLight from '@/assets/images/titlebar-icon-light.png';
+import titlebarIconDark from '@/assets/images/titlebar-icon-dark.svg';
+import titlebarIconLight from '@/assets/images/titlebar-icon-light.svg';
 import type { AppSettings } from '@/settings';
 
 const props = defineProps<{
