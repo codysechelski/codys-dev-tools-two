@@ -1,3 +1,10 @@
+# [0.37.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.36.0...v0.37.0) (2026-10-12)
+
+
+### Features
+
+* **icons:** Liquid Glass macOS icon and per-size Windows/Linux icons ([d1694cb](https://github.com/codysechelski/codys-dev-tools-two/commit/d1694cbead01b42c166233b11eb145576c70a3f7))
+
 # [0.36.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.35.1...v0.36.0) (2026-09-11)
 
 
