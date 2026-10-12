@@ -30,7 +30,7 @@ jobs:
           - os: windows-latest
             args: --win --x64
           - os: ubuntu-latest
-            args: --linux --x64
+            args: --linux --x64 --arm64
     runs-on: ${{ matrix.os }}
     steps:
       # No explicit ref: this checks out main's current tip, which by now includes the
