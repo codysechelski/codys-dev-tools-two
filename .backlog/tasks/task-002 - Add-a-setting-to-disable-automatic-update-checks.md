@@ -1,9 +1,9 @@
 ---
 id: TASK-002
 title: Add a setting to disable automatic update checks
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@claude'
+  - '@codysechelski'
 created_date: '2026-10-14 05:47'
 updated_date: '2026-10-14 05:56'
 labels: []
@@ -56,10 +56,10 @@ Open question: should the manual "Check for Updates…" menu item stay available
 - [x] #13 The README is up to date, with changes made if required
 - [x] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
 - [x] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
-- [ ] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
-- [ ] #17 Commits are pushed to the remote repo
-- [ ] #18 The task is moved to "Ready for Testing"
-- [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
+- [x] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
+- [x] #17 Commits are pushed to the remote repo
+- [x] #18 The task is moved to "Ready for Testing"
+- [x] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
 
 ## Implementation Notes
