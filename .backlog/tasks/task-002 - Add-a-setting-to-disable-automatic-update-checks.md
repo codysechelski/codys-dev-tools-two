@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-10-14 05:47'
-updated_date: '2026-10-14 05:54'
+updated_date: '2026-10-14 05:56'
 labels: []
 dependencies: []
 priority: medium
@@ -31,12 +31,12 @@ Open question: should the manual "Check for Updates…" menu item stay available
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Settings (Electron build) shows a clearly labeled control to disable automatic update checks
-- [ ] #2 The setting defaults to enabled, so existing users keep the current automatic update notification and install behavior unless they change it
-- [ ] #3 When disabled, the app does not run background update checks and does not proactively show the update banner from an automatic check
-- [ ] #4 The preference persists across restarts and is stored alongside the other app settings (settings file in Electron)
-- [ ] #5 The manual "Check for Updates…" menu action continues to function regardless of the setting (pending confirmation)
-- [ ] #6 Tests cover the new setting's default, its merge/persistence behavior, and the disabled path
+- [x] #1 Settings (Electron build) shows a clearly labeled control to disable automatic update checks
+- [x] #2 The setting defaults to enabled, so existing users keep the current automatic update notification and install behavior unless they change it
+- [x] #3 When disabled, the app does not run background update checks and does not proactively show the update banner from an automatic check
+- [x] #4 The preference persists across restarts and is stored alongside the other app settings (settings file in Electron)
+- [x] #5 The manual "Check for Updates…" menu action continues to function regardless of the setting (pending confirmation)
+- [x] #6 Tests cover the new setting's default, its merge/persistence behavior, and the disabled path
 <!-- AC:END -->
 
 ## Definition of Done
@@ -61,3 +61,15 @@ Open question: should the manual "Check for Updates…" menu item stay available
 - [ ] #18 The task is moved to "Ready for Testing"
 - [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Added automaticUpdateChecks (default true) to AppSettings in src/settings.ts, electron/main.ts, electron/preload.ts, with mergeWithDefaults/mergeSettings validation. Settings page gets an Electron-only Updates section with an "Automatically check for updates" toggle. Background checks now go through scheduleBackgroundUpdateChecks (electron/updateChecks.ts), which re-reads settings.json from disk on every tick, so turning it off takes effect without a restart and isn't racing the renderer's settings load. Unreadable settings fall back to enabled. The manual Check for Updates… menu action is unchanged and always works (resolved the open question in favor of the AC's assumption).
+
+Verification:
+- npx vitest run -> 77 files, 573 tests passed (new electron/updateChecks.test.ts; added default/merge/round-trip tests in settings.test.ts; Settings.test.ts covers toggle visibility, default state, and emit)
+- npm run typecheck -> pass; npx tsc -p tsconfig.node.json --noEmit -> pass (electron code)
+- npx electron-vite build -> pass
+- Not verified against a packaged build (background checks are skipped when not packaged).
+<!-- SECTION:NOTES:END -->
