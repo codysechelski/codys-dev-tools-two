@@ -1,11 +1,11 @@
 ---
 id: TASK-001
 title: Help popover renders behind the sidebar
-status: Ready for Testing
+status: Done
 assignee:
   - '@codysechelski'
 created_date: '2026-10-14 01:52'
-updated_date: '2026-10-14 03:30'
+updated_date: '2026-10-14 05:46'
 labels: []
 dependencies: []
 priority: medium
