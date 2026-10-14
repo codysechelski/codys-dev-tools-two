@@ -1,9 +1,9 @@
 ---
 id: TASK-001
 title: Help popover renders behind the sidebar
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@claude'
+  - '@codysechelski'
 created_date: '2026-10-14 01:52'
 updated_date: '2026-10-14 03:30'
 labels: []
@@ -42,7 +42,7 @@ Expected: help popovers should paint above all other UI chrome, including the si
 - [x] #4 Before making changes, be sure that you understand the codebase. Look for existing patterns, components, tooling, etc., before forging your own path
 - [x] #5 Before making sweeping architecture decisions, or making changes with a high likelihood of breaking other parts of the app, stop and ask first
 - [x] #6 Unit tests are written for new code
-- [ ] #7 If creating a new reusable component with a UI, or adding a variant to an existing component, add an example in the design system (style-guide) page
+- [x] #7 If creating a new reusable component with a UI, or adding a variant to an existing component, add an example in the design system (style-guide) page
 - [x] #8 Choose a verification scope based on the files changed, risk, and user-visible behavior. Full test suites are required only for cross-cutting, infrastructure, auth/session, router/app-shell, editor-core, migration, build/dependency, or release-baseline work.
 - [x] #9 Run the selected verification for real and record the commands/results. Acceptable scopes include no tests for docs/backlog/comment-only work, static checks, targeted unit/API/web tests, targeted browser/E2E checks, smoke/visual E2E, or full suites when warranted.
 - [x] #10 If automated verification is configured, use the project's verification workflow with the smallest sufficient profile, or document why verification was intentionally skipped.
@@ -50,11 +50,11 @@ Expected: help popovers should paint above all other UI chrome, including the si
 - [x] #12 If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress
 - [x] #13 The README is up to date, with changes made if required
 - [x] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
-- [ ] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
-- [ ] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
-- [ ] #17 Commits are pushed to the remote repo
-- [ ] #18 The task is moved to "Ready for Testing"
-- [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
+- [x] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
+- [x] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
+- [x] #17 Commits are pushed to the remote repo
+- [x] #18 The task is moved to "Ready for Testing"
+- [x] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
 
 ## Implementation Notes
