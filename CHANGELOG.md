@@ -1,3 +1,10 @@
+## [0.37.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.1...v0.37.2) (2026-10-14)
+
+
+### Bug Fixes
+
+* **help-popover:** render help popovers in the top layer above the sidebar ([0319f95](https://github.com/codysechelski/codys-dev-tools-two/commit/0319f954f84269f74d470ff732052f3bc1ad1527))
+
 ## [0.37.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.0...v0.37.1) (2026-10-12)
 
 
