@@ -1,0 +1,46 @@
+{
+  "enabled": true,
+  "defaultProfile": "unit-2",
+  "profiles": {
+    "unit": {
+      "description": "Run the Vitest unit test suite.",
+      "steps": [
+        {
+          "name": "unit",
+          "command": "npm run test:unit -- --run"
+        }
+      ]
+    },
+    "unit-2": {
+      "description": "Run the Vue/Vite unit test suite.",
+      "steps": [
+        {
+          "name": "unit",
+          "command": "npm run test:unit -- --run"
+        }
+      ]
+    },
+    "e2e": {
+      "description": "Run Playwright when browser coverage is warranted.",
+      "steps": [
+        {
+          "name": "playwright",
+          "command": "npx playwright test"
+        }
+      ]
+    },
+    "full": {
+      "description": "Run unit tests and Playwright for full baseline validation.",
+      "steps": [
+        {
+          "name": "unit",
+          "command": "npm run test:unit -- --run"
+        },
+        {
+          "name": "playwright",
+          "command": "npx playwright test"
+        }
+      ]
+    }
+  }
+}

@@ -9,3 +9,5 @@ local-notes/
 .env
 .env.*
 !.env.example
+
+.agent-results/

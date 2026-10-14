@@ -1,0 +1,43 @@
+project_name: "backlog"
+default_status: "To Do"
+statuses: ["To Do", "In Progress", "Ready for Testing", "Done"]
+labels: []
+priorities: ["High", "Medium", "Low"]
+types: ["bug", "feature", "enhancement", "task", "chore", "docs", "spike"]
+default_assignee: []
+milestones: []
+definition_of_done:
+  [
+    "When you are asked to work on a task, first move it to `In Progress` if it is not already there",
+    "After you have ensured the task has the proper status, you must assign the work to yourself (@claude, @codex, @opencode, etc.)",
+    "Completed the development work outlined in the task. Ask questions if things are unclear",
+    "Before making changes, be sure that you understand the codebase. Look for existing patterns, components, tooling, etc., before forging your own path",
+    "Before making sweeping architecture decisions, or making changes with a high likelihood of breaking other parts of the app, stop and ask first",
+    "Unit tests are written for new code",
+    "If creating a new reusable component with a UI, or adding a variant to an existing component, add an example in the design system (style-guide) page",
+    "Choose a verification scope based on the files changed, risk, and user-visible behavior. Full test suites are required only for cross-cutting, infrastructure, auth/session, router/app-shell, editor-core, migration, build/dependency, or release-baseline work.",
+    "Run the selected verification for real and record the commands/results. Acceptable scopes include no tests for docs/backlog/comment-only work, static checks, targeted unit/API/web tests, targeted browser/E2E checks, smoke/visual E2E, or full suites when warranted.",
+    "If automated verification is configured, use the project's verification workflow with the smallest sufficient profile, or document why verification was intentionally skipped.",
+    "Linting and formatting pass when code or style files changed",
+    "If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress",
+    "The README is up to date, with changes made if required",
+    "AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added",
+    "If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense",
+    "All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself",
+    "Commits are pushed to the remote repo",
+    'The task is moved to "Ready for Testing"',
+    "The task is assigned to Cody (the project owner) so he can review the changes.",
+  ]
+date_format: yyyy-mm-dd
+max_column_width: 20
+default_editor: "nvim"
+auto_open_browser: true
+hide_empty_columns: false
+default_port: 6420
+remote_operations: true
+auto_commit: true
+filesystem_only: false
+zero_padded_ids: 3
+bypass_git_hooks: false
+check_active_branches: true
+active_branch_days: 30
