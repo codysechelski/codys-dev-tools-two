@@ -1,11 +1,11 @@
 ---
 id: TASK-003
 title: Widen the default window width on launch
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@claude'
+  - '@cody'
 created_date: '2026-10-14 06:05'
-updated_date: '2026-10-14 06:09'
+updated_date: '2026-10-14 06:10'
 labels:
   - electron
 dependencies: []
@@ -21,10 +21,10 @@ The Electron window opens at a default size of 1200x780 (with minWidth 900 / min
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The app launches with a default window width wider than the current 1200px
-- [ ] #2 The default window still fits on common laptop displays without extending off-screen
-- [ ] #3 Existing minWidth/minHeight constraints remain enforced
-- [ ] #4 Default sizing is consistent across macOS and Windows Electron builds
+- [x] #1 The app launches with a default window width wider than the current 1200px
+- [x] #2 The default window still fits on common laptop displays without extending off-screen
+- [x] #3 Existing minWidth/minHeight constraints remain enforced
+- [x] #4 Default sizing is consistent across macOS and Windows Electron builds
 <!-- AC:END -->
 
 ## Definition of Done
@@ -49,3 +49,11 @@ The Electron window opens at a default size of 1200x780 (with minWidth 900 / min
 - [ ] #18 The task is moved to "Ready for Testing"
 - [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Default size moved to electron/windowSize.ts: preferred 1440x780, clamped to screen.getPrimaryDisplay().workAreaSize (excludes Dock/menu bar/taskbar), never below the 900x620 minimum. Same code path on mac and Windows.
+
+Verification: npx vitest run electron/ (8 passed), npm run typecheck (clean), npx electron-vite build (ok). No lint config in repo. README/AGENTS.md need no changes.
+<!-- SECTION:NOTES:END -->
