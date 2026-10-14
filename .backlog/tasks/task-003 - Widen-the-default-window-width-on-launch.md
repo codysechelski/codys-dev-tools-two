@@ -1,8 +1,9 @@
 ---
 id: TASK-003
 title: Widen the default window width on launch
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - '@claude'
 created_date: '2026-10-14 06:05'
 updated_date: '2026-10-14 06:09'
 labels:
