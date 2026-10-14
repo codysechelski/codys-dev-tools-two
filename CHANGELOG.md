@@ -1,3 +1,10 @@
+# [0.38.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.2...v0.38.0) (2026-10-14)
+
+
+### Features
+
+* **settings:** add a setting to disable automatic update checks ([bd2a582](https://github.com/codysechelski/codys-dev-tools-two/commit/bd2a58235677fe194b397f5ecf2fb688ac310be8))
+
 ## [0.37.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.1...v0.37.2) (2026-10-14)
 
 
