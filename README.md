@@ -137,6 +137,7 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set
 - **Add a tool:** see [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-tool).
 - **App version:** read from `package.json` via `src/appInfo.ts`, shown in the sidebar footer.
 - **Theme:** Settings supports light/dark/system (system follows `prefers-color-scheme`). The Electron View > Theme menu mirrors the Settings page in both directions. Theme choice isn't persisted between launches yet.
+- **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on Windows/Linux, a Releases link on macOS). Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
 - **Design tokens:** colors, spacing, radii, and shadows live in `src/styles/_tokens.scss` as CSS custom properties.
 - **Offline fonts:** Ubuntu and Ubuntu Mono are vendored under `src/assets/fonts/ubuntu` so the app doesn't depend on Google Fonts at runtime.
 - **Text editor:** the shared `src/components/TextEditor.vue` wraps CodeMirror. Editable instances have a Load File button — native OS picker in Electron, a drag-and-drop modal in the browser.

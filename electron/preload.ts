@@ -10,6 +10,7 @@ interface AppSettings {
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
   sidebarDensity: 'comfortable' | 'compact';
+  automaticUpdateChecks: boolean;
 }
 
 interface UpdateNotice {

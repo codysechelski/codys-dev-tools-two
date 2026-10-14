@@ -7,6 +7,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, shell, type Men
 import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+import { scheduleBackgroundUpdateChecks } from './updateChecks';
 
 const { autoUpdater } = electronUpdaterPkg;
 
@@ -25,6 +26,7 @@ interface AppSettings {
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
   sidebarDensity: SidebarDensity;
+  automaticUpdateChecks: boolean;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -37,6 +39,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   defaultSortKeys: false,
   pinnedToolIds: [],
   sidebarDensity: 'comfortable',
+  automaticUpdateChecks: true,
 };
 const REMEMBER_TOOL_INPUT_MODES: RememberToolInput[] = ['never', 'session', 'forever'];
 const INDENT_STYLES: IndentStyle[] = ['2-spaces', '4-spaces', 'tabs'];
@@ -296,6 +299,8 @@ function mergeSettings(raw: unknown): AppSettings {
   const sidebarDensity: SidebarDensity = SIDEBAR_DENSITIES.includes(candidate.sidebarDensity as SidebarDensity)
     ? (candidate.sidebarDensity as SidebarDensity)
     : DEFAULT_SETTINGS.sidebarDensity;
+  const automaticUpdateChecks =
+    typeof candidate.automaticUpdateChecks === 'boolean' ? candidate.automaticUpdateChecks : DEFAULT_SETTINGS.automaticUpdateChecks;
 
   return {
     themeMode,
@@ -307,7 +312,19 @@ function mergeSettings(raw: unknown): AppSettings {
     defaultSortKeys,
     pinnedToolIds,
     sidebarDensity,
+    automaticUpdateChecks,
   };
+}
+
+// Read straight from disk (rather than cached renderer state) so the background update
+// check sees the latest saved preference even before the renderer has loaded settings.
+async function readSavedSettings(): Promise<AppSettings> {
+  const { dir } = await resolveSettingsDir();
+  try {
+    return mergeSettings(JSON.parse(await readFile(getSettingsFilePath(dir), 'utf-8')));
+  } catch {
+    return { ...DEFAULT_SETTINGS };
+  }
 }
 
 ipcMain.handle('load-settings', async () => {
@@ -552,8 +569,14 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
-  setTimeout(checkForUpdatesInBackground, UPDATE_CHECK_DELAY_MS);
-  setInterval(checkForUpdatesInBackground, UPDATE_CHECK_INTERVAL_MS);
+  // Background checks respect the "Automatically check for updates" setting; the manual
+  // "Check for Updates..." menu action always works regardless.
+  scheduleBackgroundUpdateChecks({
+    isEnabled: async () => (await readSavedSettings()).automaticUpdateChecks,
+    check: checkForUpdatesInBackground,
+    delayMs: UPDATE_CHECK_DELAY_MS,
+    intervalMs: UPDATE_CHECK_INTERVAL_MS,
+  });
 });
 
 app.on('window-all-closed', () => {

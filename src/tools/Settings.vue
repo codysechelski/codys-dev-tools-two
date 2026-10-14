@@ -230,6 +230,21 @@ function confirmReset(): void {
 
     <div v-if="isElectron" class="settings-section">
       <div>
+        <h2>Updates</h2>
+        <p>Check for new versions in the background and show a notice when one is available. "Check for Updates…" in the app menu always works, even with this off.</p>
+      </div>
+
+      <div class="settings-formatting-grid">
+        <AppToggle
+          :model-value="settings.automaticUpdateChecks"
+          label="Automatically check for updates"
+          @update:model-value="emit('updateSetting', { automaticUpdateChecks: $event })"
+        />
+      </div>
+    </div>
+
+    <div v-if="isElectron" class="settings-section">
+      <div>
         <h2>Settings File</h2>
         <p>Your preferences are saved to this file automatically whenever you change them.</p>
       </div>
@@ -253,7 +268,7 @@ function confirmReset(): void {
     <div class="settings-section">
       <div>
         <h2>Reset</h2>
-        <p>Revert theme, sidebar density, remembered-input mode, formatting defaults, and pinned tools back to their factory values.</p>
+        <p>Revert theme, sidebar density, remembered-input mode, formatting defaults, update checks, and pinned tools back to their factory values.</p>
       </div>
 
       <div class="settings-file-actions">

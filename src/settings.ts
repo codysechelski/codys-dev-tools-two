@@ -14,6 +14,8 @@ export interface AppSettings {
   defaultSortKeys: boolean;
   pinnedToolIds: string[];
   sidebarDensity: SidebarDensity;
+  // Electron only: background update checks + banner. The manual menu check always works.
+  automaticUpdateChecks: boolean;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -26,6 +28,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultSortKeys: false,
   pinnedToolIds: [],
   sidebarDensity: 'comfortable',
+  automaticUpdateChecks: true,
 };
 
 const LOCAL_STORAGE_KEY = 'codys-dev-tools:settings';
@@ -56,6 +59,8 @@ export function mergeWithDefaults(raw: unknown): AppSettings {
   const sidebarDensity = SIDEBAR_DENSITIES.includes(candidate.sidebarDensity as SidebarDensity)
     ? (candidate.sidebarDensity as SidebarDensity)
     : DEFAULT_SETTINGS.sidebarDensity;
+  const automaticUpdateChecks =
+    typeof candidate.automaticUpdateChecks === 'boolean' ? candidate.automaticUpdateChecks : DEFAULT_SETTINGS.automaticUpdateChecks;
 
   return {
     themeMode,
@@ -67,6 +72,7 @@ export function mergeWithDefaults(raw: unknown): AppSettings {
     defaultSortKeys,
     pinnedToolIds,
     sidebarDensity,
+    automaticUpdateChecks,
   };
 }
 

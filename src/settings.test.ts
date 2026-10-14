@@ -75,6 +75,16 @@ describe('mergeWithDefaults', () => {
     expect(mergeWithDefaults({ sidebarDensity: 'cozy' })).toEqual(DEFAULT_SETTINGS);
     expect(mergeWithDefaults({ sidebarDensity: 123 })).toEqual(DEFAULT_SETTINGS);
   });
+
+  it('enables automatic update checks by default', () => {
+    expect(DEFAULT_SETTINGS.automaticUpdateChecks).toBe(true);
+    expect(mergeWithDefaults({}).automaticUpdateChecks).toBe(true);
+  });
+
+  it('keeps a saved automaticUpdateChecks preference and ignores invalid values', () => {
+    expect(mergeWithDefaults({ automaticUpdateChecks: false })).toEqual({ ...DEFAULT_SETTINGS, automaticUpdateChecks: false });
+    expect(mergeWithDefaults({ automaticUpdateChecks: 'no' })).toEqual(DEFAULT_SETTINGS);
+  });
 });
 
 describe('localStorage persistence', () => {
@@ -87,9 +97,9 @@ describe('localStorage persistence', () => {
   });
 
   it('round-trips settings through localStorage', () => {
-    saveSettingsToLocalStorage({ ...DEFAULT_SETTINGS, themeMode: 'dark', rememberToolInput: 'forever' });
+    saveSettingsToLocalStorage({ ...DEFAULT_SETTINGS, themeMode: 'dark', rememberToolInput: 'forever', automaticUpdateChecks: false });
 
-    expect(loadSettingsFromLocalStorage()).toEqual({ ...DEFAULT_SETTINGS, themeMode: 'dark', rememberToolInput: 'forever' });
+    expect(loadSettingsFromLocalStorage()).toEqual({ ...DEFAULT_SETTINGS, themeMode: 'dark', rememberToolInput: 'forever', automaticUpdateChecks: false });
   });
 
   it('falls back to defaults for corrupt stored JSON', () => {

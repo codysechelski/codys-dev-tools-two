@@ -86,6 +86,24 @@ describe('Settings', () => {
     expect(wrapper.emitted('updateSetting')?.[0]).toEqual([{ defaultPreserveComments: false }]);
   });
 
+  it('hides the update setting outside Electron', () => {
+    const wrapper = mount(Settings, { props: baseProps });
+
+    expect(wrapper.text()).not.toContain('Automatically check for updates');
+  });
+
+  it('shows the automatic update toggle in Electron, enabled by default, and emits changes', async () => {
+    const wrapper = mount(Settings, { props: { ...baseProps, isElectron: true } });
+
+    expect(wrapper.text()).toContain('Updates');
+    const updateToggle = wrapper.findAll('.form-toggle').find((toggle) => toggle.text().includes('Automatically check for updates'));
+    expect(updateToggle?.find('.form-toggle__control').attributes('aria-checked')).toBe('true');
+
+    await updateToggle?.find('.form-toggle__control').trigger('click');
+
+    expect(wrapper.emitted('updateSetting')?.[0]).toEqual([{ automaticUpdateChecks: false }]);
+  });
+
   it('requires confirmation before emitting resetSettings', async () => {
     const wrapper = mount(Settings, { props: baseProps, attachTo: document.body });
 
