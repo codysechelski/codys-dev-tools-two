@@ -48,7 +48,7 @@ Expected: help popovers should paint above all other UI chrome, including the si
 - [x] #10 If automated verification is configured, use the project's verification workflow with the smallest sufficient profile, or document why verification was intentionally skipped.
 - [x] #11 Linting and formatting pass when code or style files changed
 - [x] #12 If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress
-- [ ] #13 The README is up to date, with changes made if required
+- [x] #13 The README is up to date, with changes made if required
 - [ ] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
 - [ ] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
 - [ ] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
