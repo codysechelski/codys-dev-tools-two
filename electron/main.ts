@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, shell, type MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, screen, shell, type MenuItemConstructorOptions } from 'electron';
 // electron-updater is CommonJS; Node's ESM loader can't always synthesize its named exports
 // when the package is left external (see electron.vite.config.ts's externalizeDepsPlugin), so
 // this packaged main process only sees a default export at runtime. Destructure from that
@@ -8,6 +8,7 @@ import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { scheduleBackgroundUpdateChecks } from './updateChecks';
+import { MIN_WINDOW_SIZE, resolveDefaultWindowSize } from './windowSize';
 
 const { autoUpdater } = electronUpdaterPkg;
 
@@ -503,11 +504,12 @@ function buildAppMenu(): Menu {
 }
 
 function createWindow(): void {
+  const { width, height } = resolveDefaultWindowSize(screen.getPrimaryDisplay().workAreaSize);
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 780,
-    minWidth: 900,
-    minHeight: 620,
+    width,
+    height,
+    minWidth: MIN_WINDOW_SIZE.width,
+    minHeight: MIN_WINDOW_SIZE.height,
     title: "Cody's Dev Tools",
     // Windows' installer/exe resource icon comes from build/icon.ico automatically at package
     // time, but the *running* window/taskbar icon is whatever this option points at — point it
