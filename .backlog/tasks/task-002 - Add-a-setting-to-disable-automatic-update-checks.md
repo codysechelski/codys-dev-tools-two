@@ -55,7 +55,7 @@ Open question: should the manual "Check for Updates…" menu item stay available
 - [x] #12 If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress
 - [x] #13 The README is up to date, with changes made if required
 - [x] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
-- [ ] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
+- [x] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
 - [ ] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
 - [ ] #17 Commits are pushed to the remote repo
 - [ ] #18 The task is moved to "Ready for Testing"
