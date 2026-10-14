@@ -1,16 +1,16 @@
 ---
 id: TASK-002
 title: Add a setting to disable automatic update checks
-status: Ready for Testing
+status: Done
 assignee:
   - '@codysechelski'
 created_date: '2026-10-14 05:47'
-updated_date: '2026-10-14 05:56'
+updated_date: '2026-10-14 06:09'
 labels: []
 dependencies: []
 priority: medium
 type: enhancement
-ordinal: 2000
+ordinal: 500
 ---
 
 ## Description
