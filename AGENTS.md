@@ -41,6 +41,7 @@
 - Toolbar form controls should place labels above controls, align label rows horizontally, and use consistent control heights.
 - Form-control hints or descriptive text should use the shared popover help pattern instead of inline helper text in toolbars.
 - Do not add help popovers to every control by default; use them only when the control's purpose may be unclear.
+- Floating UI that must escape scroll containers or paint above the sidebar (e.g. `HelpPopover`) should use the native Popover API top layer with viewport-relative positioning rather than raising `z-index`; the content stays in place in the DOM, so `.app-shell[data-theme='light']` overrides still apply.
 - Use the shared `TextEditor` component for editor-like text areas.
 - The shared `TextEditor` is built on CodeMirror. Prefer configuring that wrapper rather than implementing one-off editors.
 - The text editor should support Tab indentation without moving focus.

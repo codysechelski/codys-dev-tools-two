@@ -1620,13 +1620,18 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   outline: 0;
 }
 
+// Promoted to the top layer via the Popover API while open (see HelpPopover.vue),
+// so it is positioned against the viewport rather than its trigger's ancestors.
 .help-popover__content {
-  position: absolute;
+  position: fixed;
   z-index: 1000;
-  bottom: calc(100% + var(--space-2));
-  left: 50%;
+  inset: auto;
+  top: 0;
+  left: 0;
   width: max-content;
   max-width: 18rem;
+  margin: 0;
+  overflow: visible;
   padding: var(--space-3);
   border: var(--border-hairline) solid rgba(103, 232, 249, 0.72);
   border-radius: var(--radius-md);
@@ -1640,16 +1645,19 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   line-height: 1.45;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, 0.25rem);
+  transform: translateY(0.25rem);
   transition:
     opacity var(--duration-fast) var(--ease-standard),
     transform var(--duration-fast) var(--ease-standard);
 }
 
-.help-popover:hover .help-popover__content,
-.help-popover:focus-within .help-popover__content {
+.help-popover__content--bottom {
+  transform: translateY(-0.25rem);
+}
+
+.help-popover__content--open {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
 }
 
 .form-text-input input,
