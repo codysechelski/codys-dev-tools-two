@@ -47,7 +47,7 @@ Expected: help popovers should paint above all other UI chrome, including the si
 - [x] #9 Run the selected verification for real and record the commands/results. Acceptable scopes include no tests for docs/backlog/comment-only work, static checks, targeted unit/API/web tests, targeted browser/E2E checks, smoke/visual E2E, or full suites when warranted.
 - [x] #10 If automated verification is configured, use the project's verification workflow with the smallest sufficient profile, or document why verification was intentionally skipped.
 - [x] #11 Linting and formatting pass when code or style files changed
-- [ ] #12 If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress
+- [x] #12 If the task has multiple Acceptance Criteria, check them off as they are completed. Do not wait for the end to check them all because I will not be able to gauge your progress
 - [ ] #13 The README is up to date, with changes made if required
 - [ ] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
 - [ ] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
