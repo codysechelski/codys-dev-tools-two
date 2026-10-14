@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@claude'
 created_date: '2026-10-14 01:52'
-updated_date: '2026-10-14 03:27'
+updated_date: '2026-10-14 03:30'
 labels: []
 dependencies: []
 priority: medium
@@ -27,11 +27,11 @@ Expected: help popovers should paint above all other UI chrome, including the si
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Hovering or focusing the Delimiter field's help icon in the Markdown Table Generator shows the full popover with no part hidden by the sidebar
-- [ ] #2 Help popovers render above all other UI chrome (sidebar, banners, surrounding tool surfaces) regardless of which tool or field triggers them
-- [ ] #3 The fix is applied to the shared help popover component so every tool using it is corrected, not just Markdown Table Generator
-- [ ] #4 Existing popover behavior is preserved: reveal on hover/focus-within, anchored to its trigger, and correct appearance in both dark and light themes
-- [ ] #5 Relevant tests or documented manual verification cover the corrected layering
+- [x] #1 Hovering or focusing the Delimiter field's help icon in the Markdown Table Generator shows the full popover with no part hidden by the sidebar
+- [x] #2 Help popovers render above all other UI chrome (sidebar, banners, surrounding tool surfaces) regardless of which tool or field triggers them
+- [x] #3 The fix is applied to the shared help popover component so every tool using it is corrected, not just Markdown Table Generator
+- [x] #4 Existing popover behavior is preserved: reveal on hover/focus-within, anchored to its trigger, and correct appearance in both dark and light themes
+- [x] #5 Relevant tests or documented manual verification cover the corrected layering
 <!-- AC:END -->
 
 ## Definition of Done
@@ -56,3 +56,14 @@ Expected: help popovers should paint above all other UI chrome, including the si
 - [ ] #18 The task is moved to "Ready for Testing"
 - [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Fix: HelpPopover content now uses popover="manual" and is promoted to the browser top layer on hover/focus, positioned against the viewport via computeHelpPopoverPosition (centered above trigger, clamped to viewport edges, flips below when no room above). Closes on mouse leave/blur/Escape; stays open while either hovered or focused. Light-theme overrides unchanged (DOM position unchanged).
+
+Verification:
+- npx vitest run -> 76 files, 565 tests passed (new: helpPopoverPosition.test.ts, extended HelpPopover.test.ts)
+- npm run typecheck -> pass (no lint config in repo)
+- Headless Chromium (Playwright) against vite dev server: Markdown Table Generator > Delimiter help popover renders fully over the sidebar (left 329px vs sidebar right 352px) in both dark and light themes; closes on mouse leave.
+<!-- SECTION:NOTES:END -->
