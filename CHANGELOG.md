@@ -1,3 +1,10 @@
+## [0.37.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.0...v0.37.1) (2026-10-12)
+
+
+### Bug Fixes
+
+* **build:** build Linux .deb for arm64 in addition to x64 ([dd4cd5c](https://github.com/codysechelski/codys-dev-tools-two/commit/dd4cd5c0bb10c4579a0a4c09026ec5e8e877faf0))
+
 # [0.37.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.36.0...v0.37.0) (2026-10-12)
 
 
