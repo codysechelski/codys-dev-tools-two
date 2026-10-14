@@ -42,7 +42,7 @@ Open question: should the manual "Check for Updates…" menu item stay available
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [x] #1 When you are asked to work on a task, first move it to `In Progress` if it is not already there
-- [ ] #2 After you have ensured the task has the proper status, you must assign the work to yourself (@claude, @codex, @opencode, etc.)
+- [x] #2 After you have ensured the task has the proper status, you must assign the work to yourself (@claude, @codex, @opencode, etc.)
 - [ ] #3 Completed the development work outlined in the task. Ask questions if things are unclear
 - [ ] #4 Before making changes, be sure that you understand the codebase. Look for existing patterns, components, tooling, etc., before forging your own path
 - [ ] #5 Before making sweeping architecture decisions, or making changes with a high likelihood of breaking other parts of the app, stop and ask first
