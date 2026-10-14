@@ -1,3 +1,10 @@
+# [0.39.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.38.0...v0.39.0) (2026-10-14)
+
+
+### Features
+
+* **electron:** widen default window width on launch ([7e23f07](https://github.com/codysechelski/codys-dev-tools-two/commit/7e23f071f14fec9c17fd368b4cce2a2e7f1b76e5))
+
 # [0.38.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.37.2...v0.38.0) (2026-10-14)
 
 
