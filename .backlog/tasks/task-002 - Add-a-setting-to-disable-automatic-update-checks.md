@@ -1,9 +1,11 @@
 ---
 id: TASK-002
 title: Add a setting to disable automatic update checks
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - '@claude'
 created_date: '2026-10-14 05:47'
+updated_date: '2026-10-14 05:54'
 labels: []
 dependencies: []
 priority: medium
