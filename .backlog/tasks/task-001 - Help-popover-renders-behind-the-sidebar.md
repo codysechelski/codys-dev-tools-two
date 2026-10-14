@@ -1,9 +1,11 @@
 ---
 id: TASK-001
 title: Help popover renders behind the sidebar
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - '@claude'
 created_date: '2026-10-14 01:52'
+updated_date: '2026-10-14 03:27'
 labels: []
 dependencies: []
 priority: medium
