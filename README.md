@@ -65,13 +65,26 @@ If you just want to use the app, grab the latest build from the **[project websi
 | Platform | File |
 | --- | --- |
 | macOS | `.dmg` |
-| Windows | `.exe` installer (recommended) or `.msi` |
+| Windows | `.exe` installer |
 | Linux (any distro) | `.AppImage` |
 | Linux (Debian/Ubuntu) | `.deb` |
 | Linux (Fedora/RHEL/openSUSE) | `.rpm` |
 | Linux (Arch/Manjaro) | `.pacman` |
 
-> **Windows MSI installs don't auto-update.** The `.msi` is meant for managed/IT deployments (Group Policy, Intune, etc.). The app will still tell you when a new version is out, but you'll need to download and install it yourself. Use the `.exe` installer if you want one-click in-app updates.
+### Enterprise edition
+
+For IT departments deploying to managed machines, each release also includes an **Enterprise** edition (files named `codys-dev-tools-enterprise-…`):
+
+| Platform | File |
+| --- | --- |
+| macOS | `.pkg` (for MDM tools like Jamf, Intune, or Kandji; always installs to `/Applications`) or `.dmg` |
+| Windows | `.msi` (for Group Policy, Intune, SCCM, etc.; installs for all users) |
+
+It's the same app with the same tools. The differences:
+
+- **No automatic updates.** The Enterprise edition never checks for updates or contacts GitHub. IT controls which version is installed by deploying a newer installer. There's no Check for Updates menu item or Updates section in Settings.
+- **No "Buy Me a Coffee" link** on the home screen.
+- The version in the sidebar and home screen reads "Enterprise".
 
 > **Note:** these builds aren't code-signed (that requires a paid Apple/Microsoft developer certificate). macOS Gatekeeper and Windows SmartScreen will warn that the app is from an "unidentified developer" — you'll need to explicitly allow it to run (macOS: right-click → Open; Windows: "More info" → "Run anyway").
 
@@ -169,12 +182,15 @@ Outputs static files to `dist/` — deploy that folder to any static host (nginx
 
 ```bash
 npm run dist:mac     # macOS .dmg + .zip (universal binary)
-npm run dist:win     # Windows .exe installer + .msi + .zip
+npm run dist:win     # Windows .exe installer + .zip
 npm run dist:linux   # Linux .deb, .rpm, .pacman, and .AppImage (x64 + arm64)
 npm run dist:all     # all three
+
+npm run dist:enterprise:mac   # Enterprise edition: macOS .pkg + .dmg
+npm run dist:enterprise:win   # Enterprise edition: Windows .msi
 ```
 
-Output lands in `release/`. These are the same commands the [release pipeline](#releases) runs — you can build them locally without needing CI, with a few host requirements: the `.msi` can only be built on Windows, `.rpm` needs `rpmbuild` and `.pacman` needs `bsdtar` (on Ubuntu: `sudo apt-get install rpm libarchive-tools`), and the `.AppImage` tooling needs Linux or an Intel/Rosetta Mac.
+Output lands in `release/` (`release/enterprise/` for the Enterprise edition, which is built with `electron-vite build --mode enterprise` and packaged with `electron-builder.enterprise.cjs`; see `src/edition.ts`). These are the same commands the [release pipeline](#releases) runs — you can build them locally without needing CI, with a few host requirements: the `.msi` can only be built on Windows, `.rpm` needs `rpmbuild` and `.pacman` needs `bsdtar` (on Ubuntu: `sudo apt-get install rpm libarchive-tools`), and the `.AppImage` tooling needs Linux or an Intel/Rosetta Mac.
 
 ## Releases
 
@@ -197,7 +213,8 @@ Contributions are welcome! Bug fixes and improvements to existing tools are alwa
 - **Add a tool:** see [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-tool).
 - **App version:** read from `package.json` via `src/appInfo.ts`, shown in the sidebar footer.
 - **Theme:** Settings supports light/dark/system (system follows `prefers-color-scheme`). The Electron View > Theme menu mirrors the Settings page in both directions. Theme choice isn't persisted between launches yet.
-- **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on Windows/Linux, a Releases link on macOS and for Windows MSI/portable installs, which electron-updater can't update in place — see `electron/installKind.ts`). Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
+- **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on Windows/Linux, a Releases link on macOS and for portable Windows `.zip` copies, which electron-updater can't update in place — see `electron/installKind.ts`). The Enterprise edition skips all of this. Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
+- **Editions:** `src/edition.ts` exposes the build's edition (`consumer` or `enterprise`), baked in by `electron-vite build --mode enterprise` via a `__APP_EDITION__` define in `electron.vite.config.ts`. Both the main process and the renderer read it; anything else (web build, dev, tests) is the consumer edition. Enterprise-only differences should check `IS_ENTERPRISE` rather than detecting the installer type.
 - **Design tokens:** colors, spacing, radii, and shadows live in `src/styles/_tokens.scss` as CSS custom properties.
 - **Offline fonts:** Ubuntu and Ubuntu Mono are vendored under `src/assets/fonts/ubuntu` so the app doesn't depend on Google Fonts at runtime.
 - **Text editor:** the shared `src/components/TextEditor.vue` wraps CodeMirror. Editable instances have a Load File button — native OS picker in Electron, a drag-and-drop modal in the browser.

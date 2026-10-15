@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
+import { IS_ENTERPRISE } from '@/edition';
 import logoForDarkBg from '@/assets/images/logo-dark-bg.svg';
 import logoForLightBg from '@/assets/images/logo-light-bg.svg';
 import type { ResolvedTheme } from '@/theme';
@@ -19,7 +20,7 @@ const logoSrc = computed(() => (props.theme === 'dark' ? logoForDarkBg : logoFor
 <template>
   <div class="home-panel">
     <img :src="logoSrc" alt="Cody's Dev Tools" class="home-panel__logo" />
-    <p class="home-panel__version">v{{ version }}</p>
+    <p class="home-panel__version">v{{ version }}<template v-if="IS_ENTERPRISE"> Enterprise</template></p>
     <p class="home-panel__blurb">
       A collection of developer tools that runs locally and never tracks or reads what you enter. Always open source, always ad-free.
     </p>
@@ -28,7 +29,8 @@ const logoSrc = computed(() => (props.theme === 'dark' ? logoForDarkBg : logoFor
         <AppIcon name="github" />
         View on GitHub
       </a>
-      <a :href="KOFI_URL" target="_blank" rel="noopener noreferrer" class="app-button app-button--secondary home-panel__link">
+      <!-- Left out of the enterprise edition, which IT departments deploy to managed machines. -->
+      <a v-if="!IS_ENTERPRISE" :href="KOFI_URL" target="_blank" rel="noopener noreferrer" class="app-button app-button--secondary home-panel__link">
         <AppIcon name="mugHot" />
         Buy Me a Coffee
       </a>

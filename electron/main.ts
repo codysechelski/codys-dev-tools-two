@@ -7,6 +7,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, screen, shell, 
 import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+import { IS_ENTERPRISE } from '../src/edition';
 import { supportsAutoInstall } from './installKind';
 import { scheduleBackgroundUpdateChecks } from './updateChecks';
 import { MIN_WINDOW_SIZE, resolveDefaultWindowSize } from './windowSize';
@@ -95,8 +96,8 @@ const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 // notice that sends the user to the Releases page to download and reinstall by hand instead:
 // - macOS: the native updater (Squirrel.Mac/ShipIt) refuses to install an update whose code
 //   signature doesn't validate, and this app isn't code-signed, so it would fail silently.
-// - Windows MSI (and portable .zip) installs: electron-updater only knows how to update via the
-//   NSIS installer, which would install a second copy of the app instead (see installKind.ts).
+// - Windows portable .zip copies: electron-updater only knows how to update via the NSIS
+//   installer, which would install a second copy of the app instead (see installKind.ts).
 // NSIS Windows installs and Linux keep the full automatic download-and-install flow.
 const canAutoInstallUpdates = supportsAutoInstall({ platform: process.platform, execPath: process.execPath, productName: app.name });
 autoUpdater.autoDownload = canAutoInstallUpdates;
@@ -421,7 +422,7 @@ function buildAppMenu(): Menu {
             label: app.name,
             submenu: [
               { label: `About ${app.name}`, click: () => showHome() },
-              { label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
+              ...(IS_ENTERPRISE ? [] : [{ label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
               { type: 'separator' },
               { label: 'Settings', accelerator: 'Cmd+,', click: () => showSettings() },
               { type: 'separator' },
@@ -498,7 +499,7 @@ function buildAppMenu(): Menu {
             label: 'Help',
             submenu: [
               { id: 'menu-about', label: `About ${app.name}`, click: () => showHome() },
-              { id: 'menu-check-updates', label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() },
+              ...(IS_ENTERPRISE ? [] : [{ id: 'menu-check-updates', label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
             ] as MenuItemConstructorOptions[],
           },
         ]),
@@ -576,13 +577,16 @@ app.whenReady().then(() => {
   });
 
   // Background checks respect the "Automatically check for updates" setting; the manual
-  // "Check for Updates..." menu action always works regardless.
-  scheduleBackgroundUpdateChecks({
-    isEnabled: async () => (await readSavedSettings()).automaticUpdateChecks,
-    check: checkForUpdatesInBackground,
-    delayMs: UPDATE_CHECK_DELAY_MS,
-    intervalMs: UPDATE_CHECK_INTERVAL_MS,
-  });
+  // "Check for Updates..." menu action always works regardless. The enterprise edition never
+  // checks at all — IT controls which version is installed (see src/edition.ts).
+  if (!IS_ENTERPRISE) {
+    scheduleBackgroundUpdateChecks({
+      isEnabled: async () => (await readSavedSettings()).automaticUpdateChecks,
+      check: checkForUpdatesInBackground,
+      delayMs: UPDATE_CHECK_DELAY_MS,
+      intervalMs: UPDATE_CHECK_INTERVAL_MS,
+    });
+  }
 });
 
 app.on('window-all-closed', () => {

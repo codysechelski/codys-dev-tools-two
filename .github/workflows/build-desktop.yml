@@ -26,11 +26,22 @@ jobs:
           # macos-26 for Xcode 26's actool, which electron-builder needs to compile
           # build/AppIcon.icon (Icon Composer) into the app's Liquid Glass icon.
           - os: macos-26
+            edition: consumer
             args: --mac --universal
           - os: windows-latest
+            edition: consumer
             args: --win --x64
           - os: ubuntu-latest
+            edition: consumer
             args: --linux --x64 --arm64
+          # Enterprise edition (src/edition.ts): the managed-deployment .pkg/.dmg and .msi,
+          # packaged with electron-builder.enterprise.cjs.
+          - os: macos-26
+            edition: enterprise
+            args: --mac --universal
+          - os: windows-latest
+            edition: enterprise
+            args: --win --x64
     runs-on: ${{ matrix.os }}
     steps:
       # No explicit ref: this checks out main's current tip, which by now includes the
@@ -45,8 +56,9 @@ jobs:
       - id: check_tag
         shell: bash
         run: |
-          if git describe --tags --exact-match HEAD 2>/dev/null; then
+          if tag=$(git describe --tags --exact-match HEAD 2>/dev/null); then
             echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
           else
             echo "should_build=false" >> "$GITHUB_OUTPUT"
           fi
@@ -66,12 +78,37 @@ jobs:
         if: steps.check_tag.outputs.should_build == 'true' && runner.os == 'Linux'
 
       - run: npm run build:electron
-        if: steps.check_tag.outputs.should_build == 'true'
+        if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'consumer'
+
+      - run: npm run build:electron:enterprise
+        if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'enterprise'
 
       - run: npx electron-builder --publish always ${{ matrix.args }}
-        if: steps.check_tag.outputs.should_build == 'true'
+        if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'consumer'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No code-signing certificate is configured, so tell electron-builder not to
           # search the CI keychain for one — otherwise the macOS build can fail outright.
           CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      # The enterprise build never publishes through electron-builder: that would also upload
+      # latest*.yml update manifests and overwrite the consumer ones. Package locally, then
+      # attach just the installers to the release.
+      - run: npx electron-builder --config electron-builder.enterprise.cjs --publish never ${{ matrix.args }}
+        if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'enterprise'
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload enterprise installers
+        if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'enterprise'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          shopt -s nullglob
+          files=(release/enterprise/*-enterprise-*.{pkg,dmg,msi})
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No enterprise installers were built" >&2
+            exit 1
+          fi
+          gh release upload "${{ steps.check_tag.outputs.tag }}" "${files[@]}" --clobber

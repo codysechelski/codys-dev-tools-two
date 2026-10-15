@@ -6,6 +6,7 @@
 - Display the app/tool version subtly in the sidebar footer and update it as notable functionality ships.
 - The UI should feel like a native desktop app where practical, especially in Electron.
 - The same Vue/TypeScript/Sass codebase should support web, macOS Electron, and Windows Electron builds.
+- There are two desktop editions: consumer and Enterprise (managed IT deploys: `.msi`/`.pkg`, no update checks, no donation link). Gate edition differences on `IS_ENTERPRISE` from `src/edition.ts`, and keep the Enterprise build from publishing `latest*.yml` update manifests.
 - The app should work offline. Do not add runtime dependencies on external CDNs, Google Fonts, or hosted assets.
 
 ## Design System

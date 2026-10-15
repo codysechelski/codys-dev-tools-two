@@ -6,6 +6,7 @@ import AppIcon from '@/components/AppIcon.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
+import { IS_ENTERPRISE } from '@/edition';
 import type { AppSettings, IndentStyle, RememberToolInput, SidebarDensity } from '@/settings';
 import type { ThemeMode } from '@/theme';
 
@@ -228,7 +229,8 @@ function confirmReset(): void {
       </div>
     </div>
 
-    <div v-if="isElectron" class="settings-section">
+    <!-- The enterprise edition never checks for updates (see src/edition.ts). -->
+    <div v-if="isElectron && !IS_ENTERPRISE" class="settings-section">
       <div>
         <h2>Updates</h2>
         <p>Check for new versions in the background and show a notice when one is available. "Check for Updates…" in the app menu always works, even with this off.</p>

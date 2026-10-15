@@ -17,7 +17,7 @@ describe('supportsAutoInstall', () => {
     expect(supportsAutoInstall({ platform: 'win32', execPath, productName, fileExists: (path) => path === uninstaller })).toBe(true);
   });
 
-  it('does not auto-install on Windows for MSI or portable installs without the NSIS uninstaller', () => {
+  it('does not auto-install on Windows for portable or MSI copies without the NSIS uninstaller', () => {
     expect(supportsAutoInstall({ platform: 'win32', execPath, productName, fileExists: () => false })).toBe(false);
   });
 

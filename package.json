@@ -25,10 +25,13 @@
     "build": "npm run typecheck && vite build && electron-vite build",
     "build:web": "npm run typecheck && vite build",
     "build:electron": "npm run typecheck && electron-vite build",
+    "build:electron:enterprise": "npm run typecheck && electron-vite build --mode enterprise",
     "dist:mac": "npm run build:electron && electron-builder --mac --universal",
     "dist:win": "npm run build:electron && electron-builder --win --x64",
     "dist:linux": "npm run build:electron && electron-builder --linux --x64 --arm64",
     "dist:all": "npm run build:electron && electron-builder --mac --universal && electron-builder --win --x64 && electron-builder --linux --x64",
+    "dist:enterprise:mac": "npm run build:electron:enterprise && electron-builder --config electron-builder.enterprise.cjs --mac --universal",
+    "dist:enterprise:win": "npm run build:electron:enterprise && electron-builder --config electron-builder.enterprise.cjs --win --x64",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -101,7 +104,6 @@
     "win": {
       "target": [
         "nsis",
-        "msi",
         "zip"
       ]
     },
@@ -122,11 +124,6 @@
       "license": "LICENSE",
       "installerHeader": "build/installerHeader.bmp",
       "installerSidebar": "build/installerSidebar.bmp"
-    },
-    "msi": {
-      "oneClick": false,
-      "perMachine": true,
-      "runAfterFinish": false
     },
     "publish": {
       "provider": "github",

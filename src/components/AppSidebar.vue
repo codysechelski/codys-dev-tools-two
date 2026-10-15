@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
+import { IS_ENTERPRISE } from '@/edition';
 import ToolNavItem from '@/components/ToolNavItem.vue';
 import type { SidebarDensity } from '@/settings';
 import type { ToolDefinition } from '@/tools/types';
@@ -84,7 +85,7 @@ const groupedTools = computed(() =>
 
     <footer class="sidebar__footer">
       <div class="sidebar__footer-links">
-        <button type="button" @click="$emit('selectTool', null)">v{{ version }}</button>
+        <button type="button" @click="$emit('selectTool', null)">v{{ version }}<template v-if="IS_ENTERPRISE"> Enterprise</template></button>
         <span aria-hidden="true">|</span>
         <button type="button" @click="$emit('selectTool', attributionsToolId)">Attributions</button>
       </div>
