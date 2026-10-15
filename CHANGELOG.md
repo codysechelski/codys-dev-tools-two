@@ -1,3 +1,10 @@
+# [0.40.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.39.0...v0.40.0) (2026-10-15)
+
+
+### Features
+
+* **home:** add Ko-fi tip button to home panel and README ([2dd0653](https://github.com/codysechelski/codys-dev-tools-two/commit/2dd065396eb6888160972c10910d00e90ad1baa9))
+
 # [0.39.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.38.0...v0.39.0) (2026-10-14)
 
 
