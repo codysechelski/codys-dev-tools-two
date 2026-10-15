@@ -101,14 +101,19 @@
     "win": {
       "target": [
         "nsis",
+        "msi",
         "zip"
       ]
     },
     "linux": {
       "category": "Development",
+      "executableName": "codys-dev-tools",
       "syncDesktopName": true,
       "target": [
-        "deb"
+        "deb",
+        "rpm",
+        "pacman",
+        "AppImage"
       ]
     },
     "nsis": {
@@ -117,6 +122,11 @@
       "license": "LICENSE",
       "installerHeader": "build/installerHeader.bmp",
       "installerSidebar": "build/installerSidebar.bmp"
+    },
+    "msi": {
+      "oneClick": false,
+      "perMachine": true,
+      "runAfterFinish": false
     },
     "publish": {
       "provider": "github",

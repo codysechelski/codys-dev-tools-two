@@ -60,6 +60,11 @@ jobs:
       - run: npm ci
         if: steps.check_tag.outputs.should_build == 'true'
 
+      # electron-builder's rpm and pacman targets shell out to rpmbuild and bsdtar, which
+      # the Ubuntu runner doesn't ship with.
+      - run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
+        if: steps.check_tag.outputs.should_build == 'true' && runner.os == 'Linux'
+
       - run: npm run build:electron
         if: steps.check_tag.outputs.should_build == 'true'
 

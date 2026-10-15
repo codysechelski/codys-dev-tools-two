@@ -7,6 +7,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, screen, shell, 
 import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+import { supportsAutoInstall } from './installKind';
 import { scheduleBackgroundUpdateChecks } from './updateChecks';
 import { MIN_WINDOW_SIZE, resolveDefaultWindowSize } from './windowSize';
 
@@ -90,16 +91,19 @@ let mainWindowRef: BrowserWindow | null = null;
 const UPDATE_CHECK_DELAY_MS = 10_000;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
-// macOS's native updater (Squirrel.Mac/ShipIt) refuses to install an update whose code signature
-// doesn't validate, and this app isn't code-signed — so on mac, downloading (let alone
-// installing) an update automatically would just fail silently every time. Instead, mac gets a
-// lighter "a new version exists" notice that sends the user to the Releases page to download and
-// reinstall by hand; Windows/Linux keep the full automatic download-and-install flow.
-autoUpdater.autoDownload = !isMacOS;
+// Copies of the app that can't install updates in place get a lighter "a new version exists"
+// notice that sends the user to the Releases page to download and reinstall by hand instead:
+// - macOS: the native updater (Squirrel.Mac/ShipIt) refuses to install an update whose code
+//   signature doesn't validate, and this app isn't code-signed, so it would fail silently.
+// - Windows MSI (and portable .zip) installs: electron-updater only knows how to update via the
+//   NSIS installer, which would install a second copy of the app instead (see installKind.ts).
+// NSIS Windows installs and Linux keep the full automatic download-and-install flow.
+const canAutoInstallUpdates = supportsAutoInstall({ platform: process.platform, execPath: process.execPath, productName: app.name });
+autoUpdater.autoDownload = canAutoInstallUpdates;
 autoUpdater.autoInstallOnAppQuit = true;
 
 autoUpdater.on('update-available', (info) => {
-  if (!isMacOS) return; // non-mac waits for "update-downloaded" below instead
+  if (canAutoInstallUpdates) return; // auto-installable copies wait for "update-downloaded" below instead
 
   mainWindowRef?.webContents.send('update-notice', { version: info.version, action: 'manual', releasesUrl: GITHUB_RELEASES_URL });
 });
