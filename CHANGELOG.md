@@ -1,3 +1,10 @@
+# [0.41.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.40.0...v0.41.0) (2026-10-15)
+
+
+### Features
+
+* **desktop:** add MSI, AppImage, rpm, and pacman installers ([c6be649](https://github.com/codysechelski/codys-dev-tools-two/commit/c6be6492653b10a5283eb947e372c5062de5c818))
+
 # [0.40.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.39.0...v0.40.0) (2026-10-15)
 
 
