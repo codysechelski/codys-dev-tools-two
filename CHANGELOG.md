@@ -1,3 +1,10 @@
+# [0.42.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.41.0...v0.42.0) (2026-10-15)
+
+
+### Features
+
+* **desktop:** add Enterprise edition with MSI and pkg installers ([23fb8ff](https://github.com/codysechelski/codys-dev-tools-two/commit/23fb8ff365d1481a8459c7fa6ebdf6f4e2963f85))
+
 # [0.41.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.40.0...v0.41.0) (2026-10-15)
 
 
