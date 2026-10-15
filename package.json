@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/codysechelski/codys-dev-tools-two/issues"
   },
-  "homepage": "https://github.com/codysechelski/codys-dev-tools-two#readme",
+  "homepage": "https://devtools.codystools.online/",
   "desktopName": "codys-dev-tools.desktop",
   "type": "module",
   "main": "out/main/index.js",
