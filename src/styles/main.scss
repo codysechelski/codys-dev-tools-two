@@ -1368,8 +1368,15 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   line-height: 1.65;
 }
 
-.home-panel__github {
+.home-panel__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
   margin-top: var(--space-2);
+}
+
+.home-panel__link {
   text-decoration: none;
 }
 

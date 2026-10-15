@@ -4,6 +4,8 @@ A collection of everyday developer tools — formatters, converters, encoders, g
 
 Built with Vue, TypeScript, Sass, and Electron.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X2B128UDFL)
+
 ## Screenshots
 
 <!-- TODO: add screenshots here, e.g.

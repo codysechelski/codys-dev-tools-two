@@ -24,11 +24,21 @@ describe('HomePanel', () => {
 
   it('links to the GitHub repo in a new tab', () => {
     const wrapper = mount(HomePanel, { props: { theme: 'dark', version: '0.20.3' } });
-    const link = wrapper.find('a');
+    const link = wrapper.findAll('a')[0];
 
     expect(link.attributes('href')).toBe('https://github.com/codysechelski/codys-dev-tools-two');
     expect(link.attributes('target')).toBe('_blank');
     expect(link.attributes('rel')).toContain('noopener');
     expect(link.text()).toContain('View on GitHub');
+  });
+
+  it('links to the Ko-fi tip page in a new tab', () => {
+    const wrapper = mount(HomePanel, { props: { theme: 'dark', version: '0.20.3' } });
+    const link = wrapper.findAll('a')[1];
+
+    expect(link.attributes('href')).toBe('https://ko-fi.com/X2B128UDFL');
+    expect(link.attributes('target')).toBe('_blank');
+    expect(link.attributes('rel')).toContain('noopener');
+    expect(link.text()).toContain('Buy Me a Coffee');
   });
 });
