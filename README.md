@@ -167,9 +167,17 @@ Output lands in `release/`. These are the same commands the [release pipeline](#
 
 Releases are fully automated with [semantic-release](https://semantic-release.gitbook.io/): every push to `main` is analyzed for [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.), and when one warrants a release, CI bumps the version, tags it, publishes a GitHub Release with generated notes, and builds + attaches the macOS/Windows/Linux installers automatically. See [CONTRIBUTING.md](CONTRIBUTING.md#commit-messages) for the commit message format this relies on.
 
+## Philosophy
+
+This project isn't trying to be the biggest Swiss Army knife of developer tools. The goal is a **focused collection of practical tools** that lots of developers reach for regularly, each one done well.
+
+That means new tools are added deliberately. If there's a tool that would be genuinely useful to a broad set of developers, and enough people want it, I'm happy to build it, or to work with you on contributing it. What I'd rather avoid is a long tail of niche tools that only a handful of people would use, since every tool added is one more to maintain and one more item to scroll past in the sidebar.
+
+If you have an idea, [open a feature request](https://github.com/codysechelski/codys-dev-tools-two/issues/new?template=feature_request.md) and explain who'd use it and how often. A thumbs-up on an existing request is the best way to show there's demand for it.
+
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up your dev environment, the commit message convention, and how to add a new tool. Please also read the [Code of Conduct](CODE_OF_CONDUCT.md).
+Contributions are welcome! Bug fixes and improvements to existing tools are always appreciated; for new tools, please read the [Philosophy](#philosophy) above first. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up your dev environment, the commit message convention, and how to add a new tool. Please also read the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Architecture notes
 

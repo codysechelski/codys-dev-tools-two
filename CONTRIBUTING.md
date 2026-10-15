@@ -8,6 +8,7 @@ By participating, you're expected to follow the [Code of Conduct](CODE_OF_CONDUC
 
 - **Bugs and small fixes:** feel free to open a pull request directly.
 - **New tools or larger changes:** please open an issue first to discuss the idea before writing code. This avoids spending time on a PR that doesn't end up merged because of a direction disagreement.
+- **On new tools specifically:** the aim is a focused set of broadly useful tools, not the largest possible collection (see [Philosophy](README.md#philosophy)). A new tool needs a clear, fairly universal use case and some demonstrated demand before it's added, so please don't open a PR for a brand-new tool without an agreed-upon issue first.
 - Check open issues and pull requests first so you don't duplicate someone else's work.
 
 ## Development setup
