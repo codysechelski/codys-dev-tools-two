@@ -1,17 +1,54 @@
 # Cody's Dev Tools
 
+[![Latest release](https://img.shields.io/github/v/release/codysechelski/codys-dev-tools-two?label=release&color=8b5cf6)](https://github.com/codysechelski/codys-dev-tools-two/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/codysechelski/codys-dev-tools-two/ci.yml?branch=main&label=CI)](https://github.com/codysechelski/codys-dev-tools-two/actions/workflows/ci.yml)
+[![Downloads](https://img.shields.io/github/downloads/codysechelski/codys-dev-tools-two/total?color=22d3ee)](https://github.com/codysechelski/codys-dev-tools-two/releases)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Web-informational)](#download)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)](LICENSE)
+[![Built with Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Electron](https://img.shields.io/badge/Electron-47848f?logo=electron&logoColor=white)](https://www.electronjs.org/)
+
 A collection of everyday developer tools — formatters, converters, encoders, generators — in one app. Runs as a website or as a native desktop app for macOS, Windows, and Linux. Everything runs locally: nothing you type is sent anywhere.
 
-Built with Vue, TypeScript, Sass, and Electron.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/diff-tool-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/diff-tool-light.png">
+  <img src="docs/screenshots/diff-tool-dark.png" alt="Cody's Dev Tools — Diff Tool">
+</picture>
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X2B128UDFL)
 
 ## Screenshots
 
-<!-- TODO: add screenshots here, e.g.
-![Home screen](docs/screenshots/home.png)
-![JSON Formatter](docs/screenshots/json-formatter.png)
--->
+<table>
+  <tr>
+    <td width="50%"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/regex-tester-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/regex-tester-light.png">
+  <img src="docs/screenshots/regex-tester-dark.png" alt="Regex Tester">
+</picture><br><sub><b>Regex Tester</b> — every match highlighted and listed</sub></td>
+    <td width="50%"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/sql-formatter-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/sql-formatter-light.png">
+  <img src="docs/screenshots/sql-formatter-dark.png" alt="SQL Formatter">
+</picture><br><sub><b>SQL Formatter</b> — SQL and SOQL, with configurable output</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/qr-code-generator-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/qr-code-generator-light.png">
+  <img src="docs/screenshots/qr-code-generator-dark.png" alt="QR Code Generator">
+</picture><br><sub><b>QR Code Generator</b> — URLs, Wi-Fi, contacts, calendar events, and more</sub></td>
+    <td width="50%"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/unicode-character-map-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/unicode-character-map-light.png">
+  <img src="docs/screenshots/unicode-character-map-dark.png" alt="Unicode Character Map">
+</picture><br><sub><b>Unicode Character Map</b> — browse, search, and copy any encoding</sub></td>
+  </tr>
+</table>
+
+Light and dark themes are both built in — the screenshots above follow your GitHub theme.
 
 ## Download
 
