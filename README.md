@@ -1,7 +1,6 @@
 # Cody's Dev Tools
 
 <p align="center">
-  <a href="https://devtools.codystools.online/"><img alt="Website" src="https://img.shields.io/badge/website-devtools.codystools.online-8b5cf6"></a>
   <a href="https://github.com/codysechelski/codys-dev-tools-two/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/codysechelski/codys-dev-tools-two?label=release&color=8b5cf6"></a>
   <a href="https://github.com/codysechelski/codys-dev-tools-two/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/codysechelski/codys-dev-tools-two/total?color=22d3ee"></a>
   <a href="#download"><img alt="Platforms" src="https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Web-informational"></a>
@@ -12,7 +11,7 @@
 
 A collection of everyday developer tools — formatters, converters, encoders, generators — in one app. Runs as a website or as a native desktop app for macOS, Windows, and Linux. Everything runs locally: nothing you type is sent anywhere.
 
-**Try it in your browser at [devtools.codystools.online](https://devtools.codystools.online/)** — no install required.
+See features, screenshots, and download links on the **[project website](https://devtools.codystools.online/)**.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/regex-tester-dark.png">
@@ -61,7 +60,7 @@ Light and dark themes are both built in — the screenshots above follow your Gi
 
 ## Download
 
-If you just want to use the app, grab the latest build from the **[Releases page](https://github.com/codysechelski/codys-dev-tools-two/releases/latest)**:
+If you just want to use the app, grab the latest build from the **[project website](https://devtools.codystools.online/)** or the **[Releases page](https://github.com/codysechelski/codys-dev-tools-two/releases/latest)**:
 
 | Platform | File |
 | --- | --- |
@@ -71,7 +70,7 @@ If you just want to use the app, grab the latest build from the **[Releases page
 
 > **Note:** these builds aren't code-signed (that requires a paid Apple/Microsoft developer certificate). macOS Gatekeeper and Windows SmartScreen will warn that the app is from an "unidentified developer" — you'll need to explicitly allow it to run (macOS: right-click → Open; Windows: "More info" → "Run anyway").
 
-Prefer the browser? Use the hosted version at **[devtools.codystools.online](https://devtools.codystools.online/)**. The app is a static website, so you can also self-host it — see [Building the web app](#building-the-web-app) below.
+Prefer the browser? The app also runs as a static website — see [Building the web app](#building-the-web-app) below if you want to self-host it.
 
 ## Tools
 
