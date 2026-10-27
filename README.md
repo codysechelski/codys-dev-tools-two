@@ -204,6 +204,18 @@ Output lands in `release/` (`release/enterprise/` for the Enterprise edition, wh
 
 Releases are fully automated with [semantic-release](https://semantic-release.gitbook.io/): every push to `main` is analyzed for [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.), and when one warrants a release, CI bumps the version, tags it, publishes a GitHub Release with generated notes, and builds + attaches the macOS/Windows/Linux installers automatically. See [CONTRIBUTING.md](CONTRIBUTING.md#commit-messages) for the commit message format this relies on.
 
+macOS builds are code-signed with a Developer ID certificate and notarized by Apple when these repository secrets are set (without them, CI still builds but the app is unsigned):
+
+| Secret | Value |
+| --- | --- |
+| `MAC_CERT_P12_BASE64` | Base64 of the exported "Developer ID Application" certificate + private key (`.p12`) |
+| `MAC_CERT_PASSWORD` | The password the `.p12` was exported with |
+| `MAC_INSTALLER_CERT_P12_BASE64` | Base64 of the "Developer ID Installer" `.p12`, which signs the Enterprise `.pkg` |
+| `MAC_INSTALLER_CERT_PASSWORD` | Its export password |
+| `APPLE_API_KEY_P8` | Contents of the App Store Connect API key (`AuthKey_XXXXXXXXXX.p8`) used for notarization |
+| `APPLE_API_KEY_ID` | That key's Key ID |
+| `APPLE_API_ISSUER` | The Issuer ID shown on the App Store Connect API keys page |
+
 The [Homebrew cask](https://github.com/codysechelski/homebrew-tap/blob/main/Casks/codys-dev-tools.rb) lives in a separate tap repo, whose daily `brew bump` workflow opens a pull request when a new release appears; merge it to ship the update to Homebrew users. The cask downloads `codys-dev-tools-<version>-universal.dmg` from the release, so renaming that artifact (`artifactName` in `package.json`) means updating the cask too.
 
 ## Philosophy
