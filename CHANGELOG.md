@@ -1,3 +1,10 @@
+# [0.43.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.42.0...v0.43.0) (2026-10-27)
+
+
+### Features
+
+* **desktop:** auto-install updates on macOS now that builds are signed and notarized ([0af3358](https://github.com/codysechelski/codys-dev-tools-two/commit/0af33586df50b3c20380b527413b07341c5c7547))
+
 # [0.42.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.41.0...v0.42.0) (2026-10-15)
 
 
