@@ -71,6 +71,14 @@ If you just want to use the app, grab the latest build from the **[project websi
 | Linux (Fedora/RHEL/openSUSE) | `.rpm` |
 | Linux (Arch/Manjaro) | `.pacman` |
 
+On macOS you can also install it with [Homebrew](https://brew.sh):
+
+```sh
+brew install --cask codysechelski/tap/codys-dev-tools
+```
+
+`brew upgrade` picks up new releases (the [tap](https://github.com/codysechelski/homebrew-tap) checks for them daily). The cask clears the macOS quarantine flag, so Homebrew installs open without the Gatekeeper warning described below.
+
 ### Enterprise edition
 
 For IT departments deploying to managed machines, each release also includes an **Enterprise** edition (files named `codys-dev-tools-enterprise-…`):
@@ -195,6 +203,8 @@ Output lands in `release/` (`release/enterprise/` for the Enterprise edition, wh
 ## Releases
 
 Releases are fully automated with [semantic-release](https://semantic-release.gitbook.io/): every push to `main` is analyzed for [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, etc.), and when one warrants a release, CI bumps the version, tags it, publishes a GitHub Release with generated notes, and builds + attaches the macOS/Windows/Linux installers automatically. See [CONTRIBUTING.md](CONTRIBUTING.md#commit-messages) for the commit message format this relies on.
+
+The [Homebrew cask](https://github.com/codysechelski/homebrew-tap/blob/main/Casks/codys-dev-tools.rb) lives in a separate tap repo, whose daily `brew bump` workflow opens a pull request when a new release appears; merge it to ship the update to Homebrew users. The cask downloads `codys-dev-tools-<version>-universal.dmg` from the release, so renaming that artifact (`artifactName` in `package.json`) means updating the cask too.
 
 ## Philosophy
 
