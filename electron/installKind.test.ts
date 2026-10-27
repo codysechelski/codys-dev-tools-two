@@ -7,8 +7,12 @@ const installDir = join('C:', 'Program Files', productName);
 const execPath = join(installDir, `${productName}.exe`);
 
 describe('supportsAutoInstall', () => {
-  it('never auto-installs on macOS', () => {
-    expect(supportsAutoInstall({ platform: 'darwin', execPath: '/Applications/App.app', productName, fileExists: () => true })).toBe(false);
+  it('auto-installs on macOS when the app is in /Applications', () => {
+    expect(supportsAutoInstall({ platform: 'darwin', execPath: '/Applications/App.app', productName, inApplicationsFolder: true })).toBe(true);
+  });
+
+  it('does not auto-install on macOS outside /Applications (mounted .dmg, App Translocation)', () => {
+    expect(supportsAutoInstall({ platform: 'darwin', execPath: '/Volumes/App/App.app', productName, inApplicationsFolder: false })).toBe(false);
   });
 
   it('auto-installs on Windows when the NSIS uninstaller is next to the executable', () => {

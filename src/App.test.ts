@@ -271,7 +271,7 @@ describe('App update banner', () => {
     expect(quitAndInstallUpdate).toHaveBeenCalled();
   });
 
-  it('shows a "View Release" link to the releases page for a manual (e.g. unsigned macOS) notice', async () => {
+  it('shows a "View Release" link to the releases page for a manual (e.g. portable Windows .zip) notice', async () => {
     let pushNotice: ((notice: UpdateNotice) => void) | null = null;
     window.codyDevTools = createCodyDevTools({
       onUpdateNotice: (callback) => {

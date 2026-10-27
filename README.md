@@ -77,7 +77,7 @@ On macOS you can also install it with [Homebrew](https://brew.sh):
 brew install --cask codysechelski/tap/codys-dev-tools
 ```
 
-`brew upgrade` picks up new releases (the [tap](https://github.com/codysechelski/homebrew-tap) checks for them daily). The cask clears the macOS quarantine flag, so Homebrew installs open without the Gatekeeper warning described below.
+`brew upgrade` picks up new releases (the [tap](https://github.com/codysechelski/homebrew-tap) checks for them daily).
 
 ### Enterprise edition
 
@@ -94,7 +94,7 @@ It's the same app with the same tools. The differences:
 - **No "Buy Me a Coffee" link** on the home screen.
 - The version in the sidebar and home screen reads "Enterprise".
 
-> **Note:** these builds aren't code-signed (that requires a paid Apple/Microsoft developer certificate). macOS Gatekeeper and Windows SmartScreen will warn that the app is from an "unidentified developer" — you'll need to explicitly allow it to run (macOS: right-click → Open; Windows: "More info" → "Run anyway").
+> **Note:** macOS builds are signed and notarized by Apple, so they open normally. Windows builds aren't code-signed yet, so SmartScreen will warn that the app is from an "unknown publisher" — click "More info" → "Run anyway".
 
 Prefer the browser? The app also runs as a static website — see [Building the web app](#building-the-web-app) below if you want to self-host it.
 
@@ -235,7 +235,7 @@ Contributions are welcome! Bug fixes and improvements to existing tools are alwa
 - **Add a tool:** see [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-tool).
 - **App version:** read from `package.json` via `src/appInfo.ts`, shown in the sidebar footer.
 - **Theme:** Settings supports light/dark/system (system follows `prefers-color-scheme`). The Electron View > Theme menu mirrors the Settings page in both directions. Theme choice isn't persisted between launches yet.
-- **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on Windows/Linux, a Releases link on macOS and for portable Windows `.zip` copies, which electron-updater can't update in place — see `electron/installKind.ts`). The Enterprise edition skips all of this. Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
+- **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on macOS, Windows, and Linux; a Releases link for copies electron-updater can't update in place — a Mac app run from outside `/Applications` or a portable Windows `.zip` — see `electron/installKind.ts`). The Enterprise edition skips all of this. Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
 - **Editions:** `src/edition.ts` exposes the build's edition (`consumer` or `enterprise`), baked in by `electron-vite build --mode enterprise` via a `__APP_EDITION__` define in `electron.vite.config.ts`. Both the main process and the renderer read it; anything else (web build, dev, tests) is the consumer edition. Enterprise-only differences should check `IS_ENTERPRISE` rather than detecting the installer type.
 - **Design tokens:** colors, spacing, radii, and shadows live in `src/styles/_tokens.scss` as CSS custom properties.
 - **Offline fonts:** Ubuntu and Ubuntu Mono are vendored under `src/assets/fonts/ubuntu` so the app doesn't depend on Google Fonts at runtime.

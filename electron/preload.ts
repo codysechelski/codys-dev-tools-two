@@ -16,7 +16,7 @@ interface AppSettings {
 interface UpdateNotice {
   version: string;
   // 'install': downloaded and ready — quitAndInstallUpdate() applies it.
-  // 'manual': found but this platform can't auto-install (unsigned macOS build) — send the user
+  // 'manual': found but this copy can't auto-install (Mac app outside /Applications, portable Windows .zip) — send the user
   // to releasesUrl to download and reinstall by hand.
   action: 'install' | 'manual';
   releasesUrl: string;
