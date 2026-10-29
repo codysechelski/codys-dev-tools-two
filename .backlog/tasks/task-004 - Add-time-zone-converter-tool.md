@@ -1,11 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:29'
+updated_date: '2026-10-29 16:30'
 labels:
   - re-work
 dependencies: []
@@ -98,6 +98,8 @@ Final rework verification: npm test passes all 83 files / 628 tests, including 4
 Rework committed as Cody in cd3add3 (feat: refine time zone comparison bars and locale clocks). Returning to Ready for Testing for review; re-work label retained until Done per workflow.
 
 Country grouping / readability follow-up complete. Both pickers now show flag chips, country descriptions and accessible country headings; UTC first, then localized country names and zone labels alphabetically. Searches include country names/codes and USA alias; exact country metadata beats incidental city substrings. Rows compare actual wall-clock offsets with selected local zone, including minutes, DST and date-line crossings. Larger typography: row names/times 16px, secondary text 14px, ticks ~13px; wider columns/taller bars and fewer 12-hour ticks. Additive shared AppSelect support documented in docs/style-guide.md (no existing design-system page in this repository), linked from README; AGENTS records reusable option fields. Final verification: npm test passes 83 files / 633 tests; npm run build passes types/web/Electron (existing chunk-size warning). Two temporary Chromium smoke scripts pass US/GB locale/format/alignment/add-remove regression plus UTC ordering, alphabetical groups/zone names, country/USA search, flags, fractional row offsets, font-size assertions, both themes and compact layouts. Screenshots reviewed at 1440/1280/900px. Prettier checks and git diff --check pass. Existing verify-task profiles still invoke missing test:unit script, so direct commands used. Version 0.46.0.
+
+Country-grouping/offset/readability follow-up committed as Cody in c178c14. Integrated the automated 0.45.0 changelog update without overwriting it; returning to Ready for Testing. Re-work label retained until Done.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
