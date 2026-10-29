@@ -1,3 +1,10 @@
+# [0.46.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.45.0...v0.46.0) (2026-10-29)
+
+
+### Features
+
+* group time zones by country and show relative offsets ([c178c14](https://github.com/codysechelski/codys-dev-tools-two/commit/c178c140ef4f2b2dba538987c06e21b39b798e44))
+
 # [0.45.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.44.0...v0.45.0) (2026-10-29)
 
 
