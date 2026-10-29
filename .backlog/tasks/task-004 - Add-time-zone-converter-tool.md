@@ -1,11 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: Ready for Testing
+status: In Progress
 assignee:
-  - '@cody'
+  - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:30'
+updated_date: '2026-10-29 16:36'
 labels:
   - re-work
 dependencies: []
@@ -80,6 +80,8 @@ Add accessible red/yellow/green business-hours dots based on each row's wall tim
 Extend shared AppSelect with optional country groups/leading flags and searchable country names; use for both zone pickers with UTC first and alphabetical countries/zone names. Add DST-aware row offsets relative to the selected local zone, with hours/minutes ahead or behind. Cover shared select compatibility, country search/sorting, offset logic, and browser/themes.
 
 Increase all zone-row typography (names/times 16px, secondary text 14px, bar ticks ~13px) and adjust widths/bar height and 12-hour tick density for readability.
+
+Persist local zone, 12/24-hour format, and added/removed zones using shared Remember tool input session/forever/off lifecycle. Do not persist date/time; initialize now in restored local zone on tool entry. Test remounts/restoration and modes.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
