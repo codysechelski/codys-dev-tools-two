@@ -1,3 +1,10 @@
+# [0.45.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.44.0...v0.45.0) (2026-10-29)
+
+
+### Features
+
+* refine time zone comparison bars and locale clocks ([cd3add3](https://github.com/codysechelski/codys-dev-tools-two/commit/cd3add3c28fd4fe064f964b663928d3cbf68d0b9))
+
 # [0.44.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.43.0...v0.44.0) (2026-10-29)
 
 
