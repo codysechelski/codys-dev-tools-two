@@ -152,13 +152,6 @@ function now(): void {
             ><strong>{{ row.label }}</strong
             ><span class="time-zone-converter__context">{{ row.abbreviation }}<template v-if="row.current"> · Current zone</template></span></span
           >
-          <span
-            class="time-zone-converter__dot"
-            :class="`time-zone-converter__dot--${row.business.kind}`"
-            role="img"
-            :aria-label="row.business.label"
-            :title="row.business.label"
-          />
         </div>
         <div class="time-zone-converter__timeline" :aria-label="`Day bars for ${row.label}`">
           <div
@@ -181,8 +174,17 @@ function now(): void {
           <span class="time-zone-converter__selected" aria-hidden="true" />
         </div>
         <div class="time-zone-converter__reading">
-          <strong>{{ row.time }}</strong
-          ><span class="time-zone-converter__offset" :title="`Compared with ${localZone}`">{{ row.offset }}</span
+          <div class="time-zone-converter__row-time">
+            <span
+              class="time-zone-converter__dot"
+              :class="`time-zone-converter__dot--${row.business.kind}`"
+              role="img"
+              :aria-label="row.business.label"
+              :title="row.business.label"
+            />
+            <strong>{{ row.time }}</strong>
+          </div>
+          <span class="time-zone-converter__offset" :title="`Compared with ${localZone}`">{{ row.offset }}</span
           ><span>{{ row.date }} · {{ row.dayLabel }}</span>
         </div>
         <div class="time-zone-converter__remove">
@@ -320,6 +322,12 @@ function now(): void {
   }
   &__reading strong {
     font: var(--zone-row-text) var(--zone-font-code);
+  }
+  &__row-time {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
   }
   &__reading span {
     font-size: var(--zone-small-text);

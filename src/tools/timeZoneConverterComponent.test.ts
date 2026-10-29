@@ -123,6 +123,11 @@ describe('TimeZoneConverter', () => {
     expect(wrapper.find('[aria-label="Global time"]').text()).toBe('🌐');
     const eastern = () => wrapper.findAll('.time-zone-converter__row').find((row) => row.find('strong').text() === 'Eastern')!;
     expect(eastern().find('[role="img"][aria-label^="Business hours"]').exists()).toBe(true);
+    for (const row of wrapper.findAll('.time-zone-converter__row')) {
+      expect(row.find('.time-zone-converter__details .time-zone-converter__dot').exists()).toBe(false);
+      const dot = row.find('.time-zone-converter__reading .time-zone-converter__dot');
+      expect(dot.element.nextElementSibling?.tagName).toBe('STRONG');
+    }
     expect(eastern().findAll('.time-zone-converter__day').length).toBeGreaterThan(0);
     await wrapper.find('.time-zone-converter__time input').setValue('11:30');
     expect(eastern().find('[role="img"][aria-label^="Near business hours"]').exists()).toBe(true);
