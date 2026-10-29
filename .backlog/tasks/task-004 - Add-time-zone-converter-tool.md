@@ -52,7 +52,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #14 AGENTS.md/CLAUDE.md is up to date, and any new memories with lasting value have been added
 - [x] #15 If there is a need to document anything, create docs in the docs folder using Markdown files. Link those doc files into the README, where it makes sense
 - [x] #16 All work is committed using Conventional Commits, authored as Cody (the project owner), never as the agent itself
-- [ ] #17 Commits are pushed to the remote repo
+- [x] #17 Commits are pushed to the remote repo
 - [x] #18 The task is moved to "Ready for Testing"
 - [x] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
