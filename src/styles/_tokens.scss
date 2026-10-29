@@ -65,6 +65,12 @@ $easings: (
 );
 
 :root {
+  --zone-time-width: 18rem;
+  --zone-font-code: 'Ubuntu Mono', ui-monospace, monospace;
+  --zone-time-size: 3rem;
+  --zone-time-height: 5rem;
+  --zone-small-text: 0.8rem;
+  --zone-timeline-height: 3.5rem;
   @each $name, $value in $colors {
     --color-#{$name}: #{$value};
   }

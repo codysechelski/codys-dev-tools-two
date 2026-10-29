@@ -25,6 +25,7 @@ import StringTemplateFormatter from './StringTemplateFormatter.vue';
 import SvgViewer from './SvgViewer.vue';
 import TextAnalyzer from './TextAnalyzer.vue';
 import TimestampConverter from './TimestampConverter.vue';
+import TimeZoneConverter from './TimeZoneConverter.vue';
 import UrlEncoderDecoder from './UrlEncoderDecoder.vue';
 import UuidGenerator from './UuidGenerator.vue';
 import XmlFormatter from './XmlFormatter.vue';
@@ -261,6 +262,16 @@ export const tools: ToolDefinition[] = [
     icon: 'language',
     component: defineAsyncComponent(() => import('./UnicodeCharacterMap.vue')),
     keywords: ['unicode', 'character', 'emoji', 'code point', 'utf-8', 'ascii'],
+  },
+  {
+    id: 'time-zone-converter',
+    name: 'Time Zone Converter',
+    section: 'Date Utilities',
+    description: 'Compare a time across regions with day-boundary timelines.',
+    instructions: 'Enter a time and date in the local zone to compare it across the world. Changing the local zone keeps your entered wall-clock time. Add more zones below the timeline.',
+    icon: 'clock',
+    component: TimeZoneConverter,
+    keywords: ['time zone', 'timezone', 'world clock', 'utc', 'meeting', 'dst'],
   },
   {
     id: 'timestamp-converter',
