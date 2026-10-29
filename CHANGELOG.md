@@ -1,3 +1,10 @@
+## [0.46.4](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.3...v0.46.4) (2026-10-29)
+
+
+### Bug Fixes
+
+* simplify and right-align time zone status legend ([a69d486](https://github.com/codysechelski/codys-dev-tools-two/commit/a69d486a6ba3792ef84cb4d9c268edd532f5c257))
+
 ## [0.46.3](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.2...v0.46.3) (2026-10-29)
 
 
