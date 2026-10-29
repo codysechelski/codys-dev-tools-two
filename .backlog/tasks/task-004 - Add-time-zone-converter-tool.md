@@ -1,9 +1,9 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
 updated_date: '2026-10-29 17:12'
 labels:
@@ -112,6 +112,8 @@ Remember-input follow-up verified: uses existing usePersistedToolState with only
 Persistence follow-up committed as Cody in cd54b8a. Integrated the automated 0.46.0 changelog update and returning to Ready for Testing; re-work label retained until Done.
 
 Date-picker follow-up: reused existing VueDatePicker and Timestamp Converter theme classes in the toolbar. Uses v14-supported formats.input and model-type yyyy-MM-dd, keeping a date-only string without browser-zone conversions; direct entry and calendar selection both work. Date remains excluded from persisted state. 57 targeted tests pass via npm test -- src/tools/timeZoneConverterComponent.test.ts src/tools/timeZoneConverterPersistence.test.ts src/tools/timeZoneConverter.test.ts src/tools/timestampConverterComponent.test.ts; persistence assertions now allow the picker mount tick. Chromium smoke passes calendar selection, direct date typing, New York DST conversion while browser is in Los Angeles, midnight-step synchronization, light/dark selection/hover screenshot review, and Session/Forever/Never persistence regression. npm run build passes typecheck/web/Electron (existing chunk-size advisory only). Prettier and git diff --check pass. README updated; AGENTS reviewed and no change needed. Existing third-party picker reused, no new reusable component/variant requiring style-guide additions. Scope remains converter-only; used documented manual commands because verify-task profiles reference missing test:unit. Version 0.46.2.
+
+Date-picker change committed as Cody in 9e25728. Integrated automated 0.46.1 changelog update and returning to Ready for Testing; re-work label retained until Done.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
