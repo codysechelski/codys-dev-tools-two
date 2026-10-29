@@ -1,3 +1,10 @@
+## [0.46.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.0...v0.46.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* remember time zone converter preferences without stale dates ([cd54b8a](https://github.com/codysechelski/codys-dev-tools-two/commit/cd54b8a88d5b6acaf103e45b5b22f4f68f4bb328))
+
 # [0.46.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.45.0...v0.46.0) (2026-10-29)
 
 
