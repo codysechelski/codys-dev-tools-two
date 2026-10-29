@@ -135,13 +135,13 @@ function now(): void {
       <AppTextInput v-model="time" class="time-zone-converter__time" label="Time" hide-label :placeholder="use24Hour ? 'HH:mm' : 'h:mm AM/PM'" />
       <AppButton variant="field" icon-only aria-label="Forward 15 minutes" :disabled="!stepWallTime(date, time, 1)" @click="step(1)">→</AppButton>
     </div>
-    <p class="time-zone-converter__context">{{ localZone.replaceAll('_', ' ') }} · arrows step 15 minutes</p>
+    <p class="time-zone-converter__context">{{ localZone.replaceAll('_', ' ') }}</p>
     <p v-if="result.error" class="time-zone-converter__error" role="alert">{{ result.error }}</p>
     <p v-else-if="result.ambiguous" role="status">This time occurs twice when clocks move back. Showing the earlier occurrence.</p>
 
     <div v-if="rows.length" class="time-zone-converter__rows">
       <p class="time-zone-converter__legend">
-        Each bar is a day · center line is the selected time · <span class="time-zone-converter__dot time-zone-converter__dot--business" /> 8–5 ·
+        <span class="time-zone-converter__dot time-zone-converter__dot--business" /> 8–5 ·
         <span class="time-zone-converter__dot time-zone-converter__dot--near" /> within one hour ·
         <span class="time-zone-converter__dot time-zone-converter__dot--outside" /> outside business hours
       </p>
@@ -259,6 +259,8 @@ function now(): void {
   &__legend {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    text-align: right;
     flex-wrap: wrap;
     gap: var(--space-2);
     margin: var(--space-2) 0 var(--space-3);

@@ -20,6 +20,10 @@ describe('TimeZoneConverter', () => {
     expect(wrapper.find('.time-zone-converter__time input').attributes('aria-label')).toBe('Time');
     expect(wrapper.findAllComponents(AppSelect)[0]!.props('modelValue')).toBe(zone);
     expect(wrapper.find('.time-zone-converter__row').text()).toContain('Current zone');
+    expect(wrapper.find('.time-zone-converter__legend').text().replace(/\s+/g, ' ')).toBe('8–5 · within one hour · outside business hours');
+    expect(wrapper.text()).not.toContain('Each bar is a day');
+    expect(wrapper.text()).not.toContain('center line is the selected time');
+    expect(wrapper.text()).not.toContain('arrows step 15 minutes');
     wrapper.unmount();
   });
 
