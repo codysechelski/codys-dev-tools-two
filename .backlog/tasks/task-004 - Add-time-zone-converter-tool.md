@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 17:16'
+updated_date: '2026-10-29 17:17'
 labels:
   - re-work
 dependencies: []
@@ -122,6 +122,8 @@ Date-picker change committed as Cody in 9e25728. Integrated automated 0.46.1 cha
 Moved row business-hours dots from beside the zone name to immediately left of the right-aligned time. Added structural regression assertions to all rows. Verification: npm test -- src/tools/timeZoneConverterComponent.test.ts passes 9 tests; npm run build:web passes typecheck/build (existing chunk warning). Chromium geometry checks pass for dots left of time and vertically centered at 1440px/900px in both themes; accessible status labels preserved. Prettier and git diff --check pass. Targeted manual scope used because verify-task profiles reference missing test:unit; no full suite needed for markup/layout-only change. README/AGENTS reviewed: no updates needed for a position-only change; no new reusable component. No version bump for this small layout adjustment.
 
 Dot-placement adjustment committed as Cody in 8520599; returning to Ready for Testing.
+
+Removed day-bar/center-line intro from the dot legend, right-aligned the remaining business-hours legend, and removed the arrow-step hint beneath the main time (zone name retained). Added copy regression assertions. Verification: all 9 converter component tests pass; npm run build:web passes typecheck/build; Chromium checks confirm flex-end legend alignment and removed text in light/dark at 1440px/900px. Prettier and git diff --check pass. Markup/style-only targeted scope; manual commands used because configured profiles reference missing test:unit. README/AGENTS reviewed: no changes needed for copy/alignment-only adjustment.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
