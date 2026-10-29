@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:13'
+updated_date: '2026-10-29 16:16'
 labels:
   - re-work
 dependencies: []
@@ -33,6 +33,11 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #8 Each row indicates its date and where day boundaries fall, so a selected time that lands on a different day in another zone is obvious without dragging or reading raw offsets
 - [x] #9 The tool is correct in both light and dark themes, with hover, focus, and selected states styled from shared tokens rather than hardcoded colors
 - [x] #10 Unit tests cover time parsing and formatting, 15-minute stepping, zone list composition, and day-boundary/DST handling
+- [x] #11 The primary time input has no visible label, is centered inline with both arrows, and does not overlap subsequent content
+- [x] #12 Compact time zone rows use Gantt-like day bars, country-flag chips, and removal controls for all non-current zones
+- [ ] #13 Add time zone is in the top toolbar and opens a correctly themed modal containing the searchable zone select
+- [x] #14 Clock formatting defaults to the user's locale, with a toolbar toggle switching the input and row times between 12 and 24 hours without changing the selected instant
+- [x] #15 Each row has an accessible live business-hours dot: green 08:00–17:00, yellow 07:00–08:00 and 17:00–18:00, red otherwise
 <!-- AC:END -->
 
 ## Definition of Done
@@ -78,6 +83,8 @@ Add accessible red/yellow/green business-hours dots based on each row's wall tim
 Browser verification passed using temporary Playwright installation outside the repository: sidebar searches time zone/world clock/UTC, navigation/heading, own-zone deduplication, midnight stepping, real searchable add/remove controls, light/dark theme switching, focus/hover colors, and no page errors. Screenshots reviewed at 1280px and 900px. 53 tests pass via npm test -- src/tools/timeZoneConverter.test.ts src/tools/timeZoneConverterComponent.test.ts src/App.test.ts src/components/AppSidebar.test.ts. npm run build passes (typecheck + web + Electron; only existing bundle-size warning). Prettier check passes for all new source/test files; git diff --check passes. No lint script/config exists. README updated; AGENTS.md reviewed and needs no change. Version bumped to 0.44.0. No runtime dependencies or reusable components added.
 
 Implementation committed as Cody in c6a7900 (feat: add DST-aware time zone converter). No architecture changes or new reusable UI, so no approval/style-guide additions needed. Documentation is covered by README; no standalone docs needed. Ready for Cody's review.
+
+Rework: 41 focused tests now pass, including locale format round-trips (US/GB/German/Arabic/Korean/Finnish), all business-hour boundaries, flags/aliases, bar segments, modal add/remove and restoring default rows. Chromium smoke passes for en-US and en-GB defaults, format switching, field/button alignment, modal add/remove, flags, day bars, and desktop/compact layouts. Screenshot review caught missing light-theme select styling in Teleported modal; shared light selectors extended, final theme rerun pending.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
