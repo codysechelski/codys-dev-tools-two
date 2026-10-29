@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 15:53'
+updated_date: '2026-10-29 15:54'
 labels: []
 dependencies: []
 type: feature
@@ -56,3 +56,11 @@ The tool should center on one large, editable time field so a developer can set 
 - [ ] #18 The task is moved to "Ready for Testing"
 - [ ] #19 The task is assigned to Cody (the project owner) so he can review the changes.
 <!-- DOD:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+1. Add dependency-free Intl-based wall-clock parsing, zone resolution, stepping, row composition, and timeline helpers with focused tests.
+2. Build the converter using shared controls and themed tokens; register it under Date Utilities and document it.
+3. Verify component interactions, DST/day boundaries, types, builds, and formatting; record evidence and hand off for testing.
+<!-- SECTION:PLAN:END -->
