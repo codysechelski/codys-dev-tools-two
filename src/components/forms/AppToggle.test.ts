@@ -25,6 +25,7 @@ describe('AppToggle', () => {
     });
 
     expect(wrapper.find('button[role="switch"]').attributes('aria-checked')).toBe('true');
+    expect(wrapper.find('button[role="switch"]').attributes('aria-label')).toBe('Sort keys');
     expect(wrapper.find('button[role="switch"]').classes()).toContain('form-toggle__control--checked');
   });
 

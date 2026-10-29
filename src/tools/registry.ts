@@ -268,7 +268,7 @@ export const tools: ToolDefinition[] = [
     name: 'Time Zone Converter',
     section: 'Date Utilities',
     description: 'Compare a time across regions with day-boundary timelines.',
-    instructions: 'Enter a time and date in the local zone to compare it across the world. Changing the local zone keeps your entered wall-clock time. Add more zones below the timeline.',
+    instructions: 'Enter a time and date to compare across regions. Changing the local zone keeps your wall-clock time. Use Add time zone to compare more regions, or switch between 12- and 24-hour clocks.',
     icon: 'clock',
     component: TimeZoneConverter,
     keywords: ['time zone', 'timezone', 'world clock', 'utc', 'meeting', 'dst'],

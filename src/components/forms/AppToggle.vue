@@ -26,6 +26,7 @@ function toggle(): void {
       class="form-toggle__control"
       type="button"
       role="switch"
+      :aria-label="label"
       :aria-checked="modelValue"
       :class="{ 'form-toggle__control--checked': modelValue }"
       @click="toggle"

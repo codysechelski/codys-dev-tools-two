@@ -1,8 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AppSelect from '@/components/forms/AppSelect.vue';
+import AppModal from '@/components/AppModal.vue';
+import AppButton from '@/components/AppButton.vue';
 import TimeZoneConverter from './TimeZoneConverter.vue';
-import { canonicalZone, formatTime, zonedParts } from './timeZoneConverter';
+import { canonicalZone, formatClock, prefers24Hour, zonedParts } from './timeZoneConverter';
 
 describe('TimeZoneConverter', () => {
   afterEach(() => vi.useRealTimers());
@@ -12,7 +14,9 @@ describe('TimeZoneConverter', () => {
     vi.setSystemTime(new Date('2026-07-01T12:34:00Z'));
     const wrapper = mount(TimeZoneConverter);
     const zone = canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe(formatTime(zonedParts(Date.now(), zone).minutes));
+    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe(formatClock(zonedParts(Date.now(), zone).minutes, prefers24Hour()));
+    expect(wrapper.find('.time-zone-converter__time').classes()).toContain('form-control--label-hidden');
+    expect(wrapper.find('.time-zone-converter__time input').attributes('aria-label')).toBe('Time');
     expect(wrapper.findAllComponents(AppSelect)[0]!.props('modelValue')).toBe(zone);
     expect(wrapper.find('.time-zone-converter__row').text()).toContain('Current zone');
     wrapper.unmount();
@@ -20,6 +24,7 @@ describe('TimeZoneConverter', () => {
 
   it('updates rows immediately, preserves wall time on zone change, and steps over midnight', async () => {
     const wrapper = mount(TimeZoneConverter);
+    if (!prefers24Hour()) await wrapper.find('[role="switch"]').trigger('click');
     await wrapper.find('input[placeholder="YYYY-MM-DD"]').setValue('2026-07-01');
     await wrapper.find('.time-zone-converter__time input').setValue('23:55');
     wrapper.findAllComponents(AppSelect)[0]!.vm.$emit('update:modelValue', 'UTC');
@@ -47,17 +52,81 @@ describe('TimeZoneConverter', () => {
     wrapper.unmount();
   });
 
-  it('adds and removes additional zones without allowing default rows to be removed', async () => {
+  it('opens the toolbar modal and adds/removes zones', async () => {
     const wrapper = mount(TimeZoneConverter);
     const count = wrapper.findAll('.time-zone-converter__row').length;
-    wrapper.findAllComponents(AppSelect)[1]!.vm.$emit('update:modelValue', 'Asia/Katmandu');
+    expect(wrapper.findAllComponents(AppSelect)).toHaveLength(1);
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === 'Add time zone')!
+      .trigger('click');
+    expect(wrapper.findComponent(AppModal).props('open')).toBe(true);
+    wrapper.findAllComponents(AppSelect)[1]!.vm.$emit('update:modelValue', canonicalZone('Asia/Kathmandu'));
     await wrapper.vm.$nextTick();
-    await wrapper.find('button[aria-label="Add selected time zone"]').trigger('click');
+    await wrapper
+      .findComponent(AppModal)
+      .findAllComponents(AppButton)
+      .find((button) => button.text() === 'Add time zone')!
+      .trigger('click');
     expect(wrapper.findAll('.time-zone-converter__row')).toHaveLength(count + 1);
-    const remove = wrapper.findAll('button[aria-label^="Remove "]');
-    expect(remove).toHaveLength(1);
-    await remove[0]!.trigger('click');
+    expect(wrapper.findComponent(AppModal).props('open')).toBe(false);
+    await wrapper.find('button[aria-label^="Remove Asia/Kat"]').trigger('click');
     expect(wrapper.findAll('.time-zone-converter__row')).toHaveLength(count);
+    wrapper.unmount();
+  });
+
+  it('removes and restores default zones, but protects the current zone', async () => {
+    const wrapper = mount(TimeZoneConverter);
+    const count = wrapper.findAll('.time-zone-converter__row').length;
+    expect(wrapper.find('.time-zone-converter__row').find('button[aria-label^="Remove"]').exists()).toBe(false);
+    await wrapper.find('button[aria-label="Remove Eastern"]').trigger('click');
+    expect(wrapper.findAll('.time-zone-converter__row')).toHaveLength(count - 1);
+    await wrapper
+      .findAll('button')
+      .find((button) => button.text() === 'Add time zone')!
+      .trigger('click');
+    wrapper.findAllComponents(AppSelect)[1]!.vm.$emit('update:modelValue', 'America/New_York');
+    await wrapper.vm.$nextTick();
+    await wrapper
+      .findComponent(AppModal)
+      .findAllComponents(AppButton)
+      .find((button) => button.text() === 'Add time zone')!
+      .trigger('click');
+    expect(wrapper.findAll('.time-zone-converter__row')).toHaveLength(count);
+    wrapper.unmount();
+  });
+
+  it('toggles clock format without changing the selected instant or invalid input', async () => {
+    const wrapper = mount(TimeZoneConverter);
+    if (prefers24Hour()) await wrapper.find('[role="switch"]').trigger('click');
+    await wrapper.find('.time-zone-converter__time input').setValue('11:55 PM');
+    await wrapper.find('[aria-label="Forward 15 minutes"]').trigger('click');
+    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe(formatClock(10, false));
+    const dates = wrapper.findAll('.time-zone-converter__reading span').map((item) => item.text());
+    await wrapper.find('[role="switch"]').trigger('click');
+    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe('00:10');
+    expect(wrapper.findAll('.time-zone-converter__reading span').map((item) => item.text())).toEqual(dates);
+    await wrapper.find('.time-zone-converter__time input').setValue('bad');
+    await wrapper.find('[role="switch"]').trigger('click');
+    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe('bad');
+    wrapper.unmount();
+  });
+
+  it('shows country chips, day bars, and live business-hour status', async () => {
+    const wrapper = mount(TimeZoneConverter);
+    await wrapper.find('input[placeholder="YYYY-MM-DD"]').setValue('2026-07-01');
+    wrapper.findAllComponents(AppSelect)[0]!.vm.$emit('update:modelValue', 'UTC');
+    await wrapper.vm.$nextTick();
+    await wrapper.find('.time-zone-converter__time input').setValue('14:30');
+    expect(wrapper.find('[aria-label="United States"]').text()).toBe('🇺🇸');
+    expect(wrapper.find('[aria-label="Global time"]').text()).toBe('🌐');
+    const eastern = () => wrapper.findAll('.time-zone-converter__row').find((row) => row.find('strong').text() === 'Eastern')!;
+    expect(eastern().find('[role="img"][aria-label^="Business hours"]').exists()).toBe(true);
+    expect(eastern().findAll('.time-zone-converter__day').length).toBeGreaterThan(0);
+    await wrapper.find('.time-zone-converter__time input').setValue('11:30');
+    expect(eastern().find('[role="img"][aria-label^="Near business hours"]').exists()).toBe(true);
+    await wrapper.find('.time-zone-converter__time input').setValue('00:00');
+    expect(eastern().find('[role="img"][aria-label="Outside business hours"]').exists()).toBe(true);
     wrapper.unmount();
   });
 });

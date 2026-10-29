@@ -26,7 +26,7 @@ export function composeZones(localZone: string, added: string[] = []) {
   const seen = new Set<string>();
   return [
     { zone: localZone, label: localZone.replaceAll('_', ' '), current: true, removable: false },
-    ...defaultZones.map((item) => ({ ...item, current: false, removable: false })),
+    ...defaultZones.map((item) => ({ ...item, current: false, removable: true })),
     ...added.map((zone) => ({ zone, label: zone.replaceAll('_', ' '), current: false, removable: true })),
   ].filter(({ zone }) => {
     const key = canonicalZone(zone);
@@ -36,8 +36,43 @@ export function composeZones(localZone: string, added: string[] = []) {
   });
 }
 
-export function parseTime(input: string): number | null {
-  const match = /^(\d{1,2}):(\d{2})\s*(am|pm)?$/i.exec(input.trim());
+export function prefers24Hour(locale?: string): boolean {
+  return new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 === false;
+}
+
+export function formatClock(minutes: number, use24Hour: boolean, locale?: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: 'UTC',
+    hour: use24Hour ? '2-digit' : 'numeric',
+    minute: '2-digit',
+    hourCycle: use24Hour ? 'h23' : 'h12',
+  }).format(new Date(Date.UTC(2000, 0, 1, 0, minutes)));
+}
+
+const inputLocales = new Map<string, { digits: string[]; periods: string[] }>();
+
+export function parseTime(input: string, locale?: string): number | null {
+  const key = locale ?? '';
+  let symbols = inputLocales.get(key);
+  if (!symbols) {
+    const numbers = new Intl.NumberFormat(locale, { useGrouping: false });
+    const clock = new Intl.DateTimeFormat(locale, { timeZone: 'UTC', hour: 'numeric', hour12: true });
+    symbols = {
+      digits: Array.from({ length: 10 }, (_, index) => numbers.format(index)),
+      periods: [9, 21].map((hour) => clock.formatToParts(Date.UTC(2000, 0, 1, hour)).find(({ type }) => type === 'dayPeriod')?.value ?? ''),
+    };
+    inputLocales.set(key, symbols);
+  }
+  let normalized = input.replace(/[\u200e\u200f\u061c]/g, '').trim();
+  symbols.digits.forEach((digit, index) => {
+    normalized = normalized.replaceAll(digit, index.toString());
+  });
+  symbols.periods.forEach((period, index) => {
+    if (period && normalized.includes(period)) normalized = `${normalized.replace(period, '').trim()} ${index === 0 ? 'am' : 'pm'}`;
+  });
+  // Some locales use a dot as the hour/minute separator.
+  normalized = normalized.replace(/(?<=\d)[.](?=\d)/g, ':');
+  const match = /^(\d{1,2}):(\d{2})\s*(am|pm)?$/i.exec(normalized);
   if (!match) return null;
   let hour = Number(match[1]);
   const minute = Number(match[2]);
@@ -133,7 +168,8 @@ export function zoneTimeline(instant: number, zone: string) {
   const start = instant - DAY / 2;
   const ticks = Array.from({ length: 8 }, (_, index) => {
     const position = (index + 0.5) / 8;
-    return { position, time: formatTime(zonedParts(start + position * DAY, zone).minutes) };
+    const minutes = zonedParts(start + position * DAY, zone).minutes;
+    return { position, minutes, time: formatTime(minutes) };
   });
   // Find calendar-day changes, not fixed offsets: DST can even skip midnight.
   // Hourly probes plus a minute-level binary search keep edits responsive.
@@ -153,5 +189,18 @@ export function zoneTimeline(instant: number, zone: string) {
     }
     previousDate = date;
   }
-  return { ticks, boundaries };
+  const starts = [{ position: 0, date: zonedParts(start, zone).date }, ...boundaries];
+  const segments = starts
+    .map((item, index) => ({
+      ...item,
+      width: (starts[index + 1]?.position ?? 1) - item.position,
+    }))
+    .filter(({ width }) => width > 0);
+  return { ticks, boundaries, segments };
+}
+
+export function businessHoursStatus(minutes: number) {
+  if (minutes >= 8 * 60 && minutes < 17 * 60) return { kind: 'business', label: 'Business hours (8 AM–5 PM)' };
+  if (minutes >= 7 * 60 && minutes < 18 * 60) return { kind: 'near', label: 'Near business hours (7–8 AM or 5–6 PM)' };
+  return { kind: 'outside', label: 'Outside business hours' };
 }

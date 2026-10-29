@@ -585,6 +585,7 @@ body[data-theme='light'] {
 
 .app-shell[data-theme='light'] .workspace p,
 .app-shell[data-theme='light'] .form-control__label-text,
+body[data-theme='light'] .modal .form-control__label-text,
 .app-shell[data-theme='light'] .text-editor__toolbar strong,
 .app-shell[data-theme='light'] .html-preview__toolbar strong,
 .app-shell[data-theme='light'] .markdown-preview__toolbar strong,
@@ -607,6 +608,7 @@ body[data-theme='light'] {
 .app-shell[data-theme='light'] .form-select__trigger,
 .app-shell[data-theme='light'] .timestamp-picker-row .dp--input,
 body[data-theme='light'] .modal .form-text-input input,
+body[data-theme='light'] .modal .form-select__trigger,
 body[data-theme='light'] .modal .form-text-input textarea {
   border-color: rgba(79, 70, 229, 0.26);
   color: var(--app-text);
@@ -627,32 +629,44 @@ body[data-theme='light'] .modal .form-text-input textarea:focus-visible {
 
 .app-shell[data-theme='light'] .form-select__trigger:hover,
 .app-shell[data-theme='light'] .form-select--open .form-select__trigger,
+body[data-theme='light'] .modal .form-select__trigger:hover,
+body[data-theme='light'] .modal .form-select--open .form-select__trigger,
+body[data-theme='light'] .modal .form-select__trigger:focus-visible,
 .app-shell[data-theme='light'] .form-select__trigger:focus-visible {
   border-color: rgba(79, 70, 229, 0.46);
   box-shadow: none;
 }
 
-.app-shell[data-theme='light'] .form-select__menu {
+.app-shell[data-theme='light'] .form-select__menu,
+body[data-theme='light'] .modal .form-select__menu {
   border-color: rgba(79, 70, 229, 0.22);
   background: rgba(248, 250, 252, 0.98);
 }
 
-.app-shell[data-theme='light'] .form-select__option {
+.app-shell[data-theme='light'] .form-select__option,
+body[data-theme='light'] .modal .form-select__option {
   color: #334155;
 }
 
 .app-shell[data-theme='light'] .form-select__search-hint,
+body[data-theme='light'] .modal .form-select__search-hint,
+body[data-theme='light'] .modal .form-select__empty,
 .app-shell[data-theme='light'] .form-select__empty {
   color: #64748b;
 }
 
 .app-shell[data-theme='light'] .form-select__option--active,
+body[data-theme='light'] .modal .form-select__option--active,
+body[data-theme='light'] .modal .form-select__option:hover,
 .app-shell[data-theme='light'] .form-select__option:hover {
   color: var(--app-text);
   background: rgba(79, 70, 229, 0.1);
 }
 
 .app-shell[data-theme='light'] .form-select__option--selected,
+body[data-theme='light'] .modal .form-select__option--selected,
+body[data-theme='light'] .modal .form-select__option--selected.form-select__option--active,
+body[data-theme='light'] .modal .form-select__option--selected:hover,
 .app-shell[data-theme='light'] .form-select__option--selected.form-select__option--active,
 .app-shell[data-theme='light'] .form-select__option--selected:hover {
   color: var(--app-text);

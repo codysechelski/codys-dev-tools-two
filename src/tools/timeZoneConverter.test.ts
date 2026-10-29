@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import {
+  businessHoursStatus,
   canonicalZone,
   composeZones,
   formatTime,
+  formatClock,
   getZoneOptions,
   parseTime,
+  prefers24Hour,
   resolveWallTime,
   stepWallTime,
   zoneDisplay,
   zoneTimeline,
 } from './timeZoneConverter';
+import { zoneCountry } from './timeZoneCountries';
 
 describe('time zone converter', () => {
   it.each([
@@ -34,6 +38,39 @@ describe('time zone converter', () => {
     expect(formatTime(0)).toBe('00:00');
     expect(formatTime(545)).toBe('09:05');
     expect(formatTime(1439)).toBe('23:59');
+  });
+
+  it('defaults to the locale clock and round-trips localized formats', () => {
+    expect(prefers24Hour('en-US')).toBe(false);
+    expect(prefers24Hour('en-GB')).toBe(true);
+    expect(formatClock(810, false, 'en-US')).toBe('1:30 PM');
+    expect(formatClock(0, true, 'en-US')).toBe('00:00');
+    for (const locale of ['en-US', 'en-GB', 'de-DE', 'ar-EG', 'ko-KR', 'fi-FI']) {
+      for (const minutes of [0, 10, 720, 810, 1439]) {
+        for (const use24 of [true, false]) expect(parseTime(formatClock(minutes, use24, locale), locale)).toBe(minutes);
+      }
+    }
+  });
+
+  it.each([
+    [419, 'outside'],
+    [420, 'near'],
+    [479, 'near'],
+    [480, 'business'],
+    [1019, 'business'],
+    [1020, 'near'],
+    [1079, 'near'],
+    [1080, 'outside'],
+  ])('classifies business hours at minute %s', (minutes, expected) => {
+    expect(businessHoursStatus(minutes).kind).toBe(expected);
+  });
+
+  it('uses geographic country flags, including aliases, rather than guessing from offsets', () => {
+    expect(zoneCountry(canonicalZone('America/New_York')).flag).toBe('🇺🇸');
+    expect(zoneCountry(canonicalZone('America/Toronto')).flag).toBe('🇨🇦');
+    expect(zoneCountry(canonicalZone('Asia/Kathmandu')).flag).toBe('🇳🇵');
+    expect(zoneCountry(canonicalZone('Europe/London')).flag).toBe('🇬🇧');
+    expect(zoneCountry('UTC').flag).toBe('🌐');
   });
 
   it('steps 15 minutes across date, month, year, and leap-day boundaries', () => {
@@ -95,6 +132,10 @@ describe('time zone converter', () => {
     const timeline = zoneTimeline(Date.parse('2026-07-01T12:00Z'), 'Asia/Kathmandu');
     expect(timeline.ticks).toHaveLength(8);
     expect(timeline.boundaries).toEqual([{ position: 1095 / 1440, date: '2026-07-02' }]);
+    expect(timeline.segments).toEqual([
+      { position: 0, width: 1095 / 1440, date: '2026-07-01' },
+      { position: 1095 / 1440, width: 1 - 1095 / 1440, date: '2026-07-02' },
+    ]);
   });
 
   it('positions midnight correctly across short and long DST days', () => {
