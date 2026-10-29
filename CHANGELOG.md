@@ -1,3 +1,10 @@
+## [0.46.3](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.2...v0.46.3) (2026-10-29)
+
+
+### Bug Fixes
+
+* place time zone status dots beside row times ([8520599](https://github.com/codysechelski/codys-dev-tools-two/commit/852059936a2da56978d2ae6ca2b6c51d8c6bd785))
+
 ## [0.46.2](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.1...v0.46.2) (2026-10-29)
 
 
