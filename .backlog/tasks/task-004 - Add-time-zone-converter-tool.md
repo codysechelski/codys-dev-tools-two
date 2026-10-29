@@ -1,11 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: Ready for Testing
+status: In Progress
 assignee:
-  - '@cody'
+  - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:18'
+updated_date: '2026-10-29 16:24'
 labels:
   - re-work
 dependencies: []
@@ -73,6 +73,8 @@ The tool should center on one large, editable time field so a developer can set 
 Revise per review: unlabeled/aligned primary time; compact Gantt-style day bars and flag chips; toolbar add-zone modal and row removal; locale-default 12/24-hour formatting toggle. Extend tests and rerun browser/theme/build checks.
 
 Add accessible red/yellow/green business-hours dots based on each row's wall time: 08:00–17:00 business, 07:00–08:00 and 17:00–18:00 near, otherwise outside (daily, no weekday restriction requested).
+
+Extend shared AppSelect with optional country groups/leading flags and searchable country names; use for both zone pickers with UTC first and alphabetical countries/zone names. Add DST-aware row offsets relative to the selected local zone, with hours/minutes ahead or behind. Cover shared select compatibility, country search/sorting, offset logic, and browser/themes.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
