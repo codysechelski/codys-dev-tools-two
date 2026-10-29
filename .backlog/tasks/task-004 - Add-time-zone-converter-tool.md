@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:27'
+updated_date: '2026-10-29 16:29'
 labels:
   - re-work
 dependencies: []
@@ -38,9 +38,9 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #13 Add time zone is in the top toolbar and opens a correctly themed modal containing the searchable zone select
 - [x] #14 Clock formatting defaults to the user's locale, with a toolbar toggle switching the input and row times between 12 and 24 hours without changing the selected instant
 - [x] #15 Each row has an accessible live business-hours dot: green 08:00–17:00, yellow 07:00–08:00 and 17:00–18:00, red otherwise
-- [ ] #16 Both zone pickers show flags and searchable country names, with UTC first then alphabetized country groups and alphabetical zone names within each group
-- [ ] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
-- [ ] #18 All zone-row text is larger and remains readable in both themes and compact layouts
+- [x] #16 Both zone pickers show flags and searchable country names, with UTC first then alphabetized country groups and alphabetical zone names within each group
+- [x] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
+- [x] #18 All zone-row text is larger and remains readable in both themes and compact layouts
 <!-- AC:END -->
 
 ## Definition of Done
@@ -96,10 +96,12 @@ Rework: 41 focused tests now pass, including locale format round-trips (US/GB/Ge
 Final rework verification: npm test passes all 83 files / 628 tests, including 41 focused converter/toggle tests. npm run build passes typecheck, web and Electron builds (existing bundle-size advisory only). Temporary Playwright smoke passes en-US/en-GB locale defaults, 12/24-hour toggle instant preservation, exact field/arrow vertical-center assertions, modal searchable picker and clipping checks, adding/removing zones and defaults, flag chips, day bars, and light/dark + compact layouts; light modal menu/selected colors asserted and screenshots reviewed. Prettier check for new/rewritten converter files and git diff --check pass. Verification profiles still reference nonexistent test:unit; explicit commands used instead. README updated with clock modes, removal, bars and daily business-hour thresholds; AGENTS reviewed, no update needed. Version 0.45.0. Country/territory mapping is bundled public-domain IANA zone.tab data; no runtime dependencies added.
 
 Rework committed as Cody in cd3add3 (feat: refine time zone comparison bars and locale clocks). Returning to Ready for Testing for review; re-work label retained until Done per workflow.
+
+Country grouping / readability follow-up complete. Both pickers now show flag chips, country descriptions and accessible country headings; UTC first, then localized country names and zone labels alphabetically. Searches include country names/codes and USA alias; exact country metadata beats incidental city substrings. Rows compare actual wall-clock offsets with selected local zone, including minutes, DST and date-line crossings. Larger typography: row names/times 16px, secondary text 14px, ticks ~13px; wider columns/taller bars and fewer 12-hour ticks. Additive shared AppSelect support documented in docs/style-guide.md (no existing design-system page in this repository), linked from README; AGENTS records reusable option fields. Final verification: npm test passes 83 files / 633 tests; npm run build passes types/web/Electron (existing chunk-size warning). Two temporary Chromium smoke scripts pass US/GB locale/format/alignment/add-remove regression plus UTC ordering, alphabetical groups/zone names, country/USA search, flags, fractional row offsets, font-size assertions, both themes and compact layouts. Screenshots reviewed at 1440/1280/900px. Prettier checks and git diff --check pass. Existing verify-task profiles still invoke missing test:unit script, so direct commands used. Version 0.46.0.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Revised Time Zone Converter per review: unlabeled, correctly centered large time input with no overflow; compact Gantt-style day bars and flag chips; toolbar Add time zone modal; removal of non-current zones; locale-default 12/24-hour toggle; accessible green/yellow/red business-hours dots (08–17 business, 07–08/17–18 near). Fixed Teleported modal select light-theme states. All 15 acceptance criteria verified; 628 tests, web/Electron build, Chromium US/GB theme/layout/interactions, formatting and diff checks pass.
+Completed Time Zone Converter and review refinements: compact day bars, locale-aware clocks, business-hour dots, country flags, grouped country-searchable pickers with UTC first, DST-aware relative hour/minute offsets, and larger row typography. All 18 acceptance criteria verified; 633 tests, typecheck/web/Electron build, Chromium locale/theme/group-search/layout smoke, formatting and diff checks pass. Shared grouped-select examples added to docs/style-guide.md.
 <!-- SECTION:FINAL_SUMMARY:END -->
