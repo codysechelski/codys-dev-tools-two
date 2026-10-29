@@ -1,12 +1,13 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: Ready for Testing
+status: In Progress
 assignee:
-  - '@cody'
+  - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 15:59'
-labels: []
+updated_date: '2026-10-29 16:10'
+labels:
+  - re-work
 dependencies: []
 type: feature
 ordinal: 4000
@@ -63,6 +64,8 @@ The tool should center on one large, editable time field so a developer can set 
 1. Add dependency-free Intl-based wall-clock parsing, zone resolution, stepping, row composition, and timeline helpers with focused tests.
 2. Build the converter using shared controls and themed tokens; register it under Date Utilities and document it.
 3. Verify component interactions, DST/day boundaries, types, builds, and formatting; record evidence and hand off for testing.
+
+Revise per review: unlabeled/aligned primary time; compact Gantt-style day bars and flag chips; toolbar add-zone modal and row removal; locale-default 12/24-hour formatting toggle. Extend tests and rerun browser/theme/build checks.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
