@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 17:09'
+updated_date: '2026-10-29 17:12'
 labels:
   - re-work
 dependencies: []
@@ -42,7 +42,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
 - [x] #18 All zone-row text is larger and remains readable in both themes and compact layouts
 - [x] #19 Local zone, 12/24-hour preference, and added/removed zones honor Remember tool input in session/forever/never modes; date and time always initialize to now in the restored local zone on entry, including delayed state loading
-- [ ] #20 The Date field uses the existing themed calendar/date picker with direct date entry, preserves selected wall dates across zones and DST, and still resets to now instead of persisting
+- [x] #20 The Date field uses the existing themed calendar/date picker with direct date entry, preserves selected wall dates across zones and DST, and still resets to now instead of persisting
 <!-- AC:END -->
 
 ## Definition of Done
@@ -110,10 +110,12 @@ Country-grouping/offset/readability follow-up committed as Cody in c178c14. Inte
 Remember-input follow-up verified: uses existing usePersistedToolState with only localZone/use24Hour/addedZones/removedZones. Date/time initialize after synchronous restoration and recompute after delayed hydration; ordinary local-zone edits still preserve entered wall time. Current-zone row remains protected if machine zone changes between sessions. 55 targeted tests pass: npm test -- src/tools/timeZoneConverterPersistence.test.ts src/tools/timeZoneConverterComponent.test.ts src/tools/timeZoneConverter.test.ts src/toolState.test.ts. Includes session remount, forever disk/restart, delayed state load, never mode, disabling remembering, year/day rollover in restored zone, and snapshot field exclusions. Actual Chromium smoke passes Settings-driven Session/Forever/Never navigation and reload policies, saved zone/format/add-remove choices, and fresh date/time in restored zone. npm run build passes types/web/Electron (existing chunk warning only); Prettier and git diff --check pass. Small converter-only change uses targeted scope; configured verify-task profiles still reference missing test:unit, so documented direct commands used. README updated; AGENTS reviewed and no additional change needed. Version 0.46.1.
 
 Persistence follow-up committed as Cody in cd54b8a. Integrated the automated 0.46.0 changelog update and returning to Ready for Testing; re-work label retained until Done.
+
+Date-picker follow-up: reused existing VueDatePicker and Timestamp Converter theme classes in the toolbar. Uses v14-supported formats.input and model-type yyyy-MM-dd, keeping a date-only string without browser-zone conversions; direct entry and calendar selection both work. Date remains excluded from persisted state. 57 targeted tests pass via npm test -- src/tools/timeZoneConverterComponent.test.ts src/tools/timeZoneConverterPersistence.test.ts src/tools/timeZoneConverter.test.ts src/tools/timestampConverterComponent.test.ts; persistence assertions now allow the picker mount tick. Chromium smoke passes calendar selection, direct date typing, New York DST conversion while browser is in Los Angeles, midnight-step synchronization, light/dark selection/hover screenshot review, and Session/Forever/Never persistence regression. npm run build passes typecheck/web/Electron (existing chunk-size advisory only). Prettier and git diff --check pass. README updated; AGENTS reviewed and no change needed. Existing third-party picker reused, no new reusable component/variant requiring style-guide additions. Scope remains converter-only; used documented manual commands because verify-task profiles reference missing test:unit. Version 0.46.2.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Time Zone Converter complete with day bars, country-grouped pickers, relative offsets, locale clocks, business-hour indicators and readable rows. Remember tool input now preserves local zone, clock format and added/removed zones for Session/Forever, respects Never, and always starts date/time at now in the restored zone. All 19 acceptance criteria verified; latest persistence change passes 55 targeted tests, Settings-driven browser persistence/reload smoke, typecheck/web/Electron builds, formatting and diff checks. Prior full baseline passed 633 tests.
+Time Zone Converter and review refinements complete, including the existing themed calendar picker for Date. Picker selection/direct typing preserve date-only zone/DST behavior and midnight stepping; dates/times still reset to now rather than being saved. All 20 acceptance criteria verified. Latest change passes 57 focused tests, real Chromium calendar/theme/DST and remember-mode smoke, typecheck/web/Electron builds, formatting and diff checks.
 <!-- SECTION:FINAL_SUMMARY:END -->
