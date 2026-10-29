@@ -1,11 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 17:13'
+updated_date: '2026-10-29 17:14'
 labels:
   - re-work
 dependencies: []
@@ -118,6 +118,8 @@ Date-picker follow-up: reused existing VueDatePicker and Timestamp Converter the
 Date-picker change committed as Cody in 9e25728. Integrated automated 0.46.1 changelog update and returning to Ready for Testing; re-work label retained until Done.
 
 Moved row business-hours dots from beside the zone name to immediately left of the right-aligned time. Added structural regression assertions to all rows. Verification: npm test -- src/tools/timeZoneConverterComponent.test.ts passes 9 tests; npm run build:web passes typecheck/build (existing chunk warning). Chromium geometry checks pass for dots left of time and vertically centered at 1440px/900px in both themes; accessible status labels preserved. Prettier and git diff --check pass. Targeted manual scope used because verify-task profiles reference missing test:unit; no full suite needed for markup/layout-only change. README/AGENTS reviewed: no updates needed for a position-only change; no new reusable component. No version bump for this small layout adjustment.
+
+Dot-placement adjustment committed as Cody in 8520599; returning to Ready for Testing.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
