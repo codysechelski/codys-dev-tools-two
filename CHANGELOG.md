@@ -1,3 +1,10 @@
+# [0.44.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.43.0...v0.44.0) (2026-10-29)
+
+
+### Features
+
+* add DST-aware time zone converter ([c6a7900](https://github.com/codysechelski/codys-dev-tools-two/commit/c6a7900009302d5f8060903cb5b651d869251600))
+
 # [0.43.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.42.0...v0.43.0) (2026-10-27)
 
 
