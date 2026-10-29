@@ -129,4 +129,20 @@ describe('TimeZoneConverter', () => {
     expect(eastern().find('[role="img"][aria-label="Outside business hours"]').exists()).toBe(true);
     wrapper.unmount();
   });
+
+  it('updates row offsets when the reference zone changes', async () => {
+    const wrapper = mount(TimeZoneConverter);
+    await wrapper.find('input[placeholder="YYYY-MM-DD"]').setValue('2026-07-01');
+    await wrapper.find('.time-zone-converter__time input').setValue('09:00');
+    const localSelect = wrapper.findAllComponents(AppSelect)[0]!;
+    localSelect.vm.$emit('update:modelValue', 'UTC');
+    await wrapper.vm.$nextTick();
+    const pacific = () => wrapper.findAll('.time-zone-converter__row').find((row) => row.find('strong').text() === 'Pacific')!;
+    expect(pacific().find('.time-zone-converter__offset').text()).toBe('7h behind');
+    localSelect.vm.$emit('update:modelValue', 'America/Chicago');
+    await wrapper.vm.$nextTick();
+    expect(pacific().find('.time-zone-converter__offset').text()).toBe('2h behind');
+    expect(localSelect.props('options')[0]).toMatchObject({ value: 'UTC' });
+    wrapper.unmount();
+  });
 });

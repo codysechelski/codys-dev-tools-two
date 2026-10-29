@@ -149,4 +149,55 @@ describe('AppSelect', () => {
     expect(wrapper.find('.form-control__label-row').exists()).toBe(true);
     expect(wrapper.find('[role="tooltip"]').text()).toBe('Choose output style.');
   });
+
+  it('groups rich options, shows flags/countries, and searches country names and aliases', async () => {
+    const wrapper = mount(AppSelect, {
+      props: {
+        modelValue: 'UTC',
+        label: 'Zone',
+        options: [
+          { label: 'UTC', value: 'UTC', leadingText: '🌐', description: 'Coordinated Universal Time' },
+          { label: 'America/Sao Paulo', value: 'America/Sao_Paulo', group: 'Brazil', description: 'Brazil', leadingText: '🇧🇷' },
+          { label: 'Asia/Jerusalem', value: 'Asia/Jerusalem', group: 'Israel', description: 'Israel', leadingText: '🇮🇱' },
+          { label: 'America/Chicago', value: 'America/Chicago', group: 'United States', description: 'United States', leadingText: '🇺🇸', keywords: ['USA'] },
+          { label: 'America/New York', value: 'America/New_York', group: 'United States', description: 'United States', leadingText: '🇺🇸', keywords: ['USA'] },
+        ],
+      },
+    });
+    await wrapper.find('[role="combobox"]').trigger('click');
+    expect(wrapper.findAll('[role="group"]').map((group) => group.attributes('aria-label'))).toEqual(['Brazil', 'Israel', 'United States']);
+    expect(wrapper.findAll('[role="option"]')).toHaveLength(5);
+    expect(wrapper.find('[data-value="America/Chicago"] .form-select__leading').text()).toBe('🇺🇸');
+    for (const key of 'usa') await wrapper.find('[role="combobox"]').trigger('keydown', { key });
+    expect(wrapper.findAll('[role="option"]')).toHaveLength(2);
+    expect(wrapper.findAll('[role="group"]')).toHaveLength(1);
+    await wrapper.find('[role="combobox"]').trigger('keydown', { key: 'Enter' });
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['America/Chicago']);
+    await wrapper.setProps({ modelValue: 'America/Chicago' });
+    expect(wrapper.find('[role="combobox"]').text()).toContain('🇺🇸');
+    expect(wrapper.find('[role="combobox"]').text()).toContain('United States');
+    await wrapper.find('[role="combobox"]').trigger('click');
+    for (const key of 'brazil') await wrapper.find('[role="combobox"]').trigger('keydown', { key });
+    expect(wrapper.findAll('[role="option"]')).toHaveLength(1);
+    expect(wrapper.find('[role="option"]').text()).toContain('America/Sao Paulo');
+    wrapper.unmount();
+  });
+
+  it('navigates across group headings without selecting them', async () => {
+    const wrapper = mount(AppSelect, {
+      props: {
+        modelValue: 'a',
+        label: 'Group navigation',
+        options: [
+          { label: 'A', value: 'a', group: 'First' },
+          { label: 'B', value: 'b', group: 'Second' },
+        ],
+      },
+    });
+    await wrapper.find('[role="combobox"]').trigger('click');
+    await wrapper.find('[role="combobox"]').trigger('keydown', { key: 'ArrowDown' });
+    await wrapper.find('[role="combobox"]').trigger('keydown', { key: 'Enter' });
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['b']);
+    wrapper.unmount();
+  });
 });

@@ -136,7 +136,7 @@ Prefer the browser? The app also runs as a static website — see [Building the 
 **Date Utilities**
 
 - Timestamp Converter builds dates from parts, picks dates with a custom themed picker, parses timestamps, and converts common timestamp formats.
-- Time Zone Converter compares an editable local time across UTC, US, and additional world zones with compact day bars, country-flag chips, and DST-aware dates. The clock defaults to your locale with a 12/24-hour toggle; arrows step 15 minutes. Add zones from the toolbar dialog or remove rows with × (your own zone stays). Status dots show business hours (8 AM–5 PM), within one hour (7–8 AM or 5–6 PM), or outside those hours, based on each zone's time every day. Missing DST times are rejected, and repeated times use the earlier occurrence.
+- Time Zone Converter compares an editable local time across UTC, US, and additional world zones with compact day bars, country-flag chips, and DST-aware dates. Both pickers show UTC first, then alphabetized country groups and zone names; search by country, city, or zone. Rows show hours/minutes ahead of or behind the selected local zone. The clock defaults to your locale with a 12/24-hour toggle; arrows step 15 minutes. Add zones from the toolbar dialog or remove rows with × (your own zone stays). Status dots show business hours (8 AM–5 PM), within one hour (7–8 AM or 5–6 PM), or outside those hours, based on each zone's time every day. Missing DST times are rejected, and repeated times use the earlier occurrence.
 - Cron Builder/Parser builds and explains cron schedules with upcoming local run times.
 
 **Miscellaneous**
@@ -150,6 +150,8 @@ Prefer the browser? The app also runs as a static website — see [Building the 
 ## Development
 
 Want to run it from source, or contribute a change? Here's what you need.
+
+See the [form control style guide](docs/style-guide.md) for reusable select examples, including grouped country/flag options.
 
 ### Prerequisites
 

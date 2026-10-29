@@ -13,6 +13,10 @@ const props = defineProps<{
   options: Array<{
     label: string;
     value: T;
+    group?: string;
+    leadingText?: string;
+    description?: string;
+    keywords?: string[];
   }>;
 }>();
 
@@ -25,16 +29,39 @@ const isOpen = ref(false);
 const activeIndex = ref(0);
 const opensAbove = ref(false);
 const searchQuery = ref('');
-const selectedOption = computed(() => props.options.find((option) => option.value === props.modelValue) ?? { label: props.modelValue, value: props.modelValue });
+const selectedOption = computed(
+  () => props.options.find((option) => option.value === props.modelValue) ?? { label: props.modelValue, value: props.modelValue },
+);
 const longestOptionLength = computed(() => Math.max(...props.options.map((option) => option.label.length), props.label.length));
-const minimumWidth = computed(() => `${Math.max(10.5, longestOptionLength.value * 0.58 + 3.5)}rem`);
+const minimumWidth = computed(
+  () => `${Math.max(10.5, Math.min(props.options.some((option) => option.description) ? 24 : Infinity, longestOptionLength.value * 0.58 + 3.5))}rem`,
+);
 const filteredOptions = computed(() => {
   const normalizedQuery = searchQuery.value.trim().toLowerCase();
   if (!normalizedQuery) return props.options;
 
+  const metadataMatches = props.options.filter((option) =>
+    [option.group, option.description, ...(option.keywords ?? [])].some((text) => text?.toLowerCase() === normalizedQuery),
+  );
+  if (metadataMatches.length) return metadataMatches;
+
   return props.options.filter((option) => {
-    return option.label.toLowerCase().includes(normalizedQuery) || option.value.toLowerCase().includes(normalizedQuery);
+    return [option.label, option.value, option.group, option.description, ...(option.keywords ?? [])].some((text) =>
+      text?.toLowerCase().includes(normalizedQuery),
+    );
   });
+});
+const optionGroups = computed(() => {
+  const groups: Array<{ label?: string; options: Array<{ option: (typeof props.options)[number]; index: number }> }> = [];
+  filteredOptions.value.forEach((option, index) => {
+    let group = groups.at(-1);
+    if (!group || group.label !== option.group) {
+      group = { label: option.group, options: [] };
+      groups.push(group);
+    }
+    group.options.push({ option, index });
+  });
+  return groups;
 });
 
 watch(filteredOptions, (options) => {
@@ -59,7 +86,10 @@ function toggleOpen(): void {
 }
 
 function openMenu(): void {
-  activeIndex.value = Math.max(0, props.options.findIndex((option) => option.value === props.modelValue));
+  activeIndex.value = Math.max(
+    0,
+    props.options.findIndex((option) => option.value === props.modelValue),
+  );
   isOpen.value = true;
   void updateMenuPlacement();
 }
@@ -148,7 +178,12 @@ async function updateMenuPlacement(): Promise<void> {
 </script>
 
 <template>
-  <div ref="root" class="form-select" :class="{ 'form-select--open': isOpen, 'form-select--above': opensAbove, 'form-control--label-hidden': hideLabel }" :style="{ '--select-min-width': minimumWidth }">
+  <div
+    ref="root"
+    class="form-select"
+    :class="{ 'form-select--open': isOpen, 'form-select--above': opensAbove, 'form-control--label-hidden': hideLabel }"
+    :style="{ '--select-min-width': minimumWidth }"
+  >
     <span class="form-control__label-row" :class="{ 'form-control__label-row--hidden': hideLabel }">
       <span class="form-control__label-text">{{ label }}</span>
       <HelpPopover v-if="description" :text="description" :label="`${label} help`" />
@@ -167,25 +202,43 @@ async function updateMenuPlacement(): Promise<void> {
       @click="toggleOpen"
       @keydown="handleKeydown"
     >
-      <span>{{ selectedOption?.label }}</span>
+      <span class="form-select__selection"
+        ><span v-if="selectedOption.leadingText" class="form-select__leading" aria-hidden="true">{{ selectedOption.leadingText }}</span
+        ><span class="form-select__selection-label"
+          >{{ selectedOption.label }}<template v-if="selectedOption.description"> · {{ selectedOption.description }}</template></span
+        ></span
+      >
       <span class="form-select__chevron" aria-hidden="true" />
     </button>
     <div v-if="isOpen" class="form-select__menu" role="listbox">
       <div v-if="searchQuery" class="form-select__search-hint">{{ searchQuery }}</div>
-      <button
-        v-for="(option, index) in filteredOptions"
-        :key="option.value"
-        type="button"
-        class="form-select__option"
-        :class="{ 'form-select__option--selected': option.value === modelValue, 'form-select__option--active': index === activeIndex }"
-        role="option"
-        :aria-selected="option.value === modelValue"
-        :data-value="option.value"
-        @mouseenter="activeIndex = index"
-        @click="selectOption(option.value)"
+      <div
+        v-for="(group, groupIndex) in optionGroups"
+        :key="groupIndex"
+        :role="group.label ? 'group' : undefined"
+        :aria-label="group.label"
+        class="form-select__group"
       >
-        {{ option.label }}
-      </button>
+        <div v-if="group.label" class="form-select__group-label" aria-hidden="true">{{ group.label }}</div>
+        <button
+          v-for="{ option, index } in group.options"
+          :key="option.value"
+          type="button"
+          class="form-select__option"
+          :class="{ 'form-select__option--selected': option.value === modelValue, 'form-select__option--active': index === activeIndex }"
+          role="option"
+          :aria-selected="option.value === modelValue"
+          :data-value="option.value"
+          @mouseenter="activeIndex = index"
+          @click="selectOption(option.value)"
+        >
+          <span v-if="option.leadingText" class="form-select__leading" aria-hidden="true">{{ option.leadingText }}</span>
+          <span class="form-select__option-content"
+            ><span>{{ option.label }}</span
+            ><span v-if="option.description" class="form-select__description">{{ option.description }}</span></span
+          >
+        </button>
+      </div>
       <div v-if="!filteredOptions.length" class="form-select__empty">No matching options</div>
     </div>
   </div>

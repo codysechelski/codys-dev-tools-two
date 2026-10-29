@@ -16,6 +16,7 @@ import {
   parseTime,
   prefers24Hour,
   resolveWallTime,
+  relativeZoneOffset,
   stepWallTime,
   zonedParts,
   zoneDisplay,
@@ -48,6 +49,7 @@ const rows = computed(() =>
           time: formatClock(display.minutes, use24Hour.value),
           country: zoneCountry(canonicalZone(zone.zone)),
           business: businessHoursStatus(display.minutes),
+          offset: relativeZoneOffset(result.value.instant!, zone.zone, localZone.value),
           timeline: zoneTimeline(result.value.instant!, zone.zone),
         };
       }),
@@ -141,13 +143,18 @@ function now(): void {
           >
             <span>{{ segment.date.slice(5) }}</span>
           </div>
-          <span v-for="tick in row.timeline.ticks" :key="tick.position" class="time-zone-converter__tick" :style="{ left: `${tick.position * 100}%` }">{{
-            formatClock(tick.minutes, use24Hour)
-          }}</span>
+          <span
+            v-for="tick in row.timeline.ticks.filter((_, index) => use24Hour || index % 2 === 0)"
+            :key="tick.position"
+            class="time-zone-converter__tick"
+            :style="{ left: `${tick.position * 100}%` }"
+            >{{ formatClock(tick.minutes, use24Hour) }}</span
+          >
           <span class="time-zone-converter__selected" aria-hidden="true" />
         </div>
         <div class="time-zone-converter__reading">
           <strong>{{ row.time }}</strong
+          ><span class="time-zone-converter__offset" :title="`Compared with ${localZone}`">{{ row.offset }}</span
           ><span>{{ row.date }} · {{ row.dayLabel }}</span>
         </div>
         <div class="time-zone-converter__remove">

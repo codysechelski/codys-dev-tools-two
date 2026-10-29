@@ -9,6 +9,7 @@ import {
   parseTime,
   prefers24Hour,
   resolveWallTime,
+  relativeZoneOffset,
   stepWallTime,
   zoneDisplay,
   zoneTimeline,
@@ -71,6 +72,37 @@ describe('time zone converter', () => {
     expect(zoneCountry(canonicalZone('Asia/Kathmandu')).flag).toBe('🇳🇵');
     expect(zoneCountry(canonicalZone('Europe/London')).flag).toBe('🇬🇧');
     expect(zoneCountry('UTC').flag).toBe('🌐');
+  });
+
+  it('puts UTC first, then alphabetizes countries and their zone names with flags/search metadata', () => {
+    const options = getZoneOptions('America/Chicago');
+    expect(options[0]).toMatchObject({ value: 'UTC', leadingText: '🌐', group: undefined });
+    const countries = options.slice(1).map(({ group }) => group!);
+    expect(countries).toEqual([...countries].sort(new Intl.Collator().compare));
+    for (const country of new Set(countries)) {
+      const labels = options.filter(({ group }) => group === country).map(({ label }) => label);
+      expect(labels).toEqual([...labels].sort(new Intl.Collator().compare));
+    }
+    expect(options.filter(({ group }) => group === 'Brazil').length).toBeGreaterThan(10);
+    expect(options.find(({ value }) => value === 'America/Chicago')).toMatchObject({
+      group: 'United States',
+      description: 'United States',
+      leadingText: '🇺🇸',
+      keywords: expect.arrayContaining(['US', 'USA']),
+    });
+  });
+
+  it('compares offsets to the selected zone with DST, minutes, and date-line differences', () => {
+    const summer = Date.parse('2026-07-01T01:00Z');
+    const winter = Date.parse('2026-01-01T01:00Z');
+    expect(relativeZoneOffset(summer, 'America/Los_Angeles', 'America/Chicago')).toBe('2h behind');
+    expect(relativeZoneOffset(summer, 'Asia/Kathmandu', 'UTC')).toBe('5h 45m ahead');
+    expect(relativeZoneOffset(summer, 'UTC', 'Asia/Kathmandu')).toBe('5h 45m behind');
+    expect(relativeZoneOffset(summer, 'Asia/Kolkata', 'Asia/Kathmandu')).toBe('15m behind');
+    expect(relativeZoneOffset(summer, 'Pacific/Kiritimati', 'Pacific/Honolulu')).toBe('24h ahead');
+    expect(relativeZoneOffset(summer, 'America/New_York', 'America/Lima')).toBe('1h ahead');
+    expect(relativeZoneOffset(winter, 'America/New_York', 'America/Lima')).toBe('Same time');
+    expect(relativeZoneOffset(summer, 'UTC', 'UTC')).toBe('Same time');
   });
 
   it('steps 15 minutes across date, month, year, and leap-day boundaries', () => {

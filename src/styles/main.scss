@@ -1802,6 +1802,8 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
 .form-select__option {
   display: flex;
   align-items: center;
+  gap: var(--space-2);
+  width: 100%;
   min-height: 2.15rem;
   border: 0;
   border-radius: var(--radius-md);
@@ -1812,6 +1814,52 @@ body[data-theme='light'] .unicode-attribute + .unicode-attribute {
   font: inherit;
   text-align: left;
   white-space: nowrap;
+}
+
+.form-select__selection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.form-select__selection-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.form-select__leading {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.form-select__group-label {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: var(--select-description-size);
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.form-select__option-content {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0;
+}
+
+.form-select__option:has(.form-select__description) {
+  padding-block: var(--space-2);
+}
+
+.form-select__description {
+  font-size: var(--select-description-size);
+  opacity: 0.8;
 }
 
 .form-select__option--active,

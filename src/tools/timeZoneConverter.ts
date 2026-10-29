@@ -1,3 +1,5 @@
+import { zoneCountry } from './timeZoneCountries';
+
 const MINUTE = 60_000;
 const DAY = 1440 * MINUTE;
 const formatters = new Map<string, Intl.DateTimeFormat>();
@@ -16,10 +18,32 @@ export function canonicalZone(zone: string): string {
   return new Intl.DateTimeFormat('en', { timeZone: zone }).resolvedOptions().timeZone;
 }
 
-export function getZoneOptions(localZone: string): Array<{ label: string; value: string }> {
+export function getZoneOptions(localZone: string) {
   const intl = Intl as typeof Intl & { supportedValuesOf?: (key: string) => string[] };
   const zones = [localZone, ...defaultZones.map(({ zone }) => zone), ...(intl.supportedValuesOf?.('timeZone') ?? [])];
-  return [...new Set(zones.map(canonicalZone))].sort().map((zone) => ({ label: zone.replaceAll('_', ' '), value: zone }));
+  const collator = new Intl.Collator();
+  const englishCountries = new Intl.DisplayNames('en', { type: 'region' });
+  return [...new Set(zones.map(canonicalZone))]
+    .map((zone) => {
+      const country = zoneCountry(zone);
+      return {
+        label: zone.replaceAll('_', ' '),
+        value: zone,
+        leadingText: country.flag,
+        description: zone === 'UTC' ? 'Coordinated Universal Time' : country.name,
+        group: zone === 'UTC' ? undefined : country.name,
+        keywords: [
+          country.code,
+          country.code ? (englishCountries.of(country.code) ?? '') : '',
+          ...(country.code === 'US' ? ['USA', 'United States of America'] : []),
+        ],
+      };
+    })
+    .sort((a, b) => {
+      if (a.value === 'UTC') return -1;
+      if (b.value === 'UTC') return 1;
+      return collator.compare(a.group ?? '', b.group ?? '') || collator.compare(a.label, b.label);
+    });
 }
 
 export function composeZones(localZone: string, added: string[] = []) {
@@ -114,6 +138,16 @@ export function zonedParts(instant: number, zone: string): { date: string; minut
 function wallValue(instant: number, zone: string): number {
   const parts = zonedParts(instant, zone);
   return Date.parse(`${parts.date}T00:00:00Z`) + parts.minutes * MINUTE;
+}
+
+export function relativeZoneOffset(instant: number, zone: string, referenceZone: string): string {
+  // Include calendar dates so offsets across midnight aren't wrapped to 0–24 hours.
+  const difference = Math.round((wallValue(instant, zone) - wallValue(instant, referenceZone)) / MINUTE);
+  if (difference === 0) return 'Same time';
+  const hours = Math.floor(Math.abs(difference) / 60);
+  const minutes = Math.abs(difference) % 60;
+  const parts = [hours ? `${hours}h` : '', minutes ? `${minutes}m` : ''].filter(Boolean);
+  return `${parts.join(' ')} ${difference > 0 ? 'ahead' : 'behind'}`;
 }
 
 // Probe both sides of a transition, then round-trip candidates. Gaps are rejected;

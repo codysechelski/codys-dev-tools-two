@@ -252,7 +252,7 @@ ZW Africa/Harare
 
 let countries: Map<string, string> | undefined;
 
-export function zoneCountry(zone: string): { flag: string; name: string } {
+export function zoneCountry(zone: string): { flag: string; name: string; code: string } {
   if (!countries) {
     countries = new Map();
     for (const line of territories.trim().split('\n')) {
@@ -270,8 +270,9 @@ export function zoneCountry(zone: string): { flag: string; name: string } {
   const country = countries.get(zone);
   return country
     ? {
+        code: country,
         flag: String.fromCodePoint(...[...country].map((letter) => 0x1f1e6 + letter.charCodeAt(0) - 65)),
         name: new Intl.DisplayNames(undefined, { type: 'region' }).of(country) ?? country,
       }
-    : { flag: '🌐', name: 'Global time' };
+    : { flag: '🌐', name: 'Global time', code: '' };
 }
