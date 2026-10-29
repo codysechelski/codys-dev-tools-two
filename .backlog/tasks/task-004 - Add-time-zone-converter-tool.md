@@ -1,9 +1,9 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
 updated_date: '2026-10-29 16:40'
 labels:
@@ -105,6 +105,8 @@ Country grouping / readability follow-up complete. Both pickers now show flag ch
 Country-grouping/offset/readability follow-up committed as Cody in c178c14. Integrated the automated 0.45.0 changelog update without overwriting it; returning to Ready for Testing. Re-work label retained until Done.
 
 Remember-input follow-up verified: uses existing usePersistedToolState with only localZone/use24Hour/addedZones/removedZones. Date/time initialize after synchronous restoration and recompute after delayed hydration; ordinary local-zone edits still preserve entered wall time. Current-zone row remains protected if machine zone changes between sessions. 55 targeted tests pass: npm test -- src/tools/timeZoneConverterPersistence.test.ts src/tools/timeZoneConverterComponent.test.ts src/tools/timeZoneConverter.test.ts src/toolState.test.ts. Includes session remount, forever disk/restart, delayed state load, never mode, disabling remembering, year/day rollover in restored zone, and snapshot field exclusions. Actual Chromium smoke passes Settings-driven Session/Forever/Never navigation and reload policies, saved zone/format/add-remove choices, and fresh date/time in restored zone. npm run build passes types/web/Electron (existing chunk warning only); Prettier and git diff --check pass. Small converter-only change uses targeted scope; configured verify-task profiles still reference missing test:unit, so documented direct commands used. README updated; AGENTS reviewed and no additional change needed. Version 0.46.1.
+
+Persistence follow-up committed as Cody in cd54b8a. Integrated the automated 0.46.0 changelog update and returning to Ready for Testing; re-work label retained until Done.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
