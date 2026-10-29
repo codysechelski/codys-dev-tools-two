@@ -1,9 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: To Do
-assignee: []
+status: In Progress
+assignee:
+  - '@opencode'
 created_date: '2026-10-29 15:48'
+updated_date: '2026-10-29 15:53'
 labels: []
 dependencies: []
 type: feature
