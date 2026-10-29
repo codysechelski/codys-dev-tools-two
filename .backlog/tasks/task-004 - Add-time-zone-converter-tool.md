@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:16'
+updated_date: '2026-10-29 16:18'
 labels:
   - re-work
 dependencies: []
@@ -35,7 +35,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #10 Unit tests cover time parsing and formatting, 15-minute stepping, zone list composition, and day-boundary/DST handling
 - [x] #11 The primary time input has no visible label, is centered inline with both arrows, and does not overlap subsequent content
 - [x] #12 Compact time zone rows use Gantt-like day bars, country-flag chips, and removal controls for all non-current zones
-- [ ] #13 Add time zone is in the top toolbar and opens a correctly themed modal containing the searchable zone select
+- [x] #13 Add time zone is in the top toolbar and opens a correctly themed modal containing the searchable zone select
 - [x] #14 Clock formatting defaults to the user's locale, with a toolbar toggle switching the input and row times between 12 and 24 hours without changing the selected instant
 - [x] #15 Each row has an accessible live business-hours dot: green 08:00–17:00, yellow 07:00–08:00 and 17:00–18:00, red otherwise
 <!-- AC:END -->
@@ -85,10 +85,12 @@ Browser verification passed using temporary Playwright installation outside the 
 Implementation committed as Cody in c6a7900 (feat: add DST-aware time zone converter). No architecture changes or new reusable UI, so no approval/style-guide additions needed. Documentation is covered by README; no standalone docs needed. Ready for Cody's review.
 
 Rework: 41 focused tests now pass, including locale format round-trips (US/GB/German/Arabic/Korean/Finnish), all business-hour boundaries, flags/aliases, bar segments, modal add/remove and restoring default rows. Chromium smoke passes for en-US and en-GB defaults, format switching, field/button alignment, modal add/remove, flags, day bars, and desktop/compact layouts. Screenshot review caught missing light-theme select styling in Teleported modal; shared light selectors extended, final theme rerun pending.
+
+Final rework verification: npm test passes all 83 files / 628 tests, including 41 focused converter/toggle tests. npm run build passes typecheck, web and Electron builds (existing bundle-size advisory only). Temporary Playwright smoke passes en-US/en-GB locale defaults, 12/24-hour toggle instant preservation, exact field/arrow vertical-center assertions, modal searchable picker and clipping checks, adding/removing zones and defaults, flag chips, day bars, and light/dark + compact layouts; light modal menu/selected colors asserted and screenshots reviewed. Prettier check for new/rewritten converter files and git diff --check pass. Verification profiles still reference nonexistent test:unit; explicit commands used instead. README updated with clock modes, removal, bars and daily business-hour thresholds; AGENTS reviewed, no update needed. Version 0.45.0. Country/territory mapping is bundled public-domain IANA zone.tab data; no runtime dependencies added.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Added offline Time Zone Converter under Date Utilities with editable wall time/date, 15-minute arrows, own-zone/UTC/US defaults, searchable add/remove zones, and aligned midnight timelines. DST gaps are rejected and overlaps explicitly use the earlier occurrence. All 10 acceptance criteria verified: 53 focused/related tests, Chromium interaction/theme/compact-layout smoke, typecheck, web/Electron builds, Prettier, and diff checks passed. README and app version updated to 0.44.0.
+Revised Time Zone Converter per review: unlabeled, correctly centered large time input with no overflow; compact Gantt-style day bars and flag chips; toolbar Add time zone modal; removal of non-current zones; locale-default 12/24-hour toggle; accessible green/yellow/red business-hours dots (08–17 business, 07–08/17–18 near). Fixed Teleported modal select light-theme states. All 15 acceptance criteria verified; 628 tests, web/Electron build, Chromium US/GB theme/layout/interactions, formatting and diff checks pass.
 <!-- SECTION:FINAL_SUMMARY:END -->
