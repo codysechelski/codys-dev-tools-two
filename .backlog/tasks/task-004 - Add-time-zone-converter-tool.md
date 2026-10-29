@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 17:06'
+updated_date: '2026-10-29 17:09'
 labels:
   - re-work
 dependencies: []
@@ -42,6 +42,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
 - [x] #18 All zone-row text is larger and remains readable in both themes and compact layouts
 - [x] #19 Local zone, 12/24-hour preference, and added/removed zones honor Remember tool input in session/forever/never modes; date and time always initialize to now in the restored local zone on entry, including delayed state loading
+- [ ] #20 The Date field uses the existing themed calendar/date picker with direct date entry, preserves selected wall dates across zones and DST, and still resets to now instead of persisting
 <!-- AC:END -->
 
 ## Definition of Done
