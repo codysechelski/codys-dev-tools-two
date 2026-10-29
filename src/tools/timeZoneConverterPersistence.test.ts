@@ -44,7 +44,8 @@ async function customize(wrapper: VueWrapper) {
   return { removedLabel, use24Hour };
 }
 
-function expectFreshTime(wrapper: VueWrapper, zone: string, use24Hour: boolean) {
+async function expectFreshTime(wrapper: VueWrapper, zone: string, use24Hour: boolean) {
+  await nextTick();
   const parts = zonedParts(Date.now(), zone);
   expect(wrapper.find('input[placeholder="YYYY-MM-DD"]').element.value).toBe(parts.date);
   expect(wrapper.find('.time-zone-converter__time input').element.value).toBe(formatClock(parts.minutes, use24Hour));
@@ -71,7 +72,7 @@ describe('Time Zone Converter remembered preferences', () => {
 
     vi.setSystemTime(new Date('2026-07-02T23:55Z'));
     const second = openTool();
-    expectFreshTime(second, 'Asia/Tokyo', use24Hour);
+    await expectFreshTime(second, 'Asia/Tokyo', use24Hour);
     expect(second.find(`button[aria-label="${removedLabel}"]`).exists()).toBe(false);
     expect(second.find('button[aria-label^="Remove Asia/Kat"]').exists()).toBe(true);
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
@@ -96,7 +97,7 @@ describe('Time Zone Converter remembered preferences', () => {
     await initToolState(false);
     toolStateMode.value = 'forever';
     const second = openTool();
-    expectFreshTime(second, 'Asia/Tokyo', use24Hour);
+    await expectFreshTime(second, 'Asia/Tokyo', use24Hour);
     expect(second.find(`button[aria-label="${removedLabel}"]`).exists()).toBe(false);
     expect(second.find('button[aria-label^="Remove Asia/Kat"]').exists()).toBe(true);
   });
@@ -121,7 +122,7 @@ describe('Time Zone Converter remembered preferences', () => {
     const wrapper = openTool();
     await initToolState(false);
     await nextTick();
-    expectFreshTime(wrapper, 'Asia/Tokyo', true);
+    await expectFreshTime(wrapper, 'Asia/Tokyo', true);
     await wrapper.find('.time-zone-converter__time input').setValue('09:00');
     wrapper.findAllComponents(AppSelect)[0]!.vm.$emit('update:modelValue', 'UTC');
     await nextTick();
@@ -138,7 +139,7 @@ describe('Time Zone Converter remembered preferences', () => {
     await customize(first);
     closeTool(first);
     const second = openTool();
-    expectFreshTime(second, canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone), prefers24Hour());
+    await expectFreshTime(second, canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone), prefers24Hour());
     expect(second.findAll('.time-zone-converter__row')).toHaveLength(count);
     expect(second.find('button[aria-label^="Remove Asia/Kat"]').exists()).toBe(false);
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
@@ -152,7 +153,7 @@ describe('Time Zone Converter remembered preferences', () => {
     closeTool(first);
     await setRememberToolInputMode('never', false);
     const second = openTool();
-    expectFreshTime(second, canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone), prefers24Hour());
+    await expectFreshTime(second, canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone), prefers24Hour());
     expect(second.find('button[aria-label^="Remove Asia/Kat"]').exists()).toBe(false);
   });
 });

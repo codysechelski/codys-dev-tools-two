@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import AppButton from '@/components/AppButton.vue';
 import AppModal from '@/components/AppModal.vue';
 import AppSelect from '@/components/forms/AppSelect.vue';
@@ -105,7 +106,24 @@ function now(): void {
 <template>
   <div class="time-zone-converter">
     <ToolToolbar>
-      <AppTextInput v-model="date" label="Date" placeholder="YYYY-MM-DD" />
+      <div class="timestamp-picker-row time-zone-converter__date">
+        <label class="timestamp-picker-field">
+          <span>Date</span>
+          <VueDatePicker
+            v-model="date"
+            model-type="yyyy-MM-dd"
+            :formats="{ input: 'yyyy-MM-dd' }"
+            auto-apply
+            :text-input="{ format: 'yyyy-MM-dd', selectOnFocus: true, openMenu: 'open', enterSubmit: true, tabSubmit: true }"
+            :time-config="{ enableTimePicker: false }"
+            :dark="true"
+            :teleport="false"
+            :aria-labels="{ input: 'Date' }"
+            :input-attrs="{ autocomplete: 'off', clearable: false, hideInputIcon: true }"
+            placeholder="YYYY-MM-DD"
+          />
+        </label>
+      </div>
       <AppSelect v-model="localZone" label="Local zone" :options="zoneOptions" />
       <AppToggle v-model="use24Hour" label="24-hour time" />
       <AppButton variant="field" @click="now">Now</AppButton>
@@ -198,6 +216,10 @@ function now(): void {
   container-type: inline-size;
   --zone-muted: color-mix(in srgb, var(--app-text) 65%, transparent);
   --zone-border: color-mix(in srgb, var(--app-text) 18%, transparent);
+  &__date {
+    grid-template-columns: minmax(0, 1fr);
+    width: var(--zone-date-width);
+  }
   &__primary {
     display: flex;
     align-items: center;

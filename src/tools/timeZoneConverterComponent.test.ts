@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AppSelect from '@/components/forms/AppSelect.vue';
 import AppModal from '@/components/AppModal.vue';
@@ -143,6 +144,24 @@ describe('TimeZoneConverter', () => {
     await wrapper.vm.$nextTick();
     expect(pacific().find('.time-zone-converter__offset').text()).toBe('2h behind');
     expect(localSelect.props('options')[0]).toMatchObject({ value: 'UTC' });
+    wrapper.unmount();
+  });
+
+  it('uses the themed date-only picker and keeps picked dates independent of the system zone', async () => {
+    const wrapper = mount(TimeZoneConverter);
+    const picker = wrapper.findComponent(VueDatePicker);
+    expect(picker.props('modelType')).toBe('yyyy-MM-dd');
+    expect(picker.props('formats')).toMatchObject({ input: 'yyyy-MM-dd' });
+    expect(picker.props('timeConfig')).toMatchObject({ enableTimePicker: false });
+    expect(picker.props('inputAttrs')).toMatchObject({ clearable: false });
+    wrapper.findAllComponents(AppSelect)[0]!.vm.$emit('update:modelValue', 'America/New_York');
+    await wrapper.find('.time-zone-converter__time input').setValue('09:00');
+    picker.vm.$emit('update:model-value', '2026-03-08');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('input[placeholder="YYYY-MM-DD"]').element.value).toBe('2026-03-08');
+    expect(wrapper.find('.time-zone-converter__time input').element.value).toBe('09:00');
+    const utc = wrapper.findAll('.time-zone-converter__row').find((row) => row.find('strong').text() === 'UTC')!;
+    expect(utc.text()).toContain(formatClock(13 * 60, prefers24Hour()));
     wrapper.unmount();
   });
 });
