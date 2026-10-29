@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 15:56'
+updated_date: '2026-10-29 15:59'
 labels: []
 dependencies: []
 type: feature
@@ -22,7 +22,7 @@ The tool should center on one large, editable time field so a developer can set 
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A new Time Zone Converter tool appears in the Date Utilities section of the tools list with a compact heading, body-copy instructions, and sidebar search keywords covering time zone, world clock, and UTC
+- [x] #1 A new Time Zone Converter tool appears in the Date Utilities section of the tools list with a compact heading, body-copy instructions, and sidebar search keywords covering time zone, world clock, and UTC
 - [x] #2 On open, the primary time field shows the current time in the user's own time zone and the local zone select defaults to the user's current time zone
 - [x] #3 The primary time field accepts typed input and has left and right arrow buttons that step the time by 15 minutes; invalid typed input is rejected or clearly indicated instead of silently changing the time
 - [x] #4 Changing the local zone select keeps the entered wall-clock time (9:00 stays 9:00) and relabels it for the new zone, and any change to the time or zone updates every zone row immediately
@@ -30,7 +30,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #6 A plus control adds further time zones to the rows, and zones added that way can be removed again
 - [x] #7 Displayed times honor daylight saving for the selected date, including zones that do not observe DST and added zones with non-hour offsets
 - [x] #8 Each row indicates its date and where day boundaries fall, so a selected time that lands on a different day in another zone is obvious without dragging or reading raw offsets
-- [ ] #9 The tool is correct in both light and dark themes, with hover, focus, and selected states styled from shared tokens rather than hardcoded colors
+- [x] #9 The tool is correct in both light and dark themes, with hover, focus, and selected states styled from shared tokens rather than hardcoded colors
 - [x] #10 Unit tests cover time parsing and formatting, 15-minute stepping, zone list composition, and day-boundary/DST handling
 <!-- AC:END -->
 
@@ -69,4 +69,6 @@ The tool should center on one large, editable time field so a developer can set 
 
 <!-- SECTION:NOTES:BEGIN -->
 25 focused helper/component tests pass; vue-tsc passes. Covers current local defaults, wall-time preservation, invalid inputs, stepping/year rollover, zone aliases/deduplication, adding/removing rows, DST gaps/overlaps, non-DST and fractional offsets, and midnight placement. Verification profiles invoke nonexistent npm run test:unit, so using focused npm test plus explicit typecheck/build instead; Playwright is not installed in the project. Theme/browser review and registry smoke coverage remain.
+
+Browser verification passed using temporary Playwright installation outside the repository: sidebar searches time zone/world clock/UTC, navigation/heading, own-zone deduplication, midnight stepping, real searchable add/remove controls, light/dark theme switching, focus/hover colors, and no page errors. Screenshots reviewed at 1280px and 900px. 53 tests pass via npm test -- src/tools/timeZoneConverter.test.ts src/tools/timeZoneConverterComponent.test.ts src/App.test.ts src/components/AppSidebar.test.ts. npm run build passes (typecheck + web + Electron; only existing bundle-size warning). Prettier check passes for all new source/test files; git diff --check passes. No lint script/config exists. README updated; AGENTS.md reviewed and needs no change. Version bumped to 0.44.0. No runtime dependencies or reusable components added.
 <!-- SECTION:NOTES:END -->
