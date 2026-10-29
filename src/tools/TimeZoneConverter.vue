@@ -6,6 +6,7 @@ import AppSelect from '@/components/forms/AppSelect.vue';
 import AppTextInput from '@/components/forms/AppTextInput.vue';
 import AppToggle from '@/components/forms/AppToggle.vue';
 import ToolToolbar from '@/components/ToolToolbar.vue';
+import { isToolStateReady, usePersistedToolState } from '@/toolState';
 import { zoneCountry } from './timeZoneCountries';
 import {
   businessHoursStatus,
@@ -25,16 +26,25 @@ import {
 
 const ownZone = canonicalZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
 const use24Hour = ref(prefers24Hour());
-const initial = zonedParts(Date.now(), ownZone);
-const date = ref(initial.date);
-const time = ref(formatClock(initial.minutes, use24Hour.value));
 const localZone = ref(ownZone);
 const addedZones = ref<string[]>([]);
 const removedZones = ref<string[]>([]);
+
+// Restore preferences before choosing "now"; never restore a stale date/time.
+usePersistedToolState('time-zone-converter', { localZone, use24Hour, addedZones, removedZones });
+const initial = zonedParts(Date.now(), localZone.value);
+const date = ref(initial.date);
+const time = ref(formatClock(initial.minutes, use24Hour.value));
+// Forever state can finish loading after the tool has already mounted.
+watch(isToolStateReady, (ready) => {
+  if (ready) now();
+});
 const showAddZone = ref(false);
 const zoneOptions = getZoneOptions(ownZone);
 const result = computed(() => resolveWallTime(date.value, time.value, localZone.value));
-const zones = computed(() => composeZones(ownZone, addedZones.value).filter(({ zone }) => !removedZones.value.includes(canonicalZone(zone))));
+const zones = computed(() =>
+  composeZones(ownZone, addedZones.value).filter(({ zone, current }) => current || !removedZones.value.includes(canonicalZone(zone))),
+);
 const availableZones = computed(() => zoneOptions.filter(({ value }) => !zones.value.some(({ zone }) => canonicalZone(zone) === value)));
 const addZone = ref(availableZones.value[0]?.value ?? 'UTC');
 const rows = computed(() =>
