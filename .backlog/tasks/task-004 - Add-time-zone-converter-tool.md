@@ -1,9 +1,9 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
 updated_date: '2026-10-29 16:18'
 labels:
@@ -87,6 +87,8 @@ Implementation committed as Cody in c6a7900 (feat: add DST-aware time zone conve
 Rework: 41 focused tests now pass, including locale format round-trips (US/GB/German/Arabic/Korean/Finnish), all business-hour boundaries, flags/aliases, bar segments, modal add/remove and restoring default rows. Chromium smoke passes for en-US and en-GB defaults, format switching, field/button alignment, modal add/remove, flags, day bars, and desktop/compact layouts. Screenshot review caught missing light-theme select styling in Teleported modal; shared light selectors extended, final theme rerun pending.
 
 Final rework verification: npm test passes all 83 files / 628 tests, including 41 focused converter/toggle tests. npm run build passes typecheck, web and Electron builds (existing bundle-size advisory only). Temporary Playwright smoke passes en-US/en-GB locale defaults, 12/24-hour toggle instant preservation, exact field/arrow vertical-center assertions, modal searchable picker and clipping checks, adding/removing zones and defaults, flag chips, day bars, and light/dark + compact layouts; light modal menu/selected colors asserted and screenshots reviewed. Prettier check for new/rewritten converter files and git diff --check pass. Verification profiles still reference nonexistent test:unit; explicit commands used instead. README updated with clock modes, removal, bars and daily business-hour thresholds; AGENTS reviewed, no update needed. Version 0.45.0. Country/territory mapping is bundled public-domain IANA zone.tab data; no runtime dependencies added.
+
+Rework committed as Cody in cd3add3 (feat: refine time zone comparison bars and locale clocks). Returning to Ready for Testing for review; re-work label retained until Done per workflow.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
