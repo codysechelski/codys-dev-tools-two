@@ -1,9 +1,9 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: In Progress
+status: Ready for Testing
 assignee:
-  - '@opencode'
+  - '@cody'
 created_date: '2026-10-29 15:48'
 updated_date: '2026-10-29 17:17'
 labels:
@@ -124,6 +124,8 @@ Moved row business-hours dots from beside the zone name to immediately left of t
 Dot-placement adjustment committed as Cody in 8520599; returning to Ready for Testing.
 
 Removed day-bar/center-line intro from the dot legend, right-aligned the remaining business-hours legend, and removed the arrow-step hint beneath the main time (zone name retained). Added copy regression assertions. Verification: all 9 converter component tests pass; npm run build:web passes typecheck/build; Chromium checks confirm flex-end legend alignment and removed text in light/dark at 1440px/900px. Prettier and git diff --check pass. Markup/style-only targeted scope; manual commands used because configured profiles reference missing test:unit. README/AGENTS reviewed: no changes needed for copy/alignment-only adjustment.
+
+Legend/hint cleanup committed as Cody in a69d486. Preserved automated 0.46.3 release updates; returning to Ready for Testing.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
