@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:10'
+updated_date: '2026-10-29 16:13'
 labels:
   - re-work
 dependencies: []
@@ -66,6 +66,8 @@ The tool should center on one large, editable time field so a developer can set 
 3. Verify component interactions, DST/day boundaries, types, builds, and formatting; record evidence and hand off for testing.
 
 Revise per review: unlabeled/aligned primary time; compact Gantt-style day bars and flag chips; toolbar add-zone modal and row removal; locale-default 12/24-hour formatting toggle. Extend tests and rerun browser/theme/build checks.
+
+Add accessible red/yellow/green business-hours dots based on each row's wall time: 08:00–17:00 business, 07:00–08:00 and 17:00–18:00 near, otherwise outside (daily, no weekday restriction requested).
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
