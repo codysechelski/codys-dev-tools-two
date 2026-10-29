@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:24'
+updated_date: '2026-10-29 16:27'
 labels:
   - re-work
 dependencies: []
@@ -38,6 +38,9 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #13 Add time zone is in the top toolbar and opens a correctly themed modal containing the searchable zone select
 - [x] #14 Clock formatting defaults to the user's locale, with a toolbar toggle switching the input and row times between 12 and 24 hours without changing the selected instant
 - [x] #15 Each row has an accessible live business-hours dot: green 08:00–17:00, yellow 07:00–08:00 and 17:00–18:00, red otherwise
+- [ ] #16 Both zone pickers show flags and searchable country names, with UTC first then alphabetized country groups and alphabetical zone names within each group
+- [ ] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
+- [ ] #18 All zone-row text is larger and remains readable in both themes and compact layouts
 <!-- AC:END -->
 
 ## Definition of Done
@@ -75,6 +78,8 @@ Revise per review: unlabeled/aligned primary time; compact Gantt-style day bars 
 Add accessible red/yellow/green business-hours dots based on each row's wall time: 08:00–17:00 business, 07:00–08:00 and 17:00–18:00 near, otherwise outside (daily, no weekday restriction requested).
 
 Extend shared AppSelect with optional country groups/leading flags and searchable country names; use for both zone pickers with UTC first and alphabetical countries/zone names. Add DST-aware row offsets relative to the selected local zone, with hours/minutes ahead or behind. Cover shared select compatibility, country search/sorting, offset logic, and browser/themes.
+
+Increase all zone-row typography (names/times 16px, secondary text 14px, bar ticks ~13px) and adjust widths/bar height and 12-hour tick density for readability.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
