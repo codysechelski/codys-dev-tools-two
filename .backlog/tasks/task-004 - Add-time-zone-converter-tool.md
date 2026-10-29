@@ -1,11 +1,11 @@
 ---
 id: TASK-004
 title: Add time zone converter tool
-status: Ready for Testing
+status: In Progress
 assignee:
-  - '@cody'
+  - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 17:14'
+updated_date: '2026-10-29 17:16'
 labels:
   - re-work
 dependencies: []
@@ -88,6 +88,8 @@ Persist local zone, 12/24-hour format, and added/removed zones using shared Reme
 Replace plain date input with the existing themed VueDatePicker pattern used by Timestamp Converter; preserve local-zone wall-date semantics, fresh-now initialization, and non-persistence of date/time. Update focused tests and verify picker interaction/themes.
 
 Move each business-hours status dot from the zone-name area to immediately left of the right-side time, preserving accessibility and status logic; verify component placement and responsive/theme alignment.
+
+Remove day-bar/center-line legend intro and arrow-step hint beneath time; right-align remaining business-hours dot legend. Verify text and layout.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
