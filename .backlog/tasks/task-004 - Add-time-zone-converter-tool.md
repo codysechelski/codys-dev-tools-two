@@ -5,7 +5,7 @@ status: In Progress
 assignee:
   - '@opencode'
 created_date: '2026-10-29 15:48'
-updated_date: '2026-10-29 16:38'
+updated_date: '2026-10-29 16:40'
 labels:
   - re-work
 dependencies: []
@@ -41,7 +41,7 @@ The tool should center on one large, editable time field so a developer can set 
 - [x] #16 Both zone pickers show flags and searchable country names, with UTC first then alphabetized country groups and alphabetical zone names within each group
 - [x] #17 Zone rows show DST-aware hours/minutes ahead of or behind the selected local zone, including fractional offsets and date-line crossings
 - [x] #18 All zone-row text is larger and remains readable in both themes and compact layouts
-- [ ] #19 Local zone, 12/24-hour preference, and added/removed zones honor Remember tool input in session/forever/never modes; date and time always initialize to now in the restored local zone on entry, including delayed state loading
+- [x] #19 Local zone, 12/24-hour preference, and added/removed zones honor Remember tool input in session/forever/never modes; date and time always initialize to now in the restored local zone on entry, including delayed state loading
 <!-- AC:END -->
 
 ## Definition of Done
@@ -103,10 +103,12 @@ Rework committed as Cody in cd3add3 (feat: refine time zone comparison bars and 
 Country grouping / readability follow-up complete. Both pickers now show flag chips, country descriptions and accessible country headings; UTC first, then localized country names and zone labels alphabetically. Searches include country names/codes and USA alias; exact country metadata beats incidental city substrings. Rows compare actual wall-clock offsets with selected local zone, including minutes, DST and date-line crossings. Larger typography: row names/times 16px, secondary text 14px, ticks ~13px; wider columns/taller bars and fewer 12-hour ticks. Additive shared AppSelect support documented in docs/style-guide.md (no existing design-system page in this repository), linked from README; AGENTS records reusable option fields. Final verification: npm test passes 83 files / 633 tests; npm run build passes types/web/Electron (existing chunk-size warning). Two temporary Chromium smoke scripts pass US/GB locale/format/alignment/add-remove regression plus UTC ordering, alphabetical groups/zone names, country/USA search, flags, fractional row offsets, font-size assertions, both themes and compact layouts. Screenshots reviewed at 1440/1280/900px. Prettier checks and git diff --check pass. Existing verify-task profiles still invoke missing test:unit script, so direct commands used. Version 0.46.0.
 
 Country-grouping/offset/readability follow-up committed as Cody in c178c14. Integrated the automated 0.45.0 changelog update without overwriting it; returning to Ready for Testing. Re-work label retained until Done.
+
+Remember-input follow-up verified: uses existing usePersistedToolState with only localZone/use24Hour/addedZones/removedZones. Date/time initialize after synchronous restoration and recompute after delayed hydration; ordinary local-zone edits still preserve entered wall time. Current-zone row remains protected if machine zone changes between sessions. 55 targeted tests pass: npm test -- src/tools/timeZoneConverterPersistence.test.ts src/tools/timeZoneConverterComponent.test.ts src/tools/timeZoneConverter.test.ts src/toolState.test.ts. Includes session remount, forever disk/restart, delayed state load, never mode, disabling remembering, year/day rollover in restored zone, and snapshot field exclusions. Actual Chromium smoke passes Settings-driven Session/Forever/Never navigation and reload policies, saved zone/format/add-remove choices, and fresh date/time in restored zone. npm run build passes types/web/Electron (existing chunk warning only); Prettier and git diff --check pass. Small converter-only change uses targeted scope; configured verify-task profiles still reference missing test:unit, so documented direct commands used. README updated; AGENTS reviewed and no additional change needed. Version 0.46.1.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Completed Time Zone Converter and review refinements: compact day bars, locale-aware clocks, business-hour dots, country flags, grouped country-searchable pickers with UTC first, DST-aware relative hour/minute offsets, and larger row typography. All 18 acceptance criteria verified; 633 tests, typecheck/web/Electron build, Chromium locale/theme/group-search/layout smoke, formatting and diff checks pass. Shared grouped-select examples added to docs/style-guide.md.
+Time Zone Converter complete with day bars, country-grouped pickers, relative offsets, locale clocks, business-hour indicators and readable rows. Remember tool input now preserves local zone, clock format and added/removed zones for Session/Forever, respects Never, and always starts date/time at now in the restored zone. All 19 acceptance criteria verified; latest persistence change passes 55 targeted tests, Settings-driven browser persistence/reload smoke, typecheck/web/Electron builds, formatting and diff checks. Prior full baseline passed 633 tests.
 <!-- SECTION:FINAL_SUMMARY:END -->
