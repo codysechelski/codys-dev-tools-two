@@ -1,3 +1,10 @@
+# [0.47.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.4...v0.47.0) (2026-11-13)
+
+
+### Features
+
+* Windows installers are now code-signed, so SmartScreen recognizes the publisher ([c6a5c37](https://github.com/codysechelski/codys-dev-tools-two/commit/c6a5c37ab4cd18444bcd87a5a1a180d50aa970cb))
+
 ## [0.46.4](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.3...v0.46.4) (2026-10-29)
 
 
