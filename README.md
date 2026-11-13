@@ -94,7 +94,7 @@ It's the same app with the same tools. The differences:
 - **No "Buy Me a Coffee" link** on the home screen.
 - The version in the sidebar and home screen reads "Enterprise".
 
-> **Note:** macOS builds are signed and notarized by Apple, so they open normally. Windows builds aren't code-signed yet, so SmartScreen will warn that the app is from an "unknown publisher" — click "More info" → "Run anyway".
+> **Note:** macOS builds are signed and notarized by Apple, and Windows installers are code-signed by Cody Sechelski, so both open normally. A brand-new release can still get a SmartScreen prompt for a while as Microsoft builds trust in it; if so, click "More info" → "Run anyway".
 
 Prefer the browser? The app also runs as a static website — see [Building the web app](#building-the-web-app) below if you want to self-host it.
 
@@ -218,6 +218,16 @@ macOS builds are code-signed with a Developer ID certificate and notarized by Ap
 | `APPLE_API_KEY_P8` | Contents of the App Store Connect API key (`AuthKey_XXXXXXXXXX.p8`) used for notarization |
 | `APPLE_API_KEY_ID` | That key's Key ID |
 | `APPLE_API_ISSUER` | The Issuer ID shown on the App Store Connect API keys page |
+
+Windows installers (the consumer `.exe` and the Enterprise `.msi`) are signed with [Azure Artifact Signing](https://learn.microsoft.com/azure/artifact-signing/), using Cody's Tools' shared certificate profile (`win.azureSignOptions` in `package.json`). CI passes these repository secrets only to the Windows jobs; without them the Windows installers are built unsigned:
+
+| Secret | Value |
+| --- | --- |
+| `AZURE_TENANT_ID` | Directory (tenant) ID of the `codystools-ci` app registration |
+| `AZURE_CLIENT_ID` | Its Application (client) ID |
+| `AZURE_CLIENT_SECRET` | Its client secret. Expires 2027-11-09 |
+
+`publisherName` must match the certificate's subject exactly, and installed copies only accept auto-updates signed by that publisher, so keep it unchanged. Signing needs Windows, so `npm run dist:win` on a Mac builds unsigned.
 
 The [Homebrew cask](https://github.com/codysechelski/homebrew-tap/blob/main/Casks/codys-dev-tools.rb) lives in a separate tap repo, whose daily `brew bump` workflow opens a pull request when a new release appears; merge it to ship the update to Homebrew users. The cask downloads `codys-dev-tools-<version>-universal.dmg` from the release, so renaming that artifact (`artifactName` in `package.json`) means updating the cask too.
 

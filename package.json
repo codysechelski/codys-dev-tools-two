@@ -105,7 +105,13 @@
       "target": [
         "nsis",
         "zip"
-      ]
+      ],
+      "azureSignOptions": {
+        "publisherName": "Cody Sechelski",
+        "endpoint": "https://cus.codesigning.azure.net",
+        "codeSigningAccountName": "codystoolssigning",
+        "certificateProfileName": "codystools-public"
+      }
     },
     "linux": {
       "category": "Development",

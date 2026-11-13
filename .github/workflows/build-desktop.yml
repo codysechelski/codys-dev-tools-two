@@ -93,9 +93,12 @@ jobs:
       # APPLE_API_KEY (a path to the App Store Connect .p8) + APPLE_API_KEY_ID + APPLE_API_ISSUER
       # let it notarize and staple the .app (and the .pkg).
       # Everything is set up only when the secrets exist, so forks and a repo without them still
-      # produce (unsigned) builds. Windows has no certificate, so there (and on Linux)
-      # electron-builder is told not to go looking for one. This goes through $GITHUB_ENV rather
-      # than step-level `env:`, which would override it.
+      # produce (unsigned) builds. Windows is signed with Azure Artifact Signing (Cody's Tools'
+      # shared certificate profile, `win.azureSignOptions` in package.json) using the AZURE_*
+      # service principal secrets; without them the signing block is dropped from this checkout's
+      # package.json so the build still runs. Off macOS, electron-builder is told not to go looking
+      # for a keychain identity. This goes through $GITHUB_ENV rather than step-level `env:`,
+      # which would override it.
       - name: Configure code signing
         if: steps.check_tag.outputs.should_build == 'true'
         shell: bash
@@ -107,7 +110,12 @@ jobs:
           APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          HAS_AZURE_SECRETS: ${{ secrets.AZURE_TENANT_ID != '' && secrets.AZURE_CLIENT_ID != '' && secrets.AZURE_CLIENT_SECRET != '' }}
         run: |
+          if [ "$RUNNER_OS" = "Windows" ] && [ "$HAS_AZURE_SECRETS" != "true" ]; then
+            echo "::warning::AZURE_* secrets aren't set; building unsigned Windows installers"
+            node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json'));delete p.build.win.azureSignOptions;fs.writeFileSync('package.json',JSON.stringify(p,null,2))"
+          fi
           if [ "$RUNNER_OS" != "macOS" ]; then
             echo "CSC_IDENTITY_AUTO_DISCOVERY=false" >> "$GITHUB_ENV"
             exit 0
@@ -163,12 +171,19 @@ jobs:
         if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'consumer'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AZURE_TENANT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_TENANT_ID || '' }}
+          AZURE_CLIENT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_ID || '' }}
+          AZURE_CLIENT_SECRET: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_SECRET || '' }}
 
       # The enterprise build never publishes through electron-builder: that would also upload
       # latest*.yml update manifests and overwrite the consumer ones. Package locally, then
       # attach just the installers to the release.
       - run: npx electron-builder --config electron-builder.enterprise.cjs --publish never ${{ matrix.args }}
         if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'enterprise'
+        env:
+          AZURE_TENANT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_TENANT_ID || '' }}
+          AZURE_CLIENT_ID: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_ID || '' }}
+          AZURE_CLIENT_SECRET: ${{ runner.os == 'Windows' && secrets.AZURE_CLIENT_SECRET || '' }}
 
       - name: Upload enterprise installers
         if: steps.check_tag.outputs.should_build == 'true' && matrix.edition == 'enterprise'
