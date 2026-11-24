@@ -198,3 +198,91 @@ jobs:
             exit 1
           fi
           gh release upload "${{ steps.check_tag.outputs.tag }}" "${files[@]}" --clobber
+
+  # Points the Homebrew cask at the new release's universal .dmg. The tap's daily `brew bump`
+  # only opens a pull request, and an unmerged one stops it from opening newer ones, so this
+  # commits to the tap directly and closes any leftover bump pull requests. It needs the
+  # HOMEBREW_TAP_TOKEN secret: a fine-grained token for codysechelski/homebrew-tap with read
+  # and write access to Contents and Pull requests. It only runs when every build succeeded,
+  # so the cask never points at a release that's missing its .dmg.
+  homebrew:
+    needs: build
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      TAP: codysechelski/homebrew-tap
+      CASK: Casks/codys-dev-tools.rb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || '' }}
+          fetch-depth: 0
+
+      # Same check as the build job: most pushes to main don't cut a release.
+      - id: check_tag
+        run: |
+          if tag=$(git describe --tags --exact-match HEAD 2>/dev/null); then
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release tag on this commit; the cask stays as it is."
+          fi
+
+      - name: Check for the tap token
+        if: steps.check_tag.outputs.tag != ''
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$HOMEBREW_TAP_TOKEN" ]; then
+            echo "::error::The HOMEBREW_TAP_TOKEN secret is missing, so the Homebrew cask can't be updated."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check_tag.outputs.tag != ''
+        with:
+          repository: ${{ env.TAP }}
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Update the cask
+        if: steps.check_tag.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.check_tag.outputs.tag }}
+        run: |
+          version="${TAG#v}"
+          dmg="codys-dev-tools-${version}-universal.dmg"
+          # GitHub records each asset's sha256; download and hash it if that's ever missing.
+          sha256=$(gh release view "$TAG" --json assets \
+            --jq ".assets[] | select(.name == \"$dmg\") | .digest | sub(\"^sha256:\"; \"\")")
+          if [ -z "$sha256" ]; then
+            gh release download "$TAG" --pattern "$dmg" --dir "$RUNNER_TEMP"
+            sha256=$(sha256sum "$RUNNER_TEMP/$dmg" | cut -d' ' -f1)
+          fi
+          cask="tap/$CASK"
+          sed -i -E "s#^  version \".*\"#  version \"${version}\"#; s#^  sha256 \".*\"#  sha256 \"${sha256}\"#" "$cask"
+          grep -qxF "  version \"${version}\"" "$cask"
+          grep -qxF "  sha256 \"${sha256}\"" "$cask"
+          cd tap
+          if git diff --quiet; then
+            echo "The cask is already at ${version}."
+            exit 0
+          fi
+          git diff
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -am "codys-dev-tools ${version}"
+          git push
+
+      - name: Close older bump pull requests
+        if: steps.check_tag.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          TAG: ${{ steps.check_tag.outputs.tag }}
+        run: |
+          gh pr list -R "$TAP" --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("bump-codys-dev-tools-")) | .number' |
+          while read -r number; do
+            gh pr close "$number" -R "$TAP" --delete-branch \
+              --comment "Superseded by codys-dev-tools ${TAG#v}, which the Build Desktop Apps workflow committed to main."
+          done

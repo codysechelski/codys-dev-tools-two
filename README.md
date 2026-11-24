@@ -77,7 +77,7 @@ On macOS you can also install it with [Homebrew](https://brew.sh):
 brew install --cask codysechelski/tap/codys-dev-tools
 ```
 
-`brew upgrade` picks up new releases (the [tap](https://github.com/codysechelski/homebrew-tap) checks for them daily).
+`brew upgrade` picks up new releases (the [tap](https://github.com/codysechelski/homebrew-tap) is updated as each release is published).
 
 ### Enterprise edition
 
@@ -229,7 +229,7 @@ Windows installers (the consumer `.exe` and the Enterprise `.msi`) are signed wi
 
 `publisherName` must match the certificate's subject exactly, and installed copies only accept auto-updates signed by that publisher, so keep it unchanged. Signing needs Windows, so `npm run dist:win` on a Mac builds unsigned.
 
-The [Homebrew cask](https://github.com/codysechelski/homebrew-tap/blob/main/Casks/codys-dev-tools.rb) lives in a separate tap repo, whose daily `brew bump` workflow opens a pull request when a new release appears; merge it to ship the update to Homebrew users. The cask downloads `codys-dev-tools-<version>-universal.dmg` from the release, so renaming that artifact (`artifactName` in `package.json`) means updating the cask too.
+The [Homebrew cask](https://github.com/codysechelski/homebrew-tap/blob/main/Casks/codys-dev-tools.rb) lives in a separate tap repo. Once every installer is built, the `homebrew` job in `build-desktop.yml` commits the new version and the universal `.dmg`'s sha256 to the cask and closes any leftover `bump-codys-dev-tools-*` pull requests. It needs the `HOMEBREW_TAP_TOKEN` secret (a fine-grained token for the tap with Contents and Pull requests read/write) and fails without it. The tap's daily `brew bump`, which only opens pull requests, is a fallback. The cask downloads `codys-dev-tools-<version>-universal.dmg` from the release, so renaming that artifact (`artifactName` in `package.json`) means updating the cask too.
 
 ## Philosophy
 
