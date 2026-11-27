@@ -55,8 +55,8 @@ Upload the `.pkg` with Transporter.
 
 | Requirement | Status |
 | --- | --- |
-| Reserve the name in Partner Center | To do |
-| Package identity in `electron-builder.msstore.cjs` | Publisher (`CN=1254F903-…`, shared by Cody's Tools apps) and display name are filled in; `identityName` is a guess (`CodysTools.CodysDevTools`) until the name is reserved. `MS_STORE_*` environment variables override them |
+| Reserve the name in Partner Center | Done 2026-11-27. Store ID `9NH4Z3MB3VFG` |
+| Package identity in `electron-builder.msstore.cjs` | Done 2026-11-27: `CodysTools.CodysDevTools`, publisher `CN=1254F903-5472-495A-867A-91E6C78CA4A3` (shared by Cody's Tools apps), display name `Cody's Tools`. `MS_STORE_*` environment variables override them |
 | Tile and logo images (`build/appx/`) | Done. Rendered from `build/icons/1024x1024.png` by `npm run store-assets` (needs ImageMagick); rerun after the icon changes |
 | Code signing | Not needed: the Store signs the package on submission. `azureSignOptions` is removed in this config so the manifest keeps the Store publisher |
 

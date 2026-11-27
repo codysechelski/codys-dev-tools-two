@@ -15,10 +15,9 @@ module.exports = {
   // its own publisher (Cody Sechelski) into the manifest instead of the Store identity below.
   win: { ...build.win, azureSignOptions: null },
   appx: {
-    // Partner Center → Product management → Product identity. These must match exactly or the
-    // upload is rejected. The publisher is shared with the other Cody's Tools apps; the identity
-    // name is a guess until the name is reserved (docs/store-releases.md). The MS_STORE_*
-    // environment variables override them.
+    // Partner Center → Product management → Product identity (reserved 2026-11-27; Store ID
+    // 9NH4Z3MB3VFG). These must match exactly or the upload is rejected. The publisher is shared
+    // with the other Cody's Tools apps. The MS_STORE_* environment variables override them.
     identityName: process.env.MS_STORE_IDENTITY_NAME ?? 'CodysTools.CodysDevTools',
     publisher: process.env.MS_STORE_PUBLISHER ?? 'CN=1254F903-5472-495A-867A-91E6C78CA4A3',
     publisherDisplayName: process.env.MS_STORE_PUBLISHER_DISPLAY_NAME ?? "Cody's Tools",
