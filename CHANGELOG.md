@@ -1,3 +1,10 @@
+## [0.47.1](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.47.0...v0.47.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **menu:** show the saved theme as checked in the View menu at launch ([b8e658e](https://github.com/codysechelski/codys-dev-tools-two/commit/b8e658e3433e6183826cba46b2ec49b031d5cb07))
+
 # [0.47.0](https://github.com/codysechelski/codys-dev-tools-two/compare/v0.46.4...v0.47.0) (2026-11-13)
 
 
