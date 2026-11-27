@@ -36,6 +36,7 @@
     "dist:mas-dev": "npm run typecheck && electron-vite build --mode mas && electron-builder --config electron-builder.mas.cjs --mac mas-dev --arm64",
     "dist:msstore": "npm run typecheck && electron-vite build --mode msstore && electron-builder --config electron-builder.msstore.cjs --win appx --x64 --arm64",
     "store-assets": "node scripts/render-store-assets.mjs",
+    "store-screenshots": "electron-vite build --mode mas && node scripts/capture-store-screenshots.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -66,6 +67,7 @@
   },
   "devDependencies": {
     "@electron-toolkit/preload": "latest",
+    "@playwright/test": "^1.65.0",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
     "@types/node": "latest",

@@ -49,6 +49,8 @@ Test a `mas-dev` build before every submission that touches files, dialogs, or s
 
 Upload the `.pkg` with Transporter.
 
+**Listing:** the copy (name, subtitle, description, keywords, review notes) is in `store/app-store-listing.md`, and the screenshots in `store/screenshots/mac/`. `npm run store-screenshots` reshoots them from the real app at 2880 × 1800 (`scripts/capture-store-screenshots.mjs`: macOS only, needs ImageMagick; windows take focus while it runs, so don't type until it finishes). Reshoot after visible UI changes.
+
 ## Microsoft Store
 
 | Requirement | Status |
