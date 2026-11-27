@@ -41,8 +41,8 @@ Requirements:
 | Requirement | Status |
 | --- | --- |
 | Apple Distribution and 3rd Party Mac Developer Installer identities in the login keychain | Present (shared with the other Cody's Tools apps) |
-| App ID `com.codysdevtools.app` registered on developer.apple.com | To do |
-| Mac App Store Connect profile → `build/embedded.provisionprofile`; macOS App Development profile → `build/development.provisionprofile` (profiles aren't secret) | To do. Without them `dist:mas` still builds and signs, but the `.pkg` can't be submitted and `mas-dev` builds won't launch |
+| App ID `com.codysdevtools.app` registered on developer.apple.com | Done 2026-11-27 |
+| Mac App Store Connect profile → `build/embedded.provisionprofile`; macOS App Development profile → `build/development.provisionprofile` (profiles aren't secret) | Done 2026-11-27 (`cdt mas appstore`, `cdt mas development`; also in pass under `certs/apple/profiles/cdt-mas-*`). Regenerate both when the Apple certificates are renewed (yearly) |
 | App Store Connect app record, listing, privacy answers | To do |
 
 Test a `mas-dev` build before every submission that touches files, dialogs, or settings: open and save a file, pick a custom settings folder, quit, relaunch, and confirm the custom folder is still used.
