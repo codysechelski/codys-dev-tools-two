@@ -1,0 +1,48 @@
+name: Store Builds
+
+# Manual only: Actions → Store Builds → Run workflow. Builds the Microsoft Store package (.appx,
+# x64 + arm64) from a release tag, since makeappx only runs on Windows. The packages are uploaded
+# as a short-lived workflow artifact to download and submit in Partner Center, not attached to the
+# GitHub Release, because end users can't install them directly.
+#
+# Windows runners bill at 2x minutes, which is why this never runs automatically. Mac App Store
+# builds stay on a local Mac (`npm run dist:mas`), where the signing identities live. See
+# docs/store-releases.md.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to package (e.g. v0.48.0), or a branch such as main for a test package
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  microsoft-store:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The Partner Center identity is committed in electron-builder.msstore.cjs. The package is
+      # left unsigned: the Store signs it on submission.
+      - run: npm run dist:msstore
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: microsoft-store-${{ inputs.tag }}
+          path: release/msstore/*.appx
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0

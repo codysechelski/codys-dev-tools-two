@@ -2,13 +2,13 @@
 
 Cody's Dev Tools can ship to the **Mac App Store** and the **Microsoft Store** alongside the GitHub Release installers. Store packages are separate builds of the consumer edition, made with their own electron-builder configs (`electron-builder.mas.cjs`, `electron-builder.msstore.cjs`), which extend the base `build` block in `package.json`.
 
-Store builds aren't produced by CI or the Release workflow. Build one from a release tag when you're ready to submit that version.
+Store builds aren't produced automatically. Build one from a release tag when you're ready to submit that version: the Mac App Store package locally, the Microsoft Store package with the manual **Store Builds** workflow (`.github/workflows/store-builds.yml`), which takes the tag as its only input.
 
 | Store           | Command                                    | Output                                                            | Where it builds                  |
 | --------------- | ------------------------------------------ | ----------------------------------------------------------------- | -------------------------------- |
 | Mac App Store   | `npm run dist:mas`                         | `release/mas/mas-universal/codys-dev-tools-mas-<version>-universal.pkg` | A Mac with the signing identities |
 | Mac App Store (test) | `npm run dist:mas-dev`                | `release/mas/mas-dev-arm64/Cody’s Dev Tools.app`                  | Same                             |
-| Microsoft Store | `npm run dist:msstore`                     | `release/msstore/codys-dev-tools-msstore-<version>-{x64,arm64}.appx` | Windows only (`makeappx`)       |
+| Microsoft Store | **Actions → Store Builds** (or `npm run dist:msstore` on Windows) | `codys-dev-tools-msstore-<version>-{x64,arm64}.appx`, as the run's `microsoft-store-<tag>` artifact (kept 3 days) | GitHub's Windows runner (2x minutes, manual only) |
 
 ## What's different in store builds
 
