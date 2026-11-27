@@ -10,11 +10,11 @@ import { basename, join } from 'node:path';
 import { CHECKS_FOR_UPDATES } from '../src/edition';
 import { supportsAutoInstall } from './installKind';
 import { scheduleBackgroundUpdateChecks } from './updateChecks';
+import { syncThemeMenuChecked, type ThemeMode } from './themeMenu';
 import { MIN_WINDOW_SIZE, resolveDefaultWindowSize } from './windowSize';
 
 const { autoUpdater } = electronUpdaterPkg;
 
-type ThemeMode = 'light' | 'dark' | 'system';
 type RememberToolInput = 'never' | 'session' | 'forever';
 type IndentStyle = '2-spaces' | '4-spaces' | 'tabs';
 type SidebarDensity = 'comfortable' | 'compact';
@@ -199,7 +199,7 @@ function looksLikeBinary(buffer: Buffer): boolean {
 
 ipcMain.on('theme-mode-changed', (_event, mode: ThemeMode) => {
   currentThemeMode = mode;
-  syncThemeMenuChecked();
+  syncThemeMenuChecked(Menu.getApplicationMenu(), currentThemeMode);
   applyTitleBarOverlay();
 });
 
@@ -225,14 +225,6 @@ function showSettings(): void {
   mainWindowRef?.webContents.send('navigate-settings');
 }
 
-function syncThemeMenuChecked(): void {
-  const menu = Menu.getApplicationMenu();
-
-  for (const mode of ['light', 'dark', 'system'] as const) {
-    const item = menu?.getMenuItemById(`theme-${mode}`);
-    if (item) item.checked = currentThemeMode === mode;
-  }
-}
 
 // Settings can live in a user-chosen directory (for dotfile management), but we need a
 // fixed, well-known place to remember *which* directory that is. This tiny pointer file
@@ -374,7 +366,7 @@ ipcMain.handle('load-settings', async () => {
   }
 
   currentThemeMode = settings.themeMode;
-  syncThemeMenuChecked();
+  syncThemeMenuChecked(Menu.getApplicationMenu(), currentThemeMode);
 
   return { settings, settingsPath: filePath, isCustomLocation: isCustom, warning };
 });
