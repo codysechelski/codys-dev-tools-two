@@ -32,6 +32,10 @@
     "dist:all": "npm run build:electron && electron-builder --mac --universal && electron-builder --win --x64 && electron-builder --linux --x64",
     "dist:enterprise:mac": "npm run build:electron:enterprise && electron-builder --config electron-builder.enterprise.cjs --mac --universal",
     "dist:enterprise:win": "npm run build:electron:enterprise && electron-builder --config electron-builder.enterprise.cjs --win --x64",
+    "dist:mas": "npm run typecheck && electron-vite build --mode mas && electron-builder --config electron-builder.mas.cjs --mac mas --universal",
+    "dist:mas-dev": "npm run typecheck && electron-vite build --mode mas && electron-builder --config electron-builder.mas.cjs --mac mas-dev --arm64",
+    "dist:msstore": "npm run typecheck && electron-vite build --mode msstore && electron-builder --config electron-builder.msstore.cjs --win appx --x64 --arm64",
+    "store-assets": "node scripts/render-store-assets.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

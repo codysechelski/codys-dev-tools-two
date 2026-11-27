@@ -8,7 +8,14 @@ import Settings from '@/tools/Settings.vue';
 
 // Every other test runs as the consumer edition (no build-time define); this file swaps in the
 // enterprise edition to cover what it removes.
-vi.mock('@/edition', () => ({ APP_EDITION: 'enterprise', IS_ENTERPRISE: true, resolveEdition: () => 'enterprise' }));
+vi.mock('@/edition', () => ({
+  APP_EDITION: 'enterprise',
+  IS_ENTERPRISE: true,
+  APP_DISTRIBUTION: 'direct',
+  IS_STORE_BUILD: false,
+  CHECKS_FOR_UPDATES: false,
+  SHOWS_DONATION_LINK: false,
+}));
 
 describe('enterprise edition', () => {
   it('leaves the Buy Me a Coffee link off the home panel and labels the version', () => {

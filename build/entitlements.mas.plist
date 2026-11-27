@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- Required for the Mac App Store. Add capabilities only when a feature needs them: the app
+         makes no network requests of its own (store builds don't check for updates), so there is
+         no com.apple.security.network.client. -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <!-- Required by Electron's V8 JIT under the sandbox. -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <!-- Open/save panels: "Load file" and "Save file" in the text tools, and choosing a custom
+         settings folder (Settings → Settings File). -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <!-- Keeps access to the custom settings folder across launches (electron/main.ts,
+         accessSettingsDirBookmark). -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+    <!-- Electron's helper processes talk to the main app through this group. It must match
+         ElectronTeamID, which signing writes into Info.plist from the provisioning profile. -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+      <string>4PJJ6QZ34K.com.codysdevtools.app</string>
+    </array>
+  </dict>
+</plist>

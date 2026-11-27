@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
-import { IS_ENTERPRISE } from '@/edition';
+import { CHECKS_FOR_UPDATES } from '@/edition';
 import titlebarIconDark from '@/assets/images/titlebar-icon-dark.svg';
 import titlebarIconLight from '@/assets/images/titlebar-icon-light.svg';
 import type { AppSettings } from '@/settings';
@@ -80,8 +80,8 @@ const menus: MenuColumn[] = [
     label: 'Help',
     items: [
       { type: 'item', id: 'menu-about', label: 'About' },
-      // The enterprise edition never checks for updates (see src/edition.ts).
-      ...(IS_ENTERPRISE ? [] : [{ type: 'item', id: 'menu-check-updates', label: 'Check for Updates...' } as const]),
+      // The enterprise edition and store builds never check for updates (see src/edition.ts).
+      ...(!CHECKS_FOR_UPDATES ? [] : [{ type: 'item', id: 'menu-check-updates', label: 'Check for Updates...' } as const]),
     ],
   },
 ];

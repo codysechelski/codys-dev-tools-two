@@ -7,7 +7,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, screen, shell, 
 import electronUpdaterPkg from 'electron-updater';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
-import { IS_ENTERPRISE } from '../src/edition';
+import { CHECKS_FOR_UPDATES } from '../src/edition';
 import { supportsAutoInstall } from './installKind';
 import { scheduleBackgroundUpdateChecks } from './updateChecks';
 import { MIN_WINDOW_SIZE, resolveDefaultWindowSize } from './windowSize';
@@ -239,6 +239,22 @@ function syncThemeMenuChecked(): void {
 // always lives in the default userData folder, even when the real settings.json doesn't.
 interface SettingsLocationPointer {
   customDirectory: string | null;
+  // Mac App Store build only: a security-scoped bookmark for customDirectory. The App Sandbox only
+  // lets the app into a folder the user picked until it quits; the bookmark restores that access on
+  // later launches (needs the com.apple.security.files.bookmarks.app-scope entitlement).
+  bookmark?: string;
+}
+
+// Releases the sandbox access granted from the current pointer's bookmark, if any.
+let stopAccessingSettingsDir: (() => void) | null = null;
+let accessedSettingsBookmark: string | null = null;
+
+function accessSettingsDirBookmark(bookmark: string | undefined): void {
+  if (!process.mas || bookmark === accessedSettingsBookmark) return;
+
+  stopAccessingSettingsDir?.();
+  stopAccessingSettingsDir = bookmark ? app.startAccessingSecurityScopedResource(bookmark) as () => void : null;
+  accessedSettingsBookmark = bookmark ?? null;
 }
 
 function getPointerFilePath(): string {
@@ -249,16 +265,21 @@ async function readSettingsLocationPointer(): Promise<SettingsLocationPointer> {
   try {
     const raw = await readFile(getPointerFilePath(), 'utf-8');
     const parsed = JSON.parse(raw) as Partial<SettingsLocationPointer>;
-    return { customDirectory: typeof parsed.customDirectory === 'string' ? parsed.customDirectory : null };
+    return {
+      customDirectory: typeof parsed.customDirectory === 'string' ? parsed.customDirectory : null,
+      bookmark: typeof parsed.bookmark === 'string' ? parsed.bookmark : undefined,
+    };
   } catch {
     return { customDirectory: null };
   }
 }
 
-async function writeSettingsLocationPointer(customDirectory: string | null): Promise<void> {
+async function writeSettingsLocationPointer(customDirectory: string | null, bookmark?: string): Promise<void> {
   const userDataDir = app.getPath('userData');
   await mkdir(userDataDir, { recursive: true });
-  await writeFile(getPointerFilePath(), JSON.stringify({ customDirectory }, null, 2), 'utf-8');
+  const pointer: SettingsLocationPointer = { customDirectory, ...(bookmark ? { bookmark } : {}) };
+  await writeFile(getPointerFilePath(), JSON.stringify(pointer, null, 2), 'utf-8');
+  accessSettingsDirBookmark(bookmark);
 }
 
 interface ResolvedSettingsDir {
@@ -272,6 +293,7 @@ async function resolveSettingsDir(): Promise<ResolvedSettingsDir> {
   if (!pointer.customDirectory) return { dir: app.getPath('userData'), isCustom: false };
 
   try {
+    accessSettingsDirBookmark(pointer.bookmark);
     await access(pointer.customDirectory);
     return { dir: pointer.customDirectory, isCustom: true };
   } catch {
@@ -367,11 +389,11 @@ ipcMain.handle('save-settings', async (_event, settings: AppSettings) => {
 });
 
 ipcMain.handle('choose-settings-directory', async () => {
-  const result = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] });
+  const result = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'], securityScopedBookmarks: process.mas });
   if (result.canceled || !result.filePaths[0]) return null;
 
   const chosenDir = result.filePaths[0];
-  await writeSettingsLocationPointer(chosenDir);
+  await writeSettingsLocationPointer(chosenDir, result.bookmarks?.[0]);
 
   return { settingsPath: getSettingsFilePath(chosenDir), isCustomLocation: true };
 });
@@ -427,7 +449,7 @@ function buildAppMenu(): Menu {
             label: app.name,
             submenu: [
               { label: `About ${app.name}`, click: () => showHome() },
-              ...(IS_ENTERPRISE ? [] : [{ label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
+              ...(!CHECKS_FOR_UPDATES ? [] : [{ label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
               { type: 'separator' },
               { label: 'Settings', accelerator: 'Cmd+,', click: () => showSettings() },
               { type: 'separator' },
@@ -504,7 +526,7 @@ function buildAppMenu(): Menu {
             label: 'Help',
             submenu: [
               { id: 'menu-about', label: `About ${app.name}`, click: () => showHome() },
-              ...(IS_ENTERPRISE ? [] : [{ id: 'menu-check-updates', label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
+              ...(!CHECKS_FOR_UPDATES ? [] : [{ id: 'menu-check-updates', label: 'Check for Updates...', click: () => void checkForUpdatesFromMenu() }]),
             ] as MenuItemConstructorOptions[],
           },
         ]),
@@ -583,8 +605,9 @@ app.whenReady().then(() => {
 
   // Background checks respect the "Automatically check for updates" setting; the manual
   // "Check for Updates..." menu action always works regardless. The enterprise edition never
-  // checks at all — IT controls which version is installed (see src/edition.ts).
-  if (!IS_ENTERPRISE) {
+  // checks at all — IT controls which version is installed — and neither do store builds, which
+  // the stores update (see src/edition.ts).
+  if (CHECKS_FOR_UPDATES) {
     scheduleBackgroundUpdateChecks({
       isEnabled: async () => (await readSavedSettings()).automaticUpdateChecks,
       check: checkForUpdatesInBackground,

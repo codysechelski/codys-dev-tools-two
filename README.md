@@ -199,9 +199,13 @@ npm run dist:all     # all three
 
 npm run dist:enterprise:mac   # Enterprise edition: macOS .pkg + .dmg
 npm run dist:enterprise:win   # Enterprise edition: Windows .msi
+
+npm run dist:mas       # Mac App Store .pkg (sandboxed, universal)
+npm run dist:mas-dev   # Mac App Store build signed for local testing
+npm run dist:msstore   # Microsoft Store .appx (x64 + arm64, Windows only)
 ```
 
-Output lands in `release/` (`release/enterprise/` for the Enterprise edition, which is built with `electron-vite build --mode enterprise` and packaged with `electron-builder.enterprise.cjs`; see `src/edition.ts`). These are the same commands the [release pipeline](#releases) runs — you can build them locally without needing CI, with a few host requirements: the `.msi` can only be built on Windows, `.rpm` needs `rpmbuild` and `.pacman` needs `bsdtar` (on Ubuntu: `sudo apt-get install rpm libarchive-tools`), and the `.AppImage` tooling needs Linux or an Intel/Rosetta Mac.
+Output lands in `release/` (`release/enterprise/` for the Enterprise edition, which is built with `electron-vite build --mode enterprise` and packaged with `electron-builder.enterprise.cjs`; see `src/edition.ts`). Store builds land in `release/mas/` and `release/msstore/`; see [docs/store-releases.md](docs/store-releases.md). The others are the same commands the [release pipeline](#releases) runs — you can build them locally without needing CI, with a few host requirements: the `.msi` can only be built on Windows, `.rpm` needs `rpmbuild` and `.pacman` needs `bsdtar` (on Ubuntu: `sudo apt-get install rpm libarchive-tools`), and the `.AppImage` tooling needs Linux or an Intel/Rosetta Mac.
 
 ## Releases
 
@@ -249,7 +253,7 @@ Contributions are welcome! Bug fixes and improvements to existing tools are alwa
 - **App version:** read from `package.json` via `src/appInfo.ts`, shown in the sidebar footer.
 - **Theme:** Settings supports light/dark/system (system follows `prefers-color-scheme`). The Electron View > Theme menu mirrors the Settings page in both directions. Theme choice isn't persisted between launches yet.
 - **Updates (Electron):** the app checks for updates shortly after launch and every 4 hours, then shows a banner (one-click install on macOS, Windows, and Linux; a Releases link for copies electron-updater can't update in place — a Mac app run from outside `/Applications` or a portable Windows `.zip` — see `electron/installKind.ts`). The Enterprise edition skips all of this. Settings > Updates can turn background checks off; Check for Updates… in the app menu always works. The flag is plumbed through `src/settings.ts`, `electron/main.ts`, and `electron/preload.ts`, and scheduling lives in `electron/updateChecks.ts`.
-- **Editions:** `src/edition.ts` exposes the build's edition (`consumer` or `enterprise`), baked in by `electron-vite build --mode enterprise` via a `__APP_EDITION__` define in `electron.vite.config.ts`. Both the main process and the renderer read it; anything else (web build, dev, tests) is the consumer edition. Enterprise-only differences should check `IS_ENTERPRISE` rather than detecting the installer type.
+- **Editions:** `src/edition.ts` exposes the build's edition (`consumer` or `enterprise`), baked in by `electron-vite build --mode enterprise` via a `__APP_EDITION__` define in `electron.vite.config.ts`. Both the main process and the renderer read it; anything else (web build, dev, tests) is the consumer edition. Enterprise-only differences should check `IS_ENTERPRISE` rather than detecting the installer type. The same file exposes the distribution (`direct`, `mas`, or `msstore`, from `--mode mas`/`--mode msstore` via `__APP_DISTRIBUTION__`) and the derived `CHECKS_FOR_UPDATES` and `SHOWS_DONATION_LINK` flags; see [docs/store-releases.md](docs/store-releases.md).
 - **Design tokens:** colors, spacing, radii, and shadows live in `src/styles/_tokens.scss` as CSS custom properties.
 - **Offline fonts:** Ubuntu and Ubuntu Mono are vendored under `src/assets/fonts/ubuntu` so the app doesn't depend on Google Fonts at runtime.
 - **Text editor:** the shared `src/components/TextEditor.vue` wraps CodeMirror. Editable instances have a Load File button — native OS picker in Electron, a drag-and-drop modal in the browser.

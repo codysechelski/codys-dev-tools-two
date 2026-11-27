@@ -4,9 +4,13 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 
 // `electron-vite build --mode enterprise` bakes the enterprise edition into the main process and
-// renderer (see src/edition.ts); every other mode is the consumer edition.
+// renderer, and `--mode mas` / `--mode msstore` the store distributions (see src/edition.ts); every
+// other mode is the consumer edition, distributed directly.
 export default defineConfig(({ mode }) => {
-  const define = { __APP_EDITION__: JSON.stringify(mode === 'enterprise' ? 'enterprise' : 'consumer') };
+  const define = {
+    __APP_EDITION__: JSON.stringify(mode === 'enterprise' ? 'enterprise' : 'consumer'),
+    __APP_DISTRIBUTION__: JSON.stringify(mode === 'mas' || mode === 'msstore' ? mode : 'direct'),
+  };
 
   return {
     main: {

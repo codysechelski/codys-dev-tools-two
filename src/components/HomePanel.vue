@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import AppIcon from '@/components/AppIcon.vue';
-import { IS_ENTERPRISE } from '@/edition';
+import { IS_ENTERPRISE, SHOWS_DONATION_LINK } from '@/edition';
 import logoForDarkBg from '@/assets/images/logo-dark-bg.svg';
 import logoForLightBg from '@/assets/images/logo-light-bg.svg';
 import type { ResolvedTheme } from '@/theme';
@@ -29,8 +29,9 @@ const logoSrc = computed(() => (props.theme === 'dark' ? logoForDarkBg : logoFor
         <AppIcon name="github" />
         View on GitHub
       </a>
-      <!-- Left out of the enterprise edition, which IT departments deploy to managed machines. -->
-      <a v-if="!IS_ENTERPRISE" :href="KOFI_URL" target="_blank" rel="noopener noreferrer" class="app-button app-button--secondary home-panel__link">
+      <!-- Left out of the enterprise edition, which IT departments deploy to managed machines (see
+           SHOWS_DONATION_LINK in src/edition.ts). -->
+      <a v-if="SHOWS_DONATION_LINK" :href="KOFI_URL" target="_blank" rel="noopener noreferrer" class="app-button app-button--secondary home-panel__link">
         <AppIcon name="mugHot" />
         Buy Me a Coffee
       </a>
