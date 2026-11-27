@@ -8,8 +8,9 @@
 // IT controls which version is installed. Shared by the Electron main process and the renderer.
 //
 // The store distributions are the consumer edition packaged for the Mac App Store (`mas`) and the
-// Microsoft Store (`msstore`). Stores deliver updates themselves, so neither checks for updates.
-// See docs/store-releases.md.
+// Microsoft Store (`msstore`). Stores deliver updates themselves, so neither checks for updates,
+// and the Mac App Store build drops the "Buy Me a Coffee" link (Apple wants tips to the developer to
+// go through In-App Purchase). See docs/store-releases.md.
 export type AppEdition = 'consumer' | 'enterprise';
 export type AppDistribution = 'direct' | 'mas' | 'msstore';
 
@@ -32,8 +33,6 @@ export const IS_STORE_BUILD = APP_DISTRIBUTION !== 'direct';
 
 // "Check for Updates…", background checks, and the Updates settings section.
 export const CHECKS_FOR_UPDATES = !IS_ENTERPRISE && !IS_STORE_BUILD;
-// The "Buy Me a Coffee" link on the home panel. Kept in both store builds: Microsoft lets non-game
-// apps take payments their own way, and Apple allows external links on the US storefront, but App
-// Review elsewhere may ask for tips to go through In-App Purchase. If it does, add
-// `&& APP_DISTRIBUTION !== 'mas'` here (docs/store-releases.md → Donation link).
-export const SHOWS_DONATION_LINK = !IS_ENTERPRISE;
+// The "Buy Me a Coffee" link on the home panel. The Microsoft Store build keeps it, since Microsoft
+// lets non-game apps take payments their own way.
+export const SHOWS_DONATION_LINK = !IS_ENTERPRISE && APP_DISTRIBUTION !== 'mas';

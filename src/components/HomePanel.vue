@@ -29,8 +29,8 @@ const logoSrc = computed(() => (props.theme === 'dark' ? logoForDarkBg : logoFor
         <AppIcon name="github" />
         View on GitHub
       </a>
-      <!-- Left out of the enterprise edition, which IT departments deploy to managed machines (see
-           SHOWS_DONATION_LINK in src/edition.ts). -->
+      <!-- Left out of the enterprise edition, which IT departments deploy to managed machines, and
+           the Mac App Store build, where tips must go through In-App Purchase (see src/edition.ts). -->
       <a v-if="SHOWS_DONATION_LINK" :href="KOFI_URL" target="_blank" rel="noopener noreferrer" class="app-button app-button--secondary home-panel__link">
         <AppIcon name="mugHot" />
         Buy Me a Coffee

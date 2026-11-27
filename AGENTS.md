@@ -7,7 +7,7 @@
 - The UI should feel like a native desktop app where practical, especially in Electron.
 - The same Vue/TypeScript/Sass codebase should support web, macOS Electron, and Windows Electron builds.
 - There are two desktop editions: consumer and Enterprise (managed IT deploys: `.msi`/`.pkg`, no update checks, no donation link). Gate edition differences on `IS_ENTERPRISE` from `src/edition.ts`, and keep the Enterprise build from publishing `latest*.yml` update manifests.
-- The consumer edition also ships to the Mac App Store and Microsoft Store (`APP_DISTRIBUTION` = `mas`/`msstore` in `src/edition.ts`; no update checks). Gate update UI on `CHECKS_FOR_UPDATES` and the donation link on `SHOWS_DONATION_LINK` rather than on `IS_ENTERPRISE` alone. The Mac App Store build is sandboxed: anything that touches files outside user-picked dialogs, or the network, needs an entitlement in `build/entitlements.mas.plist`. See `docs/store-releases.md`.
+- The consumer edition also ships to the Mac App Store and Microsoft Store (`APP_DISTRIBUTION` = `mas`/`msstore` in `src/edition.ts`; no update checks). Gate update UI on `CHECKS_FOR_UPDATES` and the donation link on `SHOWS_DONATION_LINK` (hidden in the Mac App Store build) rather than on `IS_ENTERPRISE` alone. The Mac App Store build is sandboxed: anything that touches files outside user-picked dialogs, or the network, needs an entitlement in `build/entitlements.mas.plist`. See `docs/store-releases.md`.
 - The app should work offline. Do not add runtime dependencies on external CDNs, Google Fonts, or hosted assets.
 
 ## Design System

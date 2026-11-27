@@ -42,16 +42,20 @@ async function openHelpMenu() {
   return wrapper.find('.app-titlebar__dropdown');
 }
 
-describe.each(['mas', 'msstore'])('%s store build', (distribution) => {
+describe.each([
+  { distribution: 'mas', showsDonationLink: false },
+  { distribution: 'msstore', showsDonationLink: true },
+])('$distribution store build', ({ distribution, showsDonationLink }) => {
   beforeEach(() => {
     vi.resetModules();
     edition.APP_DISTRIBUTION = distribution;
+    edition.SHOWS_DONATION_LINK = showsDonationLink;
   });
 
-  it('keeps the Buy Me a Coffee link without an edition label', async () => {
+  it(`${showsDonationLink ? 'keeps' : 'leaves off'} the Buy Me a Coffee link without an edition label`, async () => {
     const wrapper = await mountHomePanel();
 
-    expect(wrapper.find('a[href*="ko-fi.com"]').exists()).toBe(true);
+    expect(wrapper.find('a[href*="ko-fi.com"]').exists()).toBe(showsDonationLink);
     expect(wrapper.text()).toContain('View on GitHub');
     expect(wrapper.find('.home-panel__version').text()).toBe('v1.2.3');
   });

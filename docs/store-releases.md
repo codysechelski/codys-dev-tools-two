@@ -15,7 +15,7 @@ Store builds aren't produced by CI or the Release workflow. Build one from a rel
 The store `dist:*` scripts build with `electron-vite build --mode mas` or `--mode msstore`, which bakes the distribution into the app (`APP_DISTRIBUTION` in `src/edition.ts`). Gate store differences on the flags there, never on runtime detection:
 
 - **No update checks** (`CHECKS_FOR_UPDATES`): the stores deliver updates, so there's no Check for Updates menu item, no background check, and no Updates section in Settings. The configs set `publish: null`, so no `latest*.yml` manifest is ever produced.
-- **Donation link** (`SHOWS_DONATION_LINK`): kept in both store builds. Microsoft lets non-game apps take payments their own way. Apple allows external links on the US storefront; App Review in other countries may ask for tips to go through In-App Purchase instead. If it does, add `&& APP_DISTRIBUTION !== 'mas'` to `SHOWS_DONATION_LINK` (the store test in `src/storeEdition.test.ts` will need its `mas` case updated).
+- **Donation link** (`SHOWS_DONATION_LINK`): hidden in the Mac App Store build, since Apple wants tips to the developer to go through In-App Purchase, and an In-App Purchase tip jar isn't worth the extra review surface for this app. The Microsoft Store build keeps it (Microsoft lets non-game apps take payments their own way).
 - **Version** matches the GitHub Release the build was made from.
 
 ## Mac App Store
