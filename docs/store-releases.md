@@ -60,4 +60,16 @@ Upload the `.pkg` with Transporter.
 | Tile and logo images (`build/appx/`) | Done. Rendered from `build/icons/1024x1024.png` by `npm run store-assets` (needs ImageMagick); rerun after the icon changes |
 | Code signing | Not needed: the Store signs the package on submission. `azureSignOptions` is removed in this config so the manifest keeps the Store publisher |
 
-Sideload a package to test it before submitting: turn on Developer Mode, copy the `.appx` to a `.zip`, `Expand-Archive` it, and `Add-AppxPackage -Register .\<folder>\AppxManifest.xml`. Launch it from Start. Check that settings persist (MSIX redirects AppData) and that Load file, Save file, and a custom settings folder work.
+To test before submitting, register the package unpacked on Windows (no signing needed). Double-clicking the `.appx` won't work: App Installer only installs signed packages. Copy it to a local drive first (registering from a Parallels `\\Mac\Home` share can fail), turn on **Settings → System → For developers → Developer Mode**, then in PowerShell:
+
+```powershell
+Copy-Item .\codys-dev-tools-msstore-*-x64.appx cdt.zip
+Expand-Archive cdt.zip cdt-store
+# Package file names are URL-encoded (Cody%27s%20Dev%20Tools.exe); Expand-Archive leaves them that way.
+Get-ChildItem cdt-store -Recurse | Where-Object Name -like '*%*' |
+  Sort-Object { $_.FullName.Length } -Descending |
+  Rename-Item -NewName { [uri]::UnescapeDataString($_.Name) }
+Add-AppxPackage -Register .\cdt-store\AppxManifest.xml
+```
+
+Launch it from the Start menu entry, not the `.exe` in the folder. Check that settings persist across restarts (MSIX redirects AppData), that Load file, Save file, and a custom settings folder work, and that the Help menu has no Check for Updates. Remove it afterwards with Start → right-click → Uninstall.
