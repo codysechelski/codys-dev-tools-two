@@ -1,0 +1,67 @@
+[
+ {
+  "file": "01-regex-tester-dark.png",
+  "theme": "dark",
+  "tool": "Regex Tester",
+  "inputs": [
+   "\\b[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}\\b",
+   "Last Thursday morning, Daniel Mercer arrived at the office\nearlier than usual. He had been working for several weeks\non a community project that connected local volunteers\nwith families who needed assistance. His longtime friend,\nRebecca Collins, could always be reached at\nrebecca.collins@example.com. Daniel had originally\nproposed building a small website to coordinate\nvolunteers, but as more people became interested, the\nproject quickly grew beyond its expectations. By the time\nhe finished his first cup of coffee, he had already\nreceived messages from daniel.mercer@example.org,\nvolunteers@communityhub.test, and\nsarah.johnson@example.net.\n\nAround lunchtime, Daniel met with his colleague Marcus\nBennett at a small café near the town square. Marcus\nsuggested contacting several local businesses, including a\nbakery managed by someone using\norders@sunrisebakery.example and a printing company whose\ngeneral mailbox was support@brightprint.example. Marcus\nalso recommended reaching out to Emily Parker, a retired\nteacher who had volunteered at similar events for years.\nHer email address, emily.parker@example.net, was already\nin Daniel's contact list.\n\nBy Friday afternoon, the project was gaining momentum. A\nlocal technology company offered to donate several\nrefurbished laptops, provided that Daniel could arrange\ntransportation. The company's representative, Olivia Chen,\nsent the details from olivia.chen@techbridge.example,\nexplaining that the equipment would be available the\nfollowing Wednesday. Meanwhile, a local photographer named\nJames Wilson volunteered to document the event and\npromised to deliver edited photographs within a week\nthrough jwilson.photography@example.org.\n\nOn Saturday, everything came together. Volunteers checked\nin at the front desk, where a sign-up sheet listed\nteam.leads@communityhub.test for questions, and\ndispatch@greenwaytransport.example confirmed the delivery\nschedule."
+  ],
+  "fill": null
+ },
+ {
+  "file": "02-json-formatter-dark.png",
+  "theme": "dark",
+  "tool": "JSON Formatter",
+  "inputs": [
+   "{\"order\":{\"id\":\"ORD-20481\",\"placed\":\"2026-11-27T14:32:08Z\",\"status\":\"shipped\",\"customer\":{\"name\":\"Avery Brooks\",\"email\":\"avery@example.com\",\"tier\":\"gold\",\"addresses\":[{\"type\":\"shipping\",\"line1\":\"1200 Market St\",\"city\":\"San Francisco\",\"region\":\"CA\",\"postal\":\"94102\",\"country\":\"US\"}]},\"items\":[{\"sku\":\"KB-75-BLK\",\"name\":\"Mechanical Keyboard\",\"qty\":1,\"price\":129.0,\"options\":{\"switches\":\"tactile\",\"layout\":\"ANSI\"}},{\"sku\":\"MS-ERG-02\",\"name\":\"Ergonomic Mouse\",\"qty\":1,\"price\":59.5},{\"sku\":\"CB-USBC-2M\",\"name\":\"USB-C Cable (2 m)\",\"qty\":3,\"price\":12.99}],\"totals\":{\"subtotal\":227.47,\"tax\":20.47,\"shipping\":0,\"grand\":247.94,\"currency\":\"USD\"},\"tracking\":{\"carrier\":\"UPS\",\"number\":\"1Z999AA10123456784\",\"events\":[{\"at\":\"2026-11-27T18:05:00Z\",\"status\":\"label_created\"},{\"at\":\"2026-11-28T02:41:00Z\",\"status\":\"in_transit\",\"location\":\"Oakland, CA\"}]},\"gift\":false,\"notes\":null}}"
+  ],
+  "fill": null
+ },
+ {
+  "file": "03-diff-tool-light.png",
+  "theme": "light",
+  "tool": "Diff Tool",
+  "inputs": [
+   "export async function fetchUser(id) {\n  const response = await fetch('/api/users/' + id);\n  const data = await response.json();\n  return data;\n}\n\nexport function formatName(user) {\n  return user.first + ' ' + user.last;\n}\n\nexport function isAdmin(user) {\n  return user.role == 'admin';\n}",
+   "export async function fetchUser(id, { signal } = {}) {\n  const response = await fetch(`/api/users/${encodeURIComponent(id)}`, { signal });\n  if (!response.ok) throw new Error(`Request failed: ${response.status}`);\n  return response.json();\n}\n\nexport function formatName(user) {\n  return [user.first, user.middle, user.last].filter(Boolean).join(' ');\n}\n\nexport function isAdmin(user) {\n  return user.roles?.includes('admin') ?? false;\n}"
+  ],
+  "fill": null
+ },
+ {
+  "file": "04-sql-formatter-dark.png",
+  "theme": "dark",
+  "tool": "SQL Formatter",
+  "inputs": [
+   "select c.id, c.name, c.email, count(o.id) as order_count, sum(o.total) as lifetime_value, max(o.placed_at) as last_order from customers c left join orders o on o.customer_id = c.id and o.status in ('paid', 'shipped', 'delivered') where c.created_at >= '2025-01-01' and c.region = 'us-west' group by c.id, c.name, c.email having sum(o.total) > 500 order by lifetime_value desc, last_order desc limit 25;"
+  ],
+  "fill": null
+ },
+ {
+  "file": "05-time-zone-converter-dark.png",
+  "theme": "dark",
+  "tool": "Time Zone Converter",
+  "inputs": [],
+  "fill": null
+ },
+ {
+  "file": "06-qr-code-generator-light.png",
+  "theme": "light",
+  "tool": "QR Code Generator",
+  "inputs": [],
+  "fill": {
+   "selector": "textarea",
+   "value": "https://devtools.codystools.online/"
+  }
+ },
+ {
+  "file": "07-unicode-character-map-dark.png",
+  "theme": "dark",
+  "tool": "Unicode Character Map",
+  "inputs": [],
+  "fill": {
+   "selector": "input[placeholder=\"Search by Unicode name, code, or character\"]",
+   "value": "rightwards arrow"
+  }
+ }
+]

@@ -104,7 +104,7 @@ The description is also searchable, so these cover the highest-traffic tools rat
 
 - **Store logo (300 × 300, required):** `store/microsoft/store-logo-300x300.png`
 - **1:1 box art (optional):** `store/microsoft/box-art-1080x1080.png`
-- **Screenshots (desktop, at least 1366 × 768, up to 10):** `store/screenshots/mac/01-…` through `07-…`, or captures from Windows
+- **Screenshots (desktop, at least 1366 × 768, up to 10):** `store/screenshots/windows/01-…` through `07-…` (2560 × 1440, taken on Windows; see `scripts/windows-store-screenshots/`)
 
 ## Packages
 
