@@ -35,6 +35,7 @@
     "dist:mas": "npm run typecheck && electron-vite build --mode mas && electron-builder --config electron-builder.mas.cjs --mac mas --universal",
     "dist:mas-dev": "npm run typecheck && electron-vite build --mode mas && electron-builder --config electron-builder.mas.cjs --mac mas-dev --arm64",
     "dist:msstore": "npm run typecheck && electron-vite build --mode msstore && electron-builder --config electron-builder.msstore.cjs --win appx --x64 --arm64",
+    "store-art": "node scripts/render-store-art.mjs",
     "store-assets": "node scripts/render-store-assets.mjs",
     "store-screenshots": "electron-vite build --mode mas && node scripts/capture-store-screenshots.mjs",
     "preview": "vite preview"

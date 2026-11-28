@@ -102,8 +102,7 @@ The description is also searchable, so these cover the highest-traffic tools rat
 
 ## Images
 
-- **Store logo (300 × 300, required):** `store/microsoft/store-logo-300x300.png`
-- **1:1 box art (optional):** `store/microsoft/box-art-1080x1080.png`
+- **Store logos and hero art:** `store/microsoft/`. Its README says which file goes in which slot.
 - **Screenshots (desktop, at least 1366 × 768, up to 10):** `store/screenshots/windows/01-…` through `07-…` (2560 × 1440, taken on Windows; see `scripts/windows-store-screenshots/`)
 
 ## Packages
