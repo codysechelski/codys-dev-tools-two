@@ -105,6 +105,12 @@ The description is also searchable, so these cover the highest-traffic tools rat
 - **Store logos and hero art:** `store/microsoft/`. Its README says which file goes in which slot.
 - **Screenshots (desktop, at least 1366 × 768, up to 10):** `store/screenshots/windows/01-…` through `07-…` (2560 × 1440, taken on Windows; see `scripts/windows-store-screenshots/`)
 
+## Restricted capabilities (Submission options)
+
+The package declares one restricted capability, `runFullTrust`, which every desktop (Win32/Electron) app packaged as MSIX/appx needs. Partner Center asks why, under **Submission options → Restricted capabilities**:
+
+> Cody's Dev Tools is an Electron desktop app packaged with the Desktop Bridge. runFullTrust is required for any desktop (Win32) app to run as a full-trust process. The app makes no network requests, collects no data, and only reads or writes files the user picks in the standard open and save dialogs.
+
 ## Packages
 
 From the Store Builds workflow artifact (Actions → Store Builds), for example `microsoft-store-v0.47.1`: upload both `codys-dev-tools-msstore-<version>-x64.appx` and `codys-dev-tools-msstore-<version>-arm64.appx`.
